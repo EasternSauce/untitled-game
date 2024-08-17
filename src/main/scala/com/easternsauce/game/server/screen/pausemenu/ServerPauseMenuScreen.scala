@@ -1,9 +1,11 @@
 package com.easternsauce.game.server.screen.pausemenu
 
-import com.badlogic.gdx.Screen
-import com.easternsauce.game.CoreGame
+import com.easternsauce.game.{CoreGame, GameScreen}
 
-case class ServerPauseMenuScreen(game: CoreGame) extends Screen {
+case class ServerPauseMenuScreen(game: CoreGame) extends GameScreen {
+
+  override def init(): Unit = {}
+
   override def show(): Unit = {}
 
   override def render(delta: Float): Unit = {}

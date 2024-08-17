@@ -1,44 +1,36 @@
 package com.easternsauce.game
 
-import com.badlogic.gdx.scenes.scene2d.ui.Skin
-import com.badlogic.gdx.{Game, Gdx, Screen}
-import com.easternsauce.game.gamestate.GameState
+import com.badlogic.gdx.{Game, Gdx}
+import com.easternsauce.game.gamemap.GameMapRenderer
+import com.easternsauce.game.gamestate.{AreaId, GameState}
+import com.easternsauce.game.gameview.GameView
 
 abstract class CoreGame extends Game {
   private var clientId: Option[String] = None
   private var host: Option[String] = None
   private var port: Option[String] = None
 
-  var gameplayScreen: Screen = _
-  var startMenuScreen: Screen = _
-  var pauseMenuScreen: Screen = _
+  var gameplayScreen: GameScreen = _
+  var startMenuScreen: GameScreen = _
+  var pauseMenuScreen: GameScreen = _
 
   var mapRenderer: GameMapRenderer = _
-  var skin: Skin = _
 
   var gameState: GameState = _
 
-  var spriteBatches :SpriteBatches = _
-  var viewportManager: ViewportManager = _
+  var gameView: GameView = _
 
   override def create(): Unit = {
     val areaId = AreaId("area1")
-    mapRenderer = GameMapRenderer(areaId)
+    mapRenderer = gamemap.GameMapRenderer(areaId)
     mapRenderer.init()
 
-    skin = new Skin(Gdx.files.internal("assets/ui/skin/uiskin.json"))
+    gameView = GameView()
+    gameView.init()
 
     initScreens()
 
     setScreen(startMenuScreen)
-
-    spriteBatches = SpriteBatches()
-    spriteBatches.worldSpriteBatch.init()
-    spriteBatches.worldTextSpriteBatch.init()
-    spriteBatches.hudBatch.init()
-
-    viewportManager = ViewportManager()
-    viewportManager.init()
 
     gameState = GameState()
   }

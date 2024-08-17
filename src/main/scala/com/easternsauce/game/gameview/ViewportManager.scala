@@ -1,7 +1,9 @@
-package com.easternsauce.game
+package com.easternsauce.game.gameview
 
 import com.badlogic.gdx.math.Vector3
 import com.badlogic.gdx.scenes.scene2d.Stage
+import com.easternsauce.game.CoreGame
+import com.easternsauce.game.math.{IsometricProjection, Vector2f}
 
 case class ViewportManager() {
 

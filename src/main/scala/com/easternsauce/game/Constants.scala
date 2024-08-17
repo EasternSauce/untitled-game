@@ -14,5 +14,11 @@ object Constants {
   val TileCenterX = 0
   val TileCenterY = 0
 
-  val LayersByRenderingOrder = List("fill", "background", "object", "manual_object_bottom", "manual_object_top")
+  val LayersByRenderingOrder: List[String] = List(
+    "fill",
+    "background",
+    "object",
+    "manual_object_bottom",
+    "manual_object_top"
+  )
 }

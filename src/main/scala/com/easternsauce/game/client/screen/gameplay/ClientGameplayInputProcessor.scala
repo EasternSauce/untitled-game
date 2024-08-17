@@ -10,10 +10,14 @@ case class ClientGameplayInputProcessor(game: CoreGame) extends InputProcessor {
     keycode match {
       case Keys.Z      => println("typed Z!")
       case Keys.ESCAPE => game.pauseGame()
-      case Keys.W => game.gameState = game.gameState.modify(_.cameraPos.x).using(_ - 10)
-      case Keys.S => game.gameState = game.gameState.modify(_.cameraPos.x).using(_ + 10)
-      case Keys.A => game.gameState = game.gameState.modify(_.cameraPos.y).using(_ - 10)
-      case Keys.D => game.gameState = game.gameState.modify(_.cameraPos.y).using(_ + 10)
+      case Keys.W =>
+        game.gameState = game.gameState.modify(_.cameraPos.x).using(_ - 10)
+      case Keys.S =>
+        game.gameState = game.gameState.modify(_.cameraPos.x).using(_ + 10)
+      case Keys.A =>
+        game.gameState = game.gameState.modify(_.cameraPos.y).using(_ - 10)
+      case Keys.D =>
+        game.gameState = game.gameState.modify(_.cameraPos.y).using(_ + 10)
       case _ =>
     }
     true

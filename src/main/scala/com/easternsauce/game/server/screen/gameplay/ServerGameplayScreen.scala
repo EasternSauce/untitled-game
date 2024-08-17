@@ -1,9 +1,11 @@
 package com.easternsauce.game.server.screen.gameplay
 
-import com.badlogic.gdx.Screen
-import com.easternsauce.game.CoreGame
+import com.easternsauce.game.{CoreGame, GameScreen}
 
-case class ServerGameplayScreen(game: CoreGame) extends Screen {
+case class ServerGameplayScreen(game: CoreGame) extends GameScreen {
+
+  override def init(): Unit = {}
+
   override def show(): Unit = {}
 
   override def render(delta: Float): Unit = {}

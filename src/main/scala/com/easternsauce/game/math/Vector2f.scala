@@ -1,4 +1,4 @@
-package com.easternsauce.game
+package com.easternsauce.game.math
 
 case class Vector2f(x: Float, y: Float) {
   def distance(v: Vector2f): Float = {

@@ -2,17 +2,19 @@ package com.easternsauce.game.client.screen.pausemenu
 
 import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.utils.ScreenUtils
-import com.badlogic.gdx.{Gdx, InputMultiplexer, InputProcessor, Screen}
-import com.easternsauce.game.CoreGame
+import com.badlogic.gdx.{Gdx, InputMultiplexer, InputProcessor}
+import com.easternsauce.game.{CoreGame, GameScreen}
 
-case class ClientPauseMenuScreen(game: CoreGame) extends Screen {
+case class ClientPauseMenuScreen(game: CoreGame) extends GameScreen {
   private var stage: Stage = _
   private var inputProcessor: InputProcessor = _
 
-  override def show(): Unit = {
+  override def init(): Unit = {
     stage = ClientPauseMenuStageBuilder().build(game)
     inputProcessor = buildInputProcessor()
+  }
 
+  override def show(): Unit = {
     Gdx.input.setInputProcessor(inputProcessor)
   }
 

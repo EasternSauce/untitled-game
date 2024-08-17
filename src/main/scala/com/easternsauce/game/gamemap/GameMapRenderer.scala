@@ -1,7 +1,10 @@
-package com.easternsauce.game
+package com.easternsauce.game.gamemap
 
 import com.badlogic.gdx.maps.tiled.{TiledMap, TiledMapTileLayer, TmxMapLoader}
-import com.easternsauce.game.gamestate.GameState
+import com.easternsauce.game.Constants
+import com.easternsauce.game.gamestate.{AreaId, GameState}
+import com.easternsauce.game.gameview.GameSpriteBatch
+import com.easternsauce.game.math.Vector2f
 
 case class GameMapRenderer(areaId: AreaId) {
   private var tiledMap: TiledMap = _
@@ -18,11 +21,13 @@ case class GameMapRenderer(areaId: AreaId) {
 
     var layerNames: List[String] = List()
 
-    while(iterator.hasNext) {
+    while (iterator.hasNext) {
       layerNames = layerNames.appended(iterator.next().getName)
     }
 
-    layers = layerNames.reverse.map(layerName => (layerName, loadLayer(layerName))).toMap
+    layers = layerNames.reverse
+      .map(layerName => (layerName, loadLayer(layerName)))
+      .toMap
   }
 
   private def loadLayer(layerName: String): GameMapLayer = {
@@ -39,7 +44,11 @@ case class GameMapRenderer(areaId: AreaId) {
     GameMapLayer(layerName, cells.flatten)
   }
 
-  def render(batch: GameSpriteBatch, worldCameraPos: Vector2f, gameState: GameState): Unit = {
+  def render(
+      batch: GameSpriteBatch,
+      worldCameraPos: Vector2f,
+      gameState: GameState
+  ): Unit = {
     for {
       layer <- Constants.LayersByRenderingOrder.flatMap(layers.get(_))
       cell <- layer.cells

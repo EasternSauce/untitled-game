@@ -8,7 +8,10 @@ import com.easternsauce.game.client.screen.startmenu.ClientStartMenuScreen
 case class CoreGameClient() extends CoreGame {
   override def initScreens(): Unit = {
     gameplayScreen = ClientGameplayScreen(this)
+    gameplayScreen.init()
     startMenuScreen = ClientStartMenuScreen(this)
+    startMenuScreen.init()
     pauseMenuScreen = ClientPauseMenuScreen(this)
+    pauseMenuScreen.init()
   }
 }

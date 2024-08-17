@@ -1,6 +1,7 @@
-package com.easternsauce.game
+package com.easternsauce.game.math
 
-import com.badlogic.gdx.math.{Matrix4, Vector2, Vector3}
+import com.badlogic.gdx.math.{Matrix4, Vector3}
+import com.easternsauce.game.Constants
 
 object IsometricProjection {
   private val isoTransform: Matrix4 = {
