@@ -1,6 +1,7 @@
 package com.easternsauce.game.server.screen.pausemenu
 
-import com.easternsauce.game.{CoreGame, GameScreen}
+import com.easternsauce.game.CoreGame
+import com.easternsauce.game.gameview.GameScreen
 
 case class ServerPauseMenuScreen(game: CoreGame) extends GameScreen {
 

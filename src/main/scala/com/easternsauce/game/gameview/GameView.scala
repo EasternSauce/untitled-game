@@ -11,7 +11,9 @@ case class GameView() {
   var spriteBatches: SpriteBatches = _
   var viewportManager: ViewportManager = _
 
-  def init(): Unit = {
+  private var worldRenderer: WorldRenderer = _
+
+  def init(game: CoreGame): Unit = {
     skin = new Skin(Gdx.files.internal("assets/ui/skin/uiskin.json"))
 
     spriteBatches = SpriteBatches()
@@ -21,26 +23,36 @@ case class GameView() {
 
     viewportManager = ViewportManager()
     viewportManager.init()
+
+    worldRenderer = WorldRenderer()
+    worldRenderer.init(game)
+  }
+
+  def update(delta: Float, game: CoreGame): Unit = {
+    worldRenderer.update(game.gameState)
+
+    viewportManager.updateCameras(game)
   }
 
   def render(delta: Float, game: CoreGame): Unit = {
-    viewportManager.updateCameras(game)
-
     ScreenUtils.clear(0, 0, 0, 1)
 
     viewportManager.setProjectionMatrices(spriteBatches)
 
     spriteBatches.worldSpriteBatch.begin()
-
     game.mapRenderer.render(
       spriteBatches.worldSpriteBatch,
       game.gameState.cameraPos,
       game.gameState
     )
-
     spriteBatches.worldSpriteBatch.end()
 
-    println(game.gameState.cameraPos)
+    worldRenderer.drawCurrentWorld(
+      spriteBatches,
+      game.gameState.cameraPos,
+      game
+    )
+
   }
 
   def resize(width: Int, height: Int): Unit = {

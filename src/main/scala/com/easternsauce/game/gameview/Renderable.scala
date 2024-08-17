@@ -1,6 +1,7 @@
 package com.easternsauce.game.gameview
 
-import com.easternsauce.game.gamestate.{AreaId, GameState}
+import com.easternsauce.game.gamestate.GameState
+import com.easternsauce.game.gamestate.id.AreaId
 import com.easternsauce.game.math.Vector2f
 
 trait Renderable {

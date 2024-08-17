@@ -3,7 +3,8 @@ package com.easternsauce.game.client.screen.startmenu
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.utils.ScreenUtils
-import com.easternsauce.game.{CoreGame, GameScreen}
+import com.easternsauce.game.CoreGame
+import com.easternsauce.game.gameview.GameScreen
 
 case class ClientStartMenuScreen(game: CoreGame) extends GameScreen {
   private var stage: Stage = _

@@ -2,7 +2,8 @@ package com.easternsauce.game.gamemap
 
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer.Cell
 import com.easternsauce.game._
-import com.easternsauce.game.gamestate.{AreaId, GameState}
+import com.easternsauce.game.gamestate.GameState
+import com.easternsauce.game.gamestate.id.AreaId
 import com.easternsauce.game.gameview.{GameSpriteBatch, Renderable}
 import com.easternsauce.game.math.{IsometricProjection, Vector2f}
 

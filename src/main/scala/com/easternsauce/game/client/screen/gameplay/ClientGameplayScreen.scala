@@ -1,7 +1,8 @@
 package com.easternsauce.game.client.screen.gameplay
 
 import com.badlogic.gdx.Gdx
-import com.easternsauce.game.{CoreGame, GameScreen}
+import com.easternsauce.game.CoreGame
+import com.easternsauce.game.gameview.GameScreen
 
 case class ClientGameplayScreen(game: CoreGame) extends GameScreen {
   private var inputProcessor: ClientGameplayInputProcessor = _
@@ -15,7 +16,7 @@ case class ClientGameplayScreen(game: CoreGame) extends GameScreen {
   }
 
   override def render(delta: Float): Unit = {
-    game.gameView.render(delta, game)
+    game.update(delta)
   }
 
   override def resize(width: Int, height: Int): Unit = {

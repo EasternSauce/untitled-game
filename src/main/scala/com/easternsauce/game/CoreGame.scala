@@ -2,17 +2,18 @@ package com.easternsauce.game
 
 import com.badlogic.gdx.{Game, Gdx}
 import com.easternsauce.game.gamemap.GameMapRenderer
-import com.easternsauce.game.gamestate.{AreaId, GameState}
-import com.easternsauce.game.gameview.GameView
+import com.easternsauce.game.gamestate.GameState
+import com.easternsauce.game.gamestate.id.AreaId
+import com.easternsauce.game.gameview.{GameScreen, GameView}
 
 abstract class CoreGame extends Game {
   private var clientId: Option[String] = None
   private var host: Option[String] = None
   private var port: Option[String] = None
 
-  var gameplayScreen: GameScreen = _
-  var startMenuScreen: GameScreen = _
-  var pauseMenuScreen: GameScreen = _
+  protected var gameplayScreen: GameScreen = _
+  protected var startMenuScreen: GameScreen = _
+  protected var pauseMenuScreen: GameScreen = _
 
   var mapRenderer: GameMapRenderer = _
 
@@ -20,13 +21,15 @@ abstract class CoreGame extends Game {
 
   var gameView: GameView = _
 
+  def initScreens(): Unit
+
   override def create(): Unit = {
     val areaId = AreaId("area1")
     mapRenderer = gamemap.GameMapRenderer(areaId)
     mapRenderer.init()
 
     gameView = GameView()
-    gameView.init()
+    gameView.init(this)
 
     initScreens()
 
@@ -35,7 +38,12 @@ abstract class CoreGame extends Game {
     gameState = GameState()
   }
 
-  def initScreens(): Unit
+  def update(delta: Float): Unit = {
+    gameState = gameState.update(delta, this)
+
+    gameView.update(delta, this)
+    gameView.render(delta, this)
+  }
 
   def joinGame(clientId: String, host: String, port: String): Unit = {
     if (clientId.nonEmpty) {

@@ -1,6 +1,7 @@
 package com.easternsauce.game.server.screen.startmenu
 
-import com.easternsauce.game.{CoreGame, GameScreen}
+import com.easternsauce.game.CoreGame
+import com.easternsauce.game.gameview.GameScreen
 
 case class ServerStartMenuScreen(game: CoreGame) extends GameScreen {
 

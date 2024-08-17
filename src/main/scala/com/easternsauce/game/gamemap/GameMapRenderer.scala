@@ -2,7 +2,8 @@ package com.easternsauce.game.gamemap
 
 import com.badlogic.gdx.maps.tiled.{TiledMap, TiledMapTileLayer, TmxMapLoader}
 import com.easternsauce.game.Constants
-import com.easternsauce.game.gamestate.{AreaId, GameState}
+import com.easternsauce.game.gamestate.GameState
+import com.easternsauce.game.gamestate.id.AreaId
 import com.easternsauce.game.gameview.GameSpriteBatch
 import com.easternsauce.game.math.Vector2f
 
@@ -15,7 +16,7 @@ case class GameMapRenderer(areaId: AreaId) {
     val params = new TmxMapLoader.Parameters()
 
     tiledMap = new TmxMapLoader()
-      .load(s"assets/maps/${areaId.seed}/${areaId.seed}.tmx", params)
+      .load(s"assets/maps/${areaId.name}/${areaId.name}.tmx", params)
 
     val iterator = tiledMap.getLayers.iterator()
 
