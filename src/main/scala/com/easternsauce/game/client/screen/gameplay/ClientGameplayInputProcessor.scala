@@ -2,13 +2,11 @@ package com.easternsauce.game.client.screen.gameplay
 
 import com.badlogic.gdx.Input.{Buttons, Keys}
 import com.badlogic.gdx.InputProcessor
-import com.easternsauce.game.{CoreGame, GameInput}
-import com.softwaremill.quicklens.{ModifyPimp, QuicklensMapAt}
+import com.easternsauce.game.CoreGame
 
 case class ClientGameplayInputProcessor(game: CoreGame) extends InputProcessor {
   override def keyDown(keycode: Int): Boolean = {
     keycode match {
-      case Keys.Z      => println("typed Z!")
       case Keys.ESCAPE => game.pauseGame()
       case _           =>
     }
@@ -31,32 +29,10 @@ case class ClientGameplayInputProcessor(game: CoreGame) extends InputProcessor {
   ): Boolean = {
     button match {
       case Buttons.LEFT =>
-        val creature = game.clientCreatureId.map(game.gameState.creatures(_))
-
-        creature.foreach(creature => {
-          val vectorTowardsDestination =
-            creature.pos.vectorTowards(creature.params.destination)
-
-          val destination = GameInput.mouseWorldPos(
-            screenX,
-            screenY,
-            creature.pos
-          )
-
-          game.gameState = game.gameState
-            .modify(_.creatures.at(creature.id))
-            .using(
-              _.modify(_.params.destination)
-                .setTo(destination)
-            )
-            .modify(_.creatures.at(creature.id).params.facingVector)
-            .setToIf(vectorTowardsDestination.length > 0)(
-              vectorTowardsDestination
-            )
-        })
-
-        true
+        game.holdButtonInput.mouseLeftButton = true
+      case _ =>
     }
+    true
   }
 
   override def touchUp(
@@ -65,7 +41,12 @@ case class ClientGameplayInputProcessor(game: CoreGame) extends InputProcessor {
       pointer: Int,
       button: Int
   ): Boolean = {
-    false
+    button match {
+      case Buttons.LEFT =>
+        game.holdButtonInput.mouseLeftButton = false
+      case _ =>
+    }
+    true
   }
 
   override def touchCancelled(

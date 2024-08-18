@@ -1,9 +1,9 @@
-package com.easternsauce.game
+package com.easternsauce.game.math
 
 import com.badlogic.gdx.Gdx
-import com.easternsauce.game.math.{IsometricProjection, Vector2f}
+import com.easternsauce.game.Constants
 
-object GameInput {
+object MousePosTransformations {
   def mouseWorldPos(
       screenX: Float,
       screenY: Float,

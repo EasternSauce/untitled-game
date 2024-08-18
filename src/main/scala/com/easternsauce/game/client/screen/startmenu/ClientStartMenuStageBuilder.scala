@@ -46,7 +46,10 @@ case class ClientStartMenuStageBuilder() {
       text = "Join game",
       listener = new ClickListener() {
         override def clicked(event: InputEvent, x: Float, y: Float): Unit = {
-          game.joinGame(nameField.getText, hostField.getText, portField.getText)
+          if (nameField.getText.nonEmpty) {
+            game
+              .joinGame(nameField.getText, hostField.getText, portField.getText)
+          }
         }
       },
       skin = game.gameView.skin

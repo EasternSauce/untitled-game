@@ -1,6 +1,7 @@
 package com.easternsauce.game
 
 import com.badlogic.gdx.{Game, Gdx}
+import com.easternsauce.game.client.screen.gameplay.ClientHoldButtonInput
 import com.easternsauce.game.gamemap.GameTiledMap
 import com.easternsauce.game.gamephysics.GamePhysics
 import com.easternsauce.game.gamestate.GameState
@@ -25,7 +26,9 @@ abstract class CoreGame extends Game {
 
   var gamePhysics: GamePhysics = _
 
-  var playersToCreate: List[String] = List()
+  var playersToCreate: List[String] = _
+
+  var holdButtonInput: ClientHoldButtonInput = _
 
   def initScreens(): Unit
 
@@ -45,12 +48,21 @@ abstract class CoreGame extends Game {
     setScreen(startMenuScreen)
 
     gameState = GameState()
+
+    playersToCreate = List()
+
+    holdButtonInput = ClientHoldButtonInput()
   }
 
   def update(delta: Float): Unit = {
     gameState = gameState.update(delta, this)
 
-    gamePhysics.updateForArea(AreaId("area1"), gameState)
+    val areaId = clientCreatureId
+      .filter(gameState.creatures.contains(_))
+      .map(gameState.creatures(_).currentAreaId)
+      .getOrElse(Constants.DefaultAreaId)
+
+    gamePhysics.updateForArea(areaId, gameState)
 
     gameView.update(delta, this)
     gameView.render(delta, this)
