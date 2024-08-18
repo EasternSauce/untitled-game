@@ -21,10 +21,15 @@ case class WorldRenderer() {
   ): Unit = {
     spriteBatches.worldSpriteBatch.begin()
 
+    val clientCreatureAreaId = game.clientCreatureId
+      .filter(game.gameState.creatures.contains(_))
+      .map(game.gameState.creatures(_))
+      .map(_.currentAreaId)
+
     renderWorldElementsByPriority(
       spriteBatches.worldSpriteBatch,
       worldCameraPos,
-      Some(game.gameState.currentAreaId),
+      clientCreatureAreaId,
       game.gameState
     )
 

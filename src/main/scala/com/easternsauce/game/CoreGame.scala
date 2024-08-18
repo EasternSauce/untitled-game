@@ -4,7 +4,8 @@ import com.badlogic.gdx.{Game, Gdx}
 import com.easternsauce.game.gamemap.GameTiledMap
 import com.easternsauce.game.gamephysics.GamePhysics
 import com.easternsauce.game.gamestate.GameState
-import com.easternsauce.game.gamestate.id.AreaId
+import com.easternsauce.game.gamestate.creature.Creature
+import com.easternsauce.game.gamestate.id.{AreaId, GameEntityId}
 import com.easternsauce.game.gameview.{GameScreen, GameView}
 
 abstract class CoreGame extends Game {
@@ -23,6 +24,8 @@ abstract class CoreGame extends Game {
   var gameView: GameView = _
 
   var gamePhysics: GamePhysics = _
+
+  var playersToCreate: List[String] = List()
 
   def initScreens(): Unit
 
@@ -64,6 +67,7 @@ abstract class CoreGame extends Game {
       this.port = Some(port)
     }
 
+    playersToCreate = playersToCreate.appended(clientId)
     setScreen(gameplayScreen)
   }
 
@@ -77,5 +81,9 @@ abstract class CoreGame extends Game {
 
   def close(): Unit = {
     Gdx.app.exit()
+  }
+
+  def clientCreatureId: Option[GameEntityId[Creature]] = {
+    clientId.map(GameEntityId[Creature])
   }
 }

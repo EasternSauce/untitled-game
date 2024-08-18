@@ -1,6 +1,7 @@
 package com.easternsauce.game
 
 import com.easternsauce.game.gamestate.creature.{AnimationDefinition, FramesDefinition}
+import com.easternsauce.game.gamestate.id.AreaId
 
 object Constants {
   val WindowWidth = 1360
@@ -78,4 +79,6 @@ object Constants {
   val WallCollisionCellId = 6
 
   val EnableDebug = true
+
+  val DefaultAreaId: AreaId = AreaId("area1")
 }

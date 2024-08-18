@@ -4,6 +4,8 @@ import com.badlogic.gdx.math.Vector3
 import com.badlogic.gdx.scenes.scene2d.Stage
 import com.easternsauce.game.CoreGame
 import com.easternsauce.game.gamephysics.AreaWorld
+import com.easternsauce.game.gamestate.creature.Creature
+import com.easternsauce.game.gamestate.id.GameEntityId
 import com.easternsauce.game.math.{IsometricProjection, Vector2f}
 
 case class ViewportManager() {
@@ -38,12 +40,13 @@ case class ViewportManager() {
   }
 
   def updateCameras(
+      creatureId: Option[GameEntityId[Creature]],
       game: CoreGame
   ): Unit = {
-    worldViewport.updateCamera(game.gameState)
-    b2DebugViewport.updateCamera(game.gameState)
-    worldTextViewport.updateCamera(game.gameState)
-    hudViewport.updateCamera(game.gameState)
+    worldViewport.updateCamera(creatureId, game.gameState)
+    b2DebugViewport.updateCamera(creatureId, game.gameState)
+    worldTextViewport.updateCamera(creatureId, game.gameState)
+    hudViewport.updateCamera(creatureId, game.gameState)
   }
 
   def resize(width: Int, height: Int): Unit = {

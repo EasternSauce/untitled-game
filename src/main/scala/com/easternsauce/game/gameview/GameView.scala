@@ -32,7 +32,9 @@ case class GameView() {
   def update(delta: Float, game: CoreGame): Unit = {
     worldRenderer.update(game.gameState)
 
-    viewportManager.updateCameras(game)
+    val creatureId = game.clientCreatureId
+
+    viewportManager.updateCameras(creatureId, game)
   }
 
   def render(delta: Float, game: CoreGame): Unit = {
@@ -43,14 +45,14 @@ case class GameView() {
     spriteBatches.worldSpriteBatch.begin()
     game.tiledMap.render(
       spriteBatches.worldSpriteBatch,
-      game.gameState.cameraPos,
+      viewportManager.getWorldCameraPos,
       game.gameState
     )
     spriteBatches.worldSpriteBatch.end()
 
     worldRenderer.drawCurrentWorld(
       spriteBatches,
-      game.gameState.cameraPos,
+      viewportManager.getWorldCameraPos,
       game
     )
 

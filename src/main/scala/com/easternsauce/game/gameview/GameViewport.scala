@@ -7,6 +7,8 @@ import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.utils.viewport.FitViewport
 import com.easternsauce.game.Constants
 import com.easternsauce.game.gamestate.GameState
+import com.easternsauce.game.gamestate.creature.Creature
+import com.easternsauce.game.gamestate.id.GameEntityId
 import com.easternsauce.game.math.Vector2f
 
 case class GameViewport() {
@@ -38,11 +40,15 @@ case class GameViewport() {
   }
 
   def updateCamera(
+      creatureId: Option[GameEntityId[Creature]],
       gameState: GameState
   ): Unit = {
     val camPosition = camera.position
 
-    val cameraPos = gameState.cameraPos
+    val cameraPos = creatureId
+      .filter(gameState.creatures.contains)
+      .map(gameState.creatures(_).pos)
+      .getOrElse(Vector2f(0, 0))
 
     val pos = coordinateTransformation(cameraPos)
 

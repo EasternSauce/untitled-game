@@ -20,4 +20,19 @@ case class Vector2f(x: Float, y: Float) {
   }
 
   def add(vector: Vector2f): Vector2f = Vector2f(x + vector.x, y + vector.y)
+
+  def withLength(length: Float): Vector2f = {
+    normalized.multiply(length)
+  }
+
+  def normalized: Vector2f = {
+    if (length != 0) {
+      Vector2f(x / length, y / length)
+    } else {
+      Vector2f(x, y)
+    }
+  }
+
+  def multiply(value: Float): Vector2f = Vector2f(x * value, y * value)
+
 }
