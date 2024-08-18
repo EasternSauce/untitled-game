@@ -15,4 +15,9 @@ case class Vector2f(x: Float, y: Float) {
 
   def length: Float = Math.sqrt(x * x + y * y).toFloat
 
+  def vectorTowards(point: Vector2f): Vector2f = {
+    Vector2f(point.x - x, point.y - y)
+  }
+
+  def add(vector: Vector2f): Vector2f = Vector2f(x + vector.x, y + vector.y)
 }

@@ -1,7 +1,8 @@
 package com.easternsauce.game
 
 import com.badlogic.gdx.{Game, Gdx}
-import com.easternsauce.game.gamemap.GameMapRenderer
+import com.easternsauce.game.gamemap.GameTiledMap
+import com.easternsauce.game.gamephysics.GamePhysics
 import com.easternsauce.game.gamestate.GameState
 import com.easternsauce.game.gamestate.id.AreaId
 import com.easternsauce.game.gameview.{GameScreen, GameView}
@@ -15,21 +16,26 @@ abstract class CoreGame extends Game {
   protected var startMenuScreen: GameScreen = _
   protected var pauseMenuScreen: GameScreen = _
 
-  var mapRenderer: GameMapRenderer = _
+  var tiledMap: GameTiledMap = _
 
   var gameState: GameState = _
 
   var gameView: GameView = _
 
+  var gamePhysics: GamePhysics = _
+
   def initScreens(): Unit
 
   override def create(): Unit = {
     val areaId = AreaId("area1")
-    mapRenderer = gamemap.GameMapRenderer(areaId)
-    mapRenderer.init()
+    tiledMap = gamemap.GameTiledMap(areaId)
+    tiledMap.init()
 
     gameView = GameView()
     gameView.init(this)
+
+    gamePhysics = GamePhysics()
+    gamePhysics.init(Map(areaId -> tiledMap), gameState)
 
     initScreens()
 
@@ -40,6 +46,8 @@ abstract class CoreGame extends Game {
 
   def update(delta: Float): Unit = {
     gameState = gameState.update(delta, this)
+
+    gamePhysics.updateForArea(AreaId("area1"), gameState)
 
     gameView.update(delta, this)
     gameView.render(delta, this)

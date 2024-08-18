@@ -7,6 +7,7 @@ import com.easternsauce.game.math.Vector2f
 import com.softwaremill.quicklens.ModifyPimp
 
 case class Creature(params: CreatureParams) extends GameEntity {
+
   def id: GameEntityId[Creature] = params.id
 
   def pos: Vector2f = params.pos
@@ -25,12 +26,12 @@ case class Creature(params: CreatureParams) extends GameEntity {
       delta: Float,
       gameState: GameState
   ): Creature = {
-    updateTimers(delta)
+    this
+      .updateTimers(delta)
+      .updateMovement(gameState)
   }
 
   private def updateTimers(delta: Float): Creature = {
-    println("timer: " + params.animationTimer.time)
-
     this
       .modify(_.params.animationTimer)
       .using(_.update(delta))
@@ -38,5 +39,9 @@ case class Creature(params: CreatureParams) extends GameEntity {
       .using(_.update(delta))
       .modify(_.params.deathAnimationTimer)
       .using(_.update(delta))
+  }
+
+  def updateMovement(gameState: GameState): Creature = {
+    this
   }
 }

@@ -22,7 +22,7 @@ case class CreatureParams(
     life: Float,
     maxLife: Float,
     damage: Float,
-    facingVector: Vector2f = Vector2f(0, 1),
+    facingVector: Vector2f = Vector2f(1, 0),
     texturePaths: Map[CreatureAnimationType, String],
     animationDefinition: AnimationDefinition,
     attackRange: Float,

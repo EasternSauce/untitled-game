@@ -7,7 +7,7 @@ import com.easternsauce.game.gamestate.id.AreaId
 import com.easternsauce.game.gameview.GameSpriteBatch
 import com.easternsauce.game.math.Vector2f
 
-case class GameMapRenderer(areaId: AreaId) {
+case class GameTiledMap(areaId: AreaId) {
   private var tiledMap: TiledMap = _
 
   private var layers: Map[String, GameMapLayer] = _
@@ -57,4 +57,6 @@ case class GameMapRenderer(areaId: AreaId) {
       cell.render(batch, worldCameraPos, gameState)
     }
   }
+
+  def layer(name: String): GameMapLayer = layers(name)
 }

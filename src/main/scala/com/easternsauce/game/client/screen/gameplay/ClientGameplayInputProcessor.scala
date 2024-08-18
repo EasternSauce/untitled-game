@@ -1,9 +1,10 @@
 package com.easternsauce.game.client.screen.gameplay
 
-import com.badlogic.gdx.Input.Keys
+import com.badlogic.gdx.Input.{Buttons, Keys}
 import com.badlogic.gdx.InputProcessor
-import com.easternsauce.game.CoreGame
-import com.softwaremill.quicklens.ModifyPimp
+import com.easternsauce.game.gamestate.id.GameEntityId
+import com.easternsauce.game.{CoreGame, GameInput}
+import com.softwaremill.quicklens.{ModifyPimp, QuicklensMapAt}
 
 case class ClientGameplayInputProcessor(game: CoreGame) extends InputProcessor {
   override def keyDown(keycode: Int): Boolean = {
@@ -37,7 +38,34 @@ case class ClientGameplayInputProcessor(game: CoreGame) extends InputProcessor {
       pointer: Int,
       button: Int
   ): Boolean = {
-    false
+    button match {
+      case Buttons.LEFT =>
+        val creature = game.gameState.creatures(GameEntityId("player"))
+
+        val vectorTowardsDestination =
+          creature.pos.vectorTowards(creature.params.destination)
+
+        val destination = GameInput.mouseWorldPos(
+          screenX,
+          screenY,
+          game.gameState.creatures(GameEntityId("player")).pos
+        )
+
+        println("moving towards " + destination)
+
+        game.gameState = game.gameState
+          .modify(_.creatures.at(GameEntityId("player")))
+          .using(
+            _.modify(_.params.destination)
+              .setTo(destination)
+          )
+          .modify(_.creatures.at(GameEntityId("player")).params.facingVector)
+          .setToIf(vectorTowardsDestination.length > 0)(
+            vectorTowardsDestination
+          )
+
+        true
+    }
   }
 
   override def touchUp(

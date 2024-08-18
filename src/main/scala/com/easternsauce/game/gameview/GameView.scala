@@ -3,7 +3,8 @@ package com.easternsauce.game.gameview
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.utils.ScreenUtils
-import com.easternsauce.game.CoreGame
+import com.easternsauce.game.gamestate.id.AreaId
+import com.easternsauce.game.{Constants, CoreGame}
 
 case class GameView() {
 
@@ -40,7 +41,7 @@ case class GameView() {
     viewportManager.setProjectionMatrices(spriteBatches)
 
     spriteBatches.worldSpriteBatch.begin()
-    game.mapRenderer.render(
+    game.tiledMap.render(
       spriteBatches.worldSpriteBatch,
       game.gameState.cameraPos,
       game.gameState
@@ -53,6 +54,9 @@ case class GameView() {
       game
     )
 
+    if (Constants.EnableDebug) {
+      viewportManager.renderDebug(game.gamePhysics.areaWorlds(AreaId("area1")))
+    }
   }
 
   def resize(width: Int, height: Int): Unit = {

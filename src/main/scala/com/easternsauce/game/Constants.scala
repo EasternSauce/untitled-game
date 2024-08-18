@@ -70,4 +70,12 @@ object Constants {
     deathFrames = FramesDefinition(start = 48, count = 8, frameDuration = 0.1f)
   )
 
+  var PhysicsBodyCorrectionDistance = 0.5f
+
+  val BigObjectCollisionCellId = 1
+  val WaterGroundCollisionCellId = 2
+  val SmallObjectCollisionCellId = 4
+  val WallCollisionCellId = 6
+
+  val EnableDebug = true
 }
