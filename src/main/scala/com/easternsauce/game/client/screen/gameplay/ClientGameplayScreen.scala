@@ -6,11 +6,9 @@ import com.easternsauce.game.gameview.GameScreen
 
 case class ClientGameplayScreen(game: CoreGame) extends GameScreen {
   private var inputProcessor: ClientGameplayInputProcessor = _
-  private var holdButtonInput: ClientHoldButtonInput = _
 
   override def init(): Unit = {
     inputProcessor = ClientGameplayInputProcessor(game)
-    holdButtonInput = ClientHoldButtonInput()
   }
 
   override def show(): Unit = {
@@ -22,7 +20,7 @@ case class ClientGameplayScreen(game: CoreGame) extends GameScreen {
   }
 
   override def resize(width: Int, height: Int): Unit = {
-    game.gameView.resize(width, height)
+    game.view.resize(width, height)
   }
 
   override def pause(): Unit = {}

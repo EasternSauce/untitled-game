@@ -81,4 +81,10 @@ object Constants {
   val EnableDebug = true
 
   val DefaultAreaId: AreaId = AreaId("area1")
+
+  val MapFilesLocation: String = "assets/maps"
+
+  val MapAreaNames: List[String] = List("area1")
+
+  val RenderDistance: Float = 1000f
 }

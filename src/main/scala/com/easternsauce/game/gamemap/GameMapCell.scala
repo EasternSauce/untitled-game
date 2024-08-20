@@ -29,14 +29,14 @@ case class GameMapCell(tiledCell: Cell, areaId: AreaId, pos: Vector2f)
         Vector2f(pos.x + 0.75f, pos.y - 0.85f)
       )
 
-//    if (worldCameraPos.distance(screenPos) < 1000f) {
-    batch.draw(
-      textureRegion,
-      screenPos.x + Constants.TileCenterX + tiledCell.getTile.getOffsetX,
-      screenPos.y + Constants.TileCenterY + tiledCell.getTile.getOffsetY,
-      (textureWidth * Constants.MapTextureScale).toInt,
-      (textureHeight * Constants.MapTextureScale).toInt
-    )
-//    }
+    if (worldCameraPos.distance(screenPos) < Constants.RenderDistance) {
+      batch.draw(
+        textureRegion,
+        screenPos.x + Constants.TileCenterX + tiledCell.getTile.getOffsetX,
+        screenPos.y + Constants.TileCenterY + tiledCell.getTile.getOffsetY,
+        (textureWidth * Constants.MapTextureScale).toInt,
+        (textureHeight * Constants.MapTextureScale).toInt
+      )
+    }
   }
 }

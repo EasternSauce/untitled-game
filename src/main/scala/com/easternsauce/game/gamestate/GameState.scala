@@ -1,6 +1,7 @@
 package com.easternsauce.game.gamestate
 
 import com.badlogic.gdx.Gdx
+import com.badlogic.gdx.Input.Buttons
 import com.easternsauce.game.gamestate.creature.{Creature, CreatureFactory}
 import com.easternsauce.game.gamestate.id.GameEntityId
 import com.easternsauce.game.math.{MousePosTransformations, Vector2f}
@@ -28,7 +29,7 @@ case class GameState(
         if (activeCreatureIds.contains(creature.id)) {
           creature.update(
             delta,
-            game.gamePhysics.creatureBodyPositions.get(creature.id),
+            game.physics.creatureBodyPositions.get(creature.id),
             game.gameState
           )
         } else {
@@ -40,7 +41,7 @@ case class GameState(
   def handleCreatePlayers(game: CoreGame): GameState = {
     val playersToCreate = game.playersToCreate
 
-    game.playersToCreate = List()
+    game.clearPlayersToCreate()
 
     playersToCreate.foldLeft(this) { case (gameState, name) =>
       val creatureId = GameEntityId[Creature](name)
@@ -79,7 +80,7 @@ case class GameState(
       .filter(this.creatures.contains)
       .map(this.creatures(_))
 
-    if (clientCreature.nonEmpty && game.holdButtonInput.mouseLeftButton) {
+    if (clientCreature.nonEmpty && game.keyHeld(Buttons.LEFT)) {
       val creature = clientCreature.get
       val vectorTowardsDestination =
         creature.pos.vectorTowards(creature.params.destination)

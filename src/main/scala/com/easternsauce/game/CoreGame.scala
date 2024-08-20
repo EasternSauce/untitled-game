@@ -1,7 +1,6 @@
 package com.easternsauce.game
 
 import com.badlogic.gdx.{Game, Gdx}
-import com.easternsauce.game.client.screen.gameplay.ClientHoldButtonInput
 import com.easternsauce.game.gamemap.GameTiledMap
 import com.easternsauce.game.gamephysics.GamePhysics
 import com.easternsauce.game.gamestate.GameState
@@ -10,62 +9,33 @@ import com.easternsauce.game.gamestate.id.{AreaId, GameEntityId}
 import com.easternsauce.game.gameview.{GameScreen, GameView}
 
 abstract class CoreGame extends Game {
-  private var clientId: Option[String] = None
-  private var host: Option[String] = None
-  private var port: Option[String] = None
+  private var clientId: Option[String] = _
+  private var host: Option[String] = _
+  private var port: Option[String] = _
 
   protected var gameplayScreen: GameScreen = _
   protected var startMenuScreen: GameScreen = _
   protected var pauseMenuScreen: GameScreen = _
 
-  var tiledMap: GameTiledMap = _
-
-  var gameState: GameState = _
-
-  var gameView: GameView = _
-
-  var gamePhysics: GamePhysics = _
-
-  var playersToCreate: List[String] = _
-
-  var holdButtonInput: ClientHoldButtonInput = _
+  private var gameplay: Gameplay = _
 
   def initScreens(): Unit
 
   override def create(): Unit = {
-    val areaId = AreaId("area1")
-    tiledMap = gamemap.GameTiledMap(areaId)
-    tiledMap.init()
+    clientId = None
+    host = None
+    port = None
 
-    gameView = GameView()
-    gameView.init(this)
-
-    gamePhysics = GamePhysics()
-    gamePhysics.init(Map(areaId -> tiledMap), gameState)
+    gameplay = Gameplay(this)
+    gameplay.init()
 
     initScreens()
 
     setScreen(startMenuScreen)
-
-    gameState = GameState()
-
-    playersToCreate = List()
-
-    holdButtonInput = ClientHoldButtonInput()
   }
 
   def update(delta: Float): Unit = {
-    gameState = gameState.update(delta, this)
-
-    val areaId = clientCreatureId
-      .filter(gameState.creatures.contains(_))
-      .map(gameState.creatures(_).currentAreaId)
-      .getOrElse(Constants.DefaultAreaId)
-
-    gamePhysics.updateForArea(areaId, gameState)
-
-    gameView.update(delta, this)
-    gameView.render(delta, this)
+    gameplay.update(delta)
   }
 
   def joinGame(clientId: String, host: String, port: String): Unit = {
@@ -79,7 +49,9 @@ abstract class CoreGame extends Game {
       this.port = Some(port)
     }
 
-    playersToCreate = playersToCreate.appended(clientId)
+    if (this.clientId.nonEmpty)
+      gameplay.schedulePlayerToCreate(this.clientId.get)
+
     setScreen(gameplayScreen)
   }
 
@@ -98,4 +70,14 @@ abstract class CoreGame extends Game {
   def clientCreatureId: Option[GameEntityId[Creature]] = {
     clientId.map(GameEntityId[Creature])
   }
+
+  def view: GameView = gameplay.gameView
+  def physics: GamePhysics = gameplay.gamePhysics
+  def gameState: GameState = gameplay.gameState
+  def playersToCreate: List[String] = gameplay.playersToCreate
+  def clearPlayersToCreate(): Unit = gameplay.playersToCreate = List()
+  def gameTiledMaps: Map[AreaId, GameTiledMap] = gameplay.gameTiledMaps
+  def keyHeld(key: Int): Boolean = gameplay.keysHeld.getOrElse(key, false)
+  def setKeyHeld(key: Int, value: Boolean): Unit =
+    gameplay.setKeyHeld(key, value)
 }

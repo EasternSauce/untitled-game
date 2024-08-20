@@ -1,8 +1,8 @@
 package com.easternsauce.game.gameview
 
 import com.easternsauce.game.CoreGame
+import com.easternsauce.game.gamemap.GameTiledMap
 import com.easternsauce.game.gamestate.GameState
-import com.easternsauce.game.gamestate.id.AreaId
 import com.easternsauce.game.math.Vector2f
 
 case class WorldRenderer() {
@@ -29,7 +29,7 @@ case class WorldRenderer() {
     renderWorldElementsByPriority(
       spriteBatches.worldSpriteBatch,
       worldCameraPos,
-      clientCreatureAreaId,
+      clientCreatureAreaId.map(game.gameTiledMaps(_)),
       game.gameState
     )
 
@@ -43,10 +43,16 @@ case class WorldRenderer() {
   private def renderWorldElementsByPriority(
       worldSpriteBatch: GameSpriteBatch,
       worldCameraPos: Vector2f,
-      currentAreaId: Option[AreaId],
+      gameTiledMap: Option[GameTiledMap],
       gameState: GameState
   ): Unit = {
-    if (currentAreaId.isDefined) {
+    if (gameTiledMap.isDefined) {
+      gameTiledMap.get.render(
+        worldSpriteBatch,
+        worldCameraPos,
+        gameState
+      )
+
       renderDynamicElements(
         worldSpriteBatch,
         worldCameraPos,

@@ -1,19 +1,30 @@
 package com.easternsauce.game.client.screen.gameplay
 
-import com.badlogic.gdx.Input.{Buttons, Keys}
+import com.badlogic.gdx.Input.Keys
 import com.badlogic.gdx.InputProcessor
 import com.easternsauce.game.CoreGame
 
 case class ClientGameplayInputProcessor(game: CoreGame) extends InputProcessor {
+
   override def keyDown(keycode: Int): Boolean = {
     keycode match {
-      case Keys.ESCAPE => game.pauseGame()
-      case _           =>
+      case keycode =>
+        game.setKeyHeld(keycode, value = true)
     }
-    true
+
+    keycode match {
+      case Keys.ESCAPE =>
+        game.pauseGame()
+        true
+      case _ => false
+    }
   }
 
   override def keyUp(keycode: Int): Boolean = {
+    keycode match {
+      case keycode =>
+        game.setKeyHeld(keycode, value = false)
+    }
     false
   }
 
@@ -28,9 +39,8 @@ case class ClientGameplayInputProcessor(game: CoreGame) extends InputProcessor {
       button: Int
   ): Boolean = {
     button match {
-      case Buttons.LEFT =>
-        game.holdButtonInput.mouseLeftButton = true
-      case _ =>
+      case button =>
+        game.setKeyHeld(button, value = true)
     }
     true
   }
@@ -42,9 +52,8 @@ case class ClientGameplayInputProcessor(game: CoreGame) extends InputProcessor {
       button: Int
   ): Boolean = {
     button match {
-      case Buttons.LEFT =>
-        game.holdButtonInput.mouseLeftButton = false
-      case _ =>
+      case button =>
+        game.setKeyHeld(button, value = false)
     }
     true
   }

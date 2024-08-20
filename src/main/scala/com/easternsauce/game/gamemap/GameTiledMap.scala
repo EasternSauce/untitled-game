@@ -16,7 +16,10 @@ case class GameTiledMap(areaId: AreaId) {
     val params = new TmxMapLoader.Parameters()
 
     tiledMap = new TmxMapLoader()
-      .load(s"assets/maps/${areaId.name}/${areaId.name}.tmx", params)
+      .load(
+        s"${Constants.MapFilesLocation}/${areaId.name}/${areaId.name}.tmx",
+        params
+      )
 
     val iterator = tiledMap.getLayers.iterator()
 
@@ -39,7 +42,9 @@ case class GameTiledMap(areaId: AreaId) {
       x <- (0 until layer.getWidth).toList
       y <- (0 until layer.getHeight).reverse
     } yield {
-      Option(layer.getCell(x, y)).map(GameMapCell(_, areaId, Vector2f(x, y)))
+      Option(layer.getCell(x, y)).map(
+        GameMapCell(_, areaId, Vector2f(x, y))
+      ) // TODO: new parameter for render priority (decided by layer name)
     }
 
     GameMapLayer(layerName, cells.flatten)
