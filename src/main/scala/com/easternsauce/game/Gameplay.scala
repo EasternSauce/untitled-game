@@ -18,7 +18,7 @@ case class Gameplay(game: CoreGame) {
 
   var playersToCreate: List[String] = _
 
-  var keysHeld: Map[Int, Boolean] = Map()
+  var keysHeld: Map[Int, Boolean] = _
 
   def init(): Unit = {
     gameTiledMaps = Constants.MapAreaNames
@@ -29,23 +29,23 @@ case class Gameplay(game: CoreGame) {
     gameState = GameState()
 
     gameView = GameView()
-    gameView.init(game)
+    gameView.init()
 
     gamePhysics = GamePhysics()
     gamePhysics.init(gameTiledMaps, gameState)
 
     playersToCreate = List()
+
+    keysHeld = Map()
   }
 
   def update(delta: Float): Unit = {
     gameState = gameState.update(delta, game)
 
-    val areaId = game.clientCreatureId
-      .filter(gameState.creatures.contains(_))
-      .map(gameState.creatures(_).currentAreaId)
-      .getOrElse(Constants.DefaultAreaId)
-
-    gamePhysics.updateForArea(areaId, gameState)
+    gamePhysics.updateForArea(
+      game.clientCreatureAreaId.getOrElse(Constants.DefaultAreaId),
+      gameState
+    )
 
     gameView.update(delta, game)
     gameView.render(delta, game)

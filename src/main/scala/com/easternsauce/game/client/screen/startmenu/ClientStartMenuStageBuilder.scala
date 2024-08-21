@@ -7,6 +7,7 @@ import com.badlogic.gdx.scenes.scene2d.{InputEvent, Stage}
 import com.badlogic.gdx.utils.viewport.ScreenViewport
 import com.easternsauce.game.CoreGame
 
+//noinspection SameParameterValue
 case class ClientStartMenuStageBuilder() {
   def build(game: CoreGame): Stage = {
     val stage = new Stage(new ScreenViewport())
@@ -88,10 +89,10 @@ case class ClientStartMenuStageBuilder() {
   ): TextField = {
     val textField = new TextField("", skin)
     textField.setMessageText(text)
-    textField.setX(x)
-    textField.setY(y)
-    textField.setWidth(width)
-    textField.setHeight(height)
+    textField.setX(x.toFloat)
+    textField.setY(y.toFloat)
+    textField.setWidth(width.toFloat)
+    textField.setHeight(height.toFloat)
     textField
   }
 
@@ -106,10 +107,10 @@ case class ClientStartMenuStageBuilder() {
   ): TextButton = {
     val button: TextButton =
       new TextButton(text, skin, "default")
-    button.setX(x)
-    button.setY(y)
-    button.setWidth(width)
-    button.setHeight(height)
+    button.setX(x.toFloat)
+    button.setY(y.toFloat)
+    button.setWidth(width.toFloat)
+    button.setHeight(height.toFloat)
     button.addListener(listener)
 
     button

@@ -43,7 +43,7 @@ case class GameTiledMap(areaId: AreaId) {
       y <- (0 until layer.getHeight).reverse
     } yield {
       Option(layer.getCell(x, y)).map(
-        GameMapCell(_, areaId, Vector2f(x, y))
+        GameMapCell(_, areaId, Vector2f(x.toFloat, y.toFloat))
       ) // TODO: new parameter for render priority (decided by layer name)
     }
 

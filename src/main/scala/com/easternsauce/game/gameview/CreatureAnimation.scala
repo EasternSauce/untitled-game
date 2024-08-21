@@ -40,7 +40,7 @@ case class CreatureAnimation(
       new Array[Animation[TextureRegion]](WorldDirection.values.size)
 
     texture =
-      Assets.getTexture(creature.params.texturePaths(creatureAnimationType))
+      Assets.texture(creature.params.texturePaths(creatureAnimationType))
 
     val frameWidth = creature.params.animationDefinition.frameWidth
     val frameHeight = creature.params.animationDefinition.frameHeight

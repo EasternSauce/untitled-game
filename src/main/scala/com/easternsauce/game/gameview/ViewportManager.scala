@@ -33,10 +33,12 @@ case class ViewportManager() {
     )
   }
 
-  def setProjectionMatrices(spriteBatches: SpriteBatches): Unit = {
-    worldViewport.setProjectionMatrix(spriteBatches.worldSpriteBatch)
-    worldTextViewport.setProjectionMatrix(spriteBatches.worldTextSpriteBatch)
-    hudViewport.setProjectionMatrix(spriteBatches.hudBatch)
+  def setProjectionMatrices(spriteBatchHolder: SpriteBatchHolder): Unit = {
+    worldViewport.setProjectionMatrix(spriteBatchHolder.worldSpriteBatch)
+    worldTextViewport.setProjectionMatrix(
+      spriteBatchHolder.worldTextSpriteBatch
+    )
+    hudViewport.setProjectionMatrix(spriteBatchHolder.hudBatch)
   }
 
   def updateCameras(

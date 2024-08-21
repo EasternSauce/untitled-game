@@ -26,7 +26,7 @@ case class GameMapCell(tiledCell: Cell, areaId: AreaId, pos: Vector2f)
 
     val screenPos =
       IsometricProjection.translatePosIsoToScreen(
-        Vector2f(pos.x + 0.75f, pos.y - 0.85f)
+        Vector2f(pos.x + Constants.RenderShiftX, pos.y + Constants.RenderShiftY)
       )
 
     if (worldCameraPos.distance(screenPos) < Constants.RenderDistance) {

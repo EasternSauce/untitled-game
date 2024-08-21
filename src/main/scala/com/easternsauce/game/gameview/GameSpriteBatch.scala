@@ -50,8 +50,8 @@ case class GameSpriteBatch() {
       y,
       width / 2f,
       height / 2f,
-      width,
-      height,
+      width.toFloat,
+      height.toFloat,
       1f,
       1f,
       rotation

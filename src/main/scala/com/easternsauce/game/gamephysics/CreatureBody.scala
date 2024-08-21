@@ -39,6 +39,7 @@ case class CreatureBody(creatureId: GameEntityId[Creature])
     }
 
     this.areaWorld = areaWorld
+    this.sensor = false
   }
 
   override def update(gameState: GameState): Unit = {

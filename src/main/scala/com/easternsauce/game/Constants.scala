@@ -73,7 +73,7 @@ object Constants {
 
   var PhysicsBodyCorrectionDistance = 0.5f
 
-  val BigObjectCollisionCellId = 1
+  val LargeObjectCollisionCellId = 1
   val WaterGroundCollisionCellId = 2
   val SmallObjectCollisionCellId = 4
   val WallCollisionCellId = 6
@@ -87,4 +87,9 @@ object Constants {
   val MapAreaNames: List[String] = List("area1")
 
   val RenderDistance: Float = 1000f
+
+  val RenderShiftX: Float = 0.75f
+  val RenderShiftY: Float = -0.85f
+
+  val DefaultSkinPath: String = "assets/ui/skin/uiskin.json"
 }

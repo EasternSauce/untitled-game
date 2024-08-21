@@ -7,6 +7,7 @@ import com.badlogic.gdx.scenes.scene2d.{InputEvent, Stage}
 import com.badlogic.gdx.utils.viewport.ScreenViewport
 import com.easternsauce.game.CoreGame
 
+//noinspection SameParameterValue
 case class ClientPauseMenuStageBuilder() {
   def build(game: CoreGame): Stage = {
     val stage = new Stage(new ScreenViewport())
@@ -56,10 +57,10 @@ case class ClientPauseMenuStageBuilder() {
   ): TextButton = {
     val button: TextButton =
       new TextButton(text, skin, "default")
-    button.setX(x)
-    button.setY(y)
-    button.setWidth(width)
-    button.setHeight(height)
+    button.setX(x.toFloat)
+    button.setY(y.toFloat)
+    button.setWidth(width.toFloat)
+    button.setHeight(height.toFloat)
     button.addListener(listener)
 
     button

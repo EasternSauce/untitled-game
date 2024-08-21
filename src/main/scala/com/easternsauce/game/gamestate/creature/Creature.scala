@@ -2,7 +2,7 @@ package com.easternsauce.game.gamestate.creature
 
 import com.easternsauce.game.gamestate.WorldDirection.WorldDirection
 import com.easternsauce.game.gamestate.id.{AreaId, GameEntityId}
-import com.easternsauce.game.gamestate.{GameEntity, GameState, WorldDirection}
+import com.easternsauce.game.gamestate.{GameEntity, WorldDirection}
 import com.easternsauce.game.math.Vector2f
 import com.softwaremill.quicklens.ModifyPimp
 
@@ -24,8 +24,7 @@ case class Creature(params: CreatureParams) extends GameEntity {
 
   def update(
       delta: Float,
-      newPos: Option[Vector2f],
-      gameState: GameState
+      newPos: Option[Vector2f]
   ): Creature = {
     this
       .updateTimers(delta)
@@ -42,7 +41,7 @@ case class Creature(params: CreatureParams) extends GameEntity {
       .using(_.update(delta))
   }
 
-  def updateMovement(newPos: Option[Vector2f]): Creature = {
+  private def updateMovement(newPos: Option[Vector2f]): Creature = {
     val vectorTowardsDest = pos.vectorTowards(params.destination)
 
     val velocity = if (!alive) {

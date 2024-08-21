@@ -50,11 +50,11 @@ case class CreatureBodyPhysics() {
         val creature = gameState.creatures(creatureId)
 
         if (creature.alive) {
-          if (creatureBodies(creature.id).sensor) {
+          if (creatureBodies(creature.id).isSensor) {
             creatureBodies(creature.id).setNonSensor()
           }
         } else {
-          if (!creatureBodies(creature.id).sensor) {
+          if (!creatureBodies(creature.id).isSensor) {
             creatureBodies(creature.id).setSensor()
           }
         }

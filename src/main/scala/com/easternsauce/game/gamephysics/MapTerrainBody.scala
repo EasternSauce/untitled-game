@@ -5,7 +5,7 @@ import com.badlogic.gdx.physics.box2d.{BodyDef, FixtureDef, PolygonShape}
 import com.easternsauce.game.gamestate.GameState
 import com.easternsauce.game.math.Vector2f
 
-case class TerrainBody(terrainId: String) extends PhysicsBody {
+case class MapTerrainBody(terrainId: String) extends PhysicsBody {
   def init(areaWorld: AreaWorld, pos: Vector2f, gameState: GameState): Unit = {
     val bodyDef = new BodyDef()
     bodyDef.`type` = BodyType.StaticBody
@@ -26,6 +26,7 @@ case class TerrainBody(terrainId: String) extends PhysicsBody {
     this.b2Body = body
 
     this.areaWorld = areaWorld
+    this.sensor = false
   }
 
   override def update(gameState: GameState): Unit = {}

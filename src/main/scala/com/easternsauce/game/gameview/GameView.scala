@@ -7,25 +7,23 @@ import com.easternsauce.game.{Constants, CoreGame}
 
 case class GameView() {
 
-  var skin: Skin = _
-  var spriteBatches: SpriteBatches = _
-  var viewportManager: ViewportManager = _
-
+  private var viewportManager: ViewportManager = _
   private var worldRenderer: WorldRenderer = _
 
-  def init(game: CoreGame): Unit = {
-    skin = new Skin(Gdx.files.internal("assets/ui/skin/uiskin.json"))
+  var skin: Skin = _
+  var spriteBatchHolder: SpriteBatchHolder = _
 
-    spriteBatches = SpriteBatches()
-    spriteBatches.worldSpriteBatch.init()
-    spriteBatches.worldTextSpriteBatch.init()
-    spriteBatches.hudBatch.init()
+  def init(): Unit = {
+    skin = new Skin(Gdx.files.internal(Constants.DefaultSkinPath))
+
+    spriteBatchHolder = SpriteBatchHolder()
+    spriteBatchHolder.init()
 
     viewportManager = ViewportManager()
     viewportManager.init()
 
     worldRenderer = WorldRenderer()
-    worldRenderer.init(game)
+    worldRenderer.init()
   }
 
   def update(delta: Float, game: CoreGame): Unit = {
@@ -39,19 +37,18 @@ case class GameView() {
   def render(delta: Float, game: CoreGame): Unit = {
     ScreenUtils.clear(0, 0, 0, 1)
 
-    viewportManager.setProjectionMatrices(spriteBatches)
+    viewportManager.setProjectionMatrices(spriteBatchHolder)
 
     worldRenderer.drawCurrentWorld(
-      spriteBatches,
+      spriteBatchHolder,
       viewportManager.getWorldCameraPos,
       game
     )
 
-    val areaId =
-      game.clientCreatureId.map(game.gameState.creatures(_).currentAreaId)
-
-    if (Constants.EnableDebug && areaId.nonEmpty) {
-      viewportManager.renderDebug(game.physics.areaWorlds(areaId.get))
+    if (Constants.EnableDebug) {
+      game.clientCreatureAreaId.foreach(areaId =>
+        viewportManager.renderDebug(game.physics.areaWorlds(areaId))
+      )
     }
   }
 

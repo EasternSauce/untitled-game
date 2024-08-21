@@ -1,35 +1,25 @@
 package com.easternsauce.game
 
-import com.badlogic.gdx.{Game, Gdx}
+import com.badlogic.gdx.Gdx
 import com.easternsauce.game.gamemap.GameTiledMap
 import com.easternsauce.game.gamephysics.GamePhysics
 import com.easternsauce.game.gamestate.GameState
 import com.easternsauce.game.gamestate.creature.Creature
 import com.easternsauce.game.gamestate.id.{AreaId, GameEntityId}
-import com.easternsauce.game.gameview.{GameScreen, GameView}
+import com.easternsauce.game.gameview.GameView
 
-abstract class CoreGame extends Game {
-  private var clientId: Option[String] = _
-  private var host: Option[String] = _
-  private var port: Option[String] = _
-
-  protected var gameplayScreen: GameScreen = _
-  protected var startMenuScreen: GameScreen = _
-  protected var pauseMenuScreen: GameScreen = _
-
+abstract class CoreGame extends ScreenSwitchableGame {
   private var gameplay: Gameplay = _
 
-  def initScreens(): Unit
+  protected def init(): Unit
 
   override def create(): Unit = {
-    clientId = None
-    host = None
-    port = None
+    clientData = ClientData()
 
     gameplay = Gameplay(this)
     gameplay.init()
 
-    initScreens()
+    init()
 
     setScreen(startMenuScreen)
   }
@@ -38,37 +28,19 @@ abstract class CoreGame extends Game {
     gameplay.update(delta)
   }
 
-  def joinGame(clientId: String, host: String, port: String): Unit = {
-    if (clientId.nonEmpty) {
-      this.clientId = Some(clientId)
-    }
-    if (host.nonEmpty) {
-      this.host = Some(host)
-    }
-    if (port.nonEmpty) {
-      this.port = Some(port)
-    }
-
-    if (this.clientId.nonEmpty)
-      gameplay.schedulePlayerToCreate(this.clientId.get)
-
-    setScreen(gameplayScreen)
-  }
-
-  def resumeGame(): Unit = {
-    setScreen(gameplayScreen)
-  }
-
-  def pauseGame(): Unit = {
-    setScreen(pauseMenuScreen)
-  }
-
   def close(): Unit = {
     Gdx.app.exit()
   }
 
   def clientCreatureId: Option[GameEntityId[Creature]] = {
-    clientId.map(GameEntityId[Creature])
+    clientData.clientId.map(GameEntityId[Creature])
+  }
+
+  def clientCreatureAreaId: Option[AreaId] = {
+    clientCreatureId
+      .filter(gameState.creatures.contains(_))
+      .map(gameState.creatures(_))
+      .map(_.currentAreaId)
   }
 
   def view: GameView = gameplay.gameView

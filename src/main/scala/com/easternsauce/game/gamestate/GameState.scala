@@ -22,15 +22,14 @@ case class GameState(
       .handleClientInput(game)
   }
 
-  def updateCreatures(delta: Float, game: CoreGame): GameState = {
+  private def updateCreatures(delta: Float, game: CoreGame): GameState = {
     this
       .modify(_.creatures.each)
       .using(creature =>
         if (activeCreatureIds.contains(creature.id)) {
           creature.update(
             delta,
-            game.physics.creatureBodyPositions.get(creature.id),
-            game.gameState
+            game.physics.creatureBodyPositions.get(creature.id)
           )
         } else {
           creature
@@ -38,7 +37,7 @@ case class GameState(
       )
   }
 
-  def handleCreatePlayers(game: CoreGame): GameState = {
+  private def handleCreatePlayers(game: CoreGame): GameState = {
     val playersToCreate = game.playersToCreate
 
     game.clearPlayersToCreate()
@@ -75,7 +74,7 @@ case class GameState(
     }
   }
 
-  def handleClientInput(game: CoreGame): GameState = {
+  private def handleClientInput(game: CoreGame): GameState = {
     val clientCreature = game.clientCreatureId
       .filter(this.creatures.contains)
       .map(this.creatures(_))
@@ -86,8 +85,8 @@ case class GameState(
         creature.pos.vectorTowards(creature.params.destination)
 
       val destination = MousePosTransformations.mouseWorldPos(
-        Gdx.input.getX,
-        Gdx.input.getY,
+        Gdx.input.getX.toFloat,
+        Gdx.input.getY.toFloat,
         creature.pos
       )
 

@@ -6,60 +6,59 @@ import com.easternsauce.game.gamestate.GameState
 import com.easternsauce.game.math.Vector2f
 
 case class WorldRenderer() {
-  private var creatureRenderers: CreatureRenderers = _
+  private var creatureRenderer: CreatureRenderer = _
 
-  def init(game: CoreGame): Unit = {
-    creatureRenderers = CreatureRenderers()
-    creatureRenderers.init(game.gameState)
-
+  def init(): Unit = {
+    creatureRenderer = CreatureRenderer()
+    creatureRenderer.init()
   }
 
   def drawCurrentWorld(
-      spriteBatches: SpriteBatches,
+      spriteBatchHolder: SpriteBatchHolder,
       worldCameraPos: Vector2f,
       game: CoreGame
   ): Unit = {
-    spriteBatches.worldSpriteBatch.begin()
+    spriteBatchHolder.worldSpriteBatch.begin()
 
     val clientCreatureAreaId = game.clientCreatureId
       .filter(game.gameState.creatures.contains(_))
       .map(game.gameState.creatures(_))
       .map(_.currentAreaId)
 
-    renderWorldElementsByPriority(
-      spriteBatches.worldSpriteBatch,
-      worldCameraPos,
-      clientCreatureAreaId.map(game.gameTiledMaps(_)),
-      game.gameState
+    clientCreatureAreaId.foreach(areaId =>
+      renderWorldElementsByPriority(
+        spriteBatchHolder.worldSpriteBatch,
+        worldCameraPos,
+        game.gameTiledMaps(areaId),
+        game.gameState
+      )
     )
 
-    spriteBatches.worldSpriteBatch.end()
+    spriteBatchHolder.worldSpriteBatch.end()
 
-    spriteBatches.worldTextSpriteBatch.begin()
+    spriteBatchHolder.worldTextSpriteBatch.begin()
 
-    spriteBatches.worldTextSpriteBatch.end()
+    spriteBatchHolder.worldTextSpriteBatch.end()
   }
 
   private def renderWorldElementsByPriority(
       worldSpriteBatch: GameSpriteBatch,
       worldCameraPos: Vector2f,
-      gameTiledMap: Option[GameTiledMap],
+      gameTiledMap: GameTiledMap,
       gameState: GameState
   ): Unit = {
-    if (gameTiledMap.isDefined) {
-      gameTiledMap.get.render(
-        worldSpriteBatch,
-        worldCameraPos,
-        gameState
-      )
 
-      renderDynamicElements(
-        worldSpriteBatch,
-        worldCameraPos,
-        gameState
-      )
-    }
+    gameTiledMap.render(
+      worldSpriteBatch,
+      worldCameraPos,
+      gameState
+    )
 
+    renderDynamicElements(
+      worldSpriteBatch,
+      worldCameraPos,
+      gameState
+    )
   }
 
   private def renderDynamicElements(
@@ -67,14 +66,14 @@ case class WorldRenderer() {
       worldCameraPos: Vector2f,
       gameState: GameState
   ): Unit = {
-    val aliveCreatureRenderables =
-      creatureRenderers.getRenderersForAliveCreatures(gameState)
-
-    aliveCreatureRenderables
-      .foreach(_.render(worldSpriteBatch, worldCameraPos, gameState))
+    creatureRenderer.renderAliveCreatures(
+      worldSpriteBatch,
+      worldCameraPos,
+      gameState
+    )
   }
 
   def update(gameState: GameState): Unit = {
-    creatureRenderers.update(gameState)
+    creatureRenderer.updateRenderables(gameState)
   }
 }

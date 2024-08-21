@@ -16,22 +16,19 @@ case class StaticBodyPhysics() {
       areaWorlds: Map[AreaId, AreaWorld],
       gameState: GameState
   ): Unit = {
-
-    staticBodies = List()
-
     areaWorlds.foreach { case (areaId, world) =>
       val GameTiledMap = tiledMaps(areaId)
 
-      val terrainCollisions =
-        getTerrainCollisionCells(GameTiledMap) ++ getBigObjectCells(
+      val mapTerrainCollisions =
+        mapTerrainCollisionCells(GameTiledMap) ++ largeMapObjectCells(
           GameTiledMap
         )
 
-      val objectCollisions = getObjectCollisionCells(GameTiledMap)
+      val mapObjectCollisions = mapObjectCollisionCells(GameTiledMap)
 
-      staticBodies ++= createStaticBodies(
-        terrainCollisions,
-        objectCollisions,
+      staticBodies = createStaticBodies(
+        mapTerrainCollisions,
+        mapObjectCollisions,
         world,
         gameState
       )
@@ -41,64 +38,66 @@ case class StaticBodyPhysics() {
   }
 
   private def createStaticBodies(
-      terrainCollisions: List[GameMapCell],
-      objectCollisions: List[GameMapCell],
+      mapTerrainCollisions: List[GameMapCell],
+      mapObjectCollisions: List[GameMapCell],
       world: AreaWorld,
       gameState: GameState
   ): List[PhysicsBody] = {
-    createTerrainBodies(terrainCollisions, world, gameState) ++
-      createObjectBodies(objectCollisions, world, gameState)
+    createMapTerrainBodies(mapTerrainCollisions, world, gameState) ++
+      createMapObjectBodies(mapObjectCollisions, world, gameState)
   }
 
-  private def createObjectBodies(
+  private def createMapObjectBodies(
       objectCollisions: List[GameMapCell],
       world: AreaWorld,
       gameState: GameState
-  ): List[ObjectBody] = {
+  ): List[MapObjectBody] = {
     objectCollisions
       .map(_.pos(gameState))
       .distinct
-      .map(createObjectBody(_, world, gameState))
+      .map(createMapObjectBody(_, world, gameState))
   }
 
-  private def createTerrainBodies(
+  private def createMapTerrainBodies(
       terrainCollisions: List[GameMapCell],
       world: AreaWorld,
       gameState: GameState
-  ): List[TerrainBody] = {
+  ): List[MapTerrainBody] = {
     terrainCollisions
       .map(_.pos(gameState))
       .distinct
-      .map(createTerrainBody(_, world, gameState))
+      .map(createMapTerrainBody(_, world, gameState))
   }
 
-  private def createObjectBody(
+  private def createMapObjectBody(
       pos: Vector2f,
       world: AreaWorld,
       gameState: GameState
   ) = {
-    val objectBody = ObjectBody("objectBody_" + pos.x + "_" + pos.y)
+    val objectBody = MapObjectBody("objectBody_" + pos.x + "_" + pos.y)
     objectBody.init(world, pos, gameState)
     objectBody
   }
 
-  private def createTerrainBody(
+  private def createMapTerrainBody(
       pos: Vector2f,
       world: AreaWorld,
       gameState: GameState
   ) = {
-    val terrainBody = TerrainBody("terrainBody_" + pos.x + "_" + pos.y)
-    terrainBody.init(world, pos, gameState)
-    terrainBody
+    val mapTerrainBody = MapTerrainBody("terrainBody_" + pos.x + "_" + pos.y)
+    mapTerrainBody.init(world, pos, gameState)
+    mapTerrainBody
   }
 
-  private def getBigObjectCells(
+  private def largeMapObjectCells(
       gameTiledMap: GameTiledMap
   ): List[GameMapCell] = {
     gameTiledMap.layer("object").cells
   }
 
-  private def getObjectCollisionCells(gameTiledMap: GameTiledMap) = {
+  private def mapObjectCollisionCells(
+      gameTiledMap: GameTiledMap
+  ): List[GameMapCell] = {
     gameTiledMap
       .layer("collision")
       .cells
@@ -113,7 +112,7 @@ case class StaticBodyPhysics() {
         )
   }
 
-  private def getTerrainCollisionCells(
+  private def mapTerrainCollisionCells(
       GameTiledMap: GameTiledMap
   ): List[GameMapCell] = {
     GameTiledMap
@@ -122,7 +121,7 @@ case class StaticBodyPhysics() {
       .filter(GameMapCell => {
         val cellId = GameMapCell.tiledCell.getTile.getId
         cellId == Constants.WaterGroundCollisionCellId ||
-        cellId == Constants.BigObjectCollisionCellId ||
+        cellId == Constants.LargeObjectCollisionCellId ||
         cellId == Constants.WallCollisionCellId
       }) ++
       GameTiledMap

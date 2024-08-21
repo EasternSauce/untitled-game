@@ -6,7 +6,7 @@ import com.badlogic.gdx.graphics.Texture
 object Assets {
   private var textures: Map[String, Texture] = Map[String, Texture]()
 
-  def getTexture(texturePath: String): Texture = {
+  def texture(texturePath: String): Texture = {
     if (textures.contains(texturePath)) {
       textures(texturePath)
     } else {
