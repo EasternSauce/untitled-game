@@ -6,11 +6,11 @@ import com.badlogic.gdx.utils.ScreenUtils
 import com.easternsauce.game.CoreGame
 import com.easternsauce.game.gameview.GameScreen
 
-case class ClientStartMenuScreen(game: CoreGame) extends GameScreen {
+case class ClientStartMenuScreen()(implicit game: CoreGame) extends GameScreen {
   private var stage: Stage = _
 
   override def init(): Unit = {
-    stage = ClientStartMenuStageBuilder().build(game)
+    stage = ClientStartMenuStageBuilder().build()
   }
 
   override def show(): Unit = {

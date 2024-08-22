@@ -4,24 +4,25 @@ import com.badlogic.gdx.Game
 import com.easternsauce.game.gameview.GameScreen
 
 abstract class ScreenSwitchableGame extends Game {
-  protected def gameplayScreen: GameScreen
-  protected def startMenuScreen: GameScreen
-  protected def pauseMenuScreen: GameScreen
 
-  private var _clientData: ClientData = _
+  protected var gameplayScreen: GameScreen = _
+  protected var startMenuScreen: GameScreen = _
+  protected var pauseMenuScreen: GameScreen = _
+  protected var _clientData: ClientData = _
+  protected var clientData: ClientData = _
 
   def joinGame(clientId: String, host: String, port: String): Unit = {
     if (clientId.nonEmpty) {
-      _clientData.clientId = Some(clientId)
+      clientData.clientId = Some(clientId)
     }
     if (host.nonEmpty) {
-      _clientData.host = Some(host)
+      clientData.host = Some(host)
     }
     if (port.nonEmpty) {
-      _clientData.port = Some(port)
+      clientData.port = Some(port)
     }
 
-    _clientData.clientId.foreach(gameplay.schedulePlayerToCreate(_))
+    clientData.clientId.foreach(schedulePlayerToCreate)
 
     setScreen(gameplayScreen)
   }
@@ -34,5 +35,8 @@ abstract class ScreenSwitchableGame extends Game {
     setScreen(pauseMenuScreen)
   }
 
-  def clientData: ClientData = _clientData
+  protected def init(): Unit
+
+  def schedulePlayerToCreate(clientId: String): Unit
+
 }

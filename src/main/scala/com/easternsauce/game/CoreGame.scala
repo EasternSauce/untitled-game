@@ -9,20 +9,20 @@ import com.easternsauce.game.gamestate.id.{AreaId, GameEntityId}
 import com.easternsauce.game.gameview.GameView
 
 abstract class CoreGame extends ScreenSwitchableGame {
-  private var gameplay: Gameplay = _
-
-  protected def init(): Unit
 
   override def create(): Unit = {
-    clientData = ClientData()
-
-    gameplay = Gameplay(this)
-    gameplay.init()
-
     init()
+
+    gameplayScreen.init()
+    startMenuScreen.init()
+    pauseMenuScreen.init()
+
+    clientData = ClientData()
 
     setScreen(startMenuScreen)
   }
+
+  protected def gameplay: Gameplay
 
   def update(delta: Float): Unit = {
     gameplay.update(delta)
@@ -43,13 +43,15 @@ abstract class CoreGame extends ScreenSwitchableGame {
       .map(_.currentAreaId)
   }
 
-  def view: GameView = gameplay.gameView
-  def physics: GamePhysics = gameplay.gamePhysics
+  def view: GameView = gameplay.view
+  def physics: GamePhysics = gameplay.physics
   def gameState: GameState = gameplay.gameState
   def playersToCreate: List[String] = gameplay.playersToCreate
   def clearPlayersToCreate(): Unit = gameplay.playersToCreate = List()
-  def gameTiledMaps: Map[AreaId, GameTiledMap] = gameplay.gameTiledMaps
+  def gameTiledMaps: Map[AreaId, GameTiledMap] = gameplay.tiledMaps
   def keyHeld(key: Int): Boolean = gameplay.keysHeld.getOrElse(key, false)
   def setKeyHeld(key: Int, value: Boolean): Unit =
     gameplay.setKeyHeld(key, value)
+  override def schedulePlayerToCreate(clientId: String): Unit =
+    gameplay.schedulePlayerToCreate(clientId)
 }

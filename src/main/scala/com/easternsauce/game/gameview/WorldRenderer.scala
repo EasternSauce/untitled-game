@@ -73,7 +73,7 @@ case class WorldRenderer() {
     )
   }
 
-  def update(gameState: GameState): Unit = {
-    creatureRenderer.updateRenderables(gameState)
+  def update()(implicit game: CoreGame): Unit = {
+    creatureRenderer.synchronizeRenderables()
   }
 }

@@ -6,33 +6,28 @@ import com.easternsauce.game.gamestate.GameState
 import com.easternsauce.game.gamestate.id.AreaId
 import com.easternsauce.game.gameview.GameView
 
-case class Gameplay(game: CoreGame) {
+case class Gameplay()(implicit game: CoreGame) {
 
-  var gameTiledMaps: Map[AreaId, GameTiledMap] = _
-
-  var gameView: GameView = _
-
-  var gamePhysics: GamePhysics = _
-
+  var tiledMaps: Map[AreaId, GameTiledMap] = _
+  var view: GameView = _
+  var physics: GamePhysics = _
   var gameState: GameState = _
-
   var playersToCreate: List[String] = _
-
   var keysHeld: Map[Int, Boolean] = _
 
   def init(): Unit = {
-    gameTiledMaps = Constants.MapAreaNames
+    tiledMaps = Constants.MapAreaNames
       .map(name => (AreaId(name), GameTiledMap(AreaId(name))))
       .toMap
-    gameTiledMaps.values.foreach(_.init())
+    tiledMaps.values.foreach(_.init())
 
     gameState = GameState()
 
-    gameView = GameView()
-    gameView.init()
+    view = GameView()
+    view.init()
 
-    gamePhysics = GamePhysics()
-    gamePhysics.init(gameTiledMaps, gameState)
+    physics = GamePhysics()
+    physics.init(tiledMaps, gameState)
 
     playersToCreate = List()
 
@@ -40,15 +35,15 @@ case class Gameplay(game: CoreGame) {
   }
 
   def update(delta: Float): Unit = {
-    gameState = gameState.update(delta, game)
+    gameState = gameState.update(delta)
 
-    gamePhysics.updateForArea(
+    physics.updateForArea(
       game.clientCreatureAreaId.getOrElse(Constants.DefaultAreaId),
       gameState
     )
 
-    gameView.update(delta, game)
-    gameView.render(delta, game)
+    view.update(delta)
+    view.render(delta)
   }
 
   def schedulePlayerToCreate(clientId: String): Unit = {

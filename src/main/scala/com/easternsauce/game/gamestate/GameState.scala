@@ -12,17 +12,16 @@ case class GameState(
     creatures: Map[GameEntityId[Creature], Creature] = Map(),
     activeCreatureIds: Set[GameEntityId[Creature]] = Set()
 ) {
-  def update(
-      delta: Float,
-      game: CoreGame
-  ): GameState = {
+  def update(delta: Float)(implicit game: CoreGame): GameState = {
     this
-      .updateCreatures(delta, game)
-      .handleCreatePlayers(game)
-      .handleClientInput(game)
+      .updateCreatures(delta)
+      .handleCreatePlayers()
+      .handleClientInput()
   }
 
-  private def updateCreatures(delta: Float, game: CoreGame): GameState = {
+  private def updateCreatures(
+      delta: Float
+  )(implicit game: CoreGame): GameState = {
     this
       .modify(_.creatures.each)
       .using(creature =>
@@ -37,7 +36,7 @@ case class GameState(
       )
   }
 
-  private def handleCreatePlayers(game: CoreGame): GameState = {
+  private def handleCreatePlayers()(implicit game: CoreGame): GameState = {
     val playersToCreate = game.playersToCreate
 
     game.clearPlayersToCreate()
@@ -74,7 +73,7 @@ case class GameState(
     }
   }
 
-  private def handleClientInput(game: CoreGame): GameState = {
+  private def handleClientInput()(implicit game: CoreGame): GameState = {
     val clientCreature = game.clientCreatureId
       .filter(this.creatures.contains)
       .map(this.creatures(_))

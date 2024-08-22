@@ -4,11 +4,11 @@ import com.badlogic.gdx.Gdx
 import com.easternsauce.game.CoreGame
 import com.easternsauce.game.gameview.GameScreen
 
-case class ClientGameplayScreen(game: CoreGame) extends GameScreen {
+case class ClientGameplayScreen()(implicit game: CoreGame) extends GameScreen {
   private var inputProcessor: ClientGameplayInputProcessor = _
 
   override def init(): Unit = {
-    inputProcessor = ClientGameplayInputProcessor(game)
+    inputProcessor = ClientGameplayInputProcessor()
   }
 
   override def show(): Unit = {

@@ -52,7 +52,7 @@ case class GamePhysics() {
       areaId: AreaId,
       gameState: GameState
   ): Unit = {
-    creatureBodyPhysics.synchronizeWithGameState(areaId, gameState)
+    creatureBodyPhysics.synchronize(areaId, gameState)
   }
 
   private def correctBodyPositions(

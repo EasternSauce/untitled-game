@@ -24,7 +24,7 @@ case class CreatureBodyPhysics() {
       .foreach(_.update(gameState))
   }
 
-  def synchronizeWithGameState(areaId: AreaId, gameState: GameState): Unit = {
+  def synchronize(areaId: AreaId, gameState: GameState): Unit = {
     val creatureBodiesToCreate =
       gameState.activeCreatureIds -- creatureBodies.keys.toSet
     val creatureBodiesToDestroy =

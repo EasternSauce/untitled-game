@@ -42,13 +42,12 @@ case class ViewportManager() {
   }
 
   def updateCameras(
-      creatureId: Option[GameEntityId[Creature]],
-      game: CoreGame
-  ): Unit = {
-    worldViewport.updateCamera(creatureId, game.gameState)
-    b2DebugViewport.updateCamera(creatureId, game.gameState)
-    worldTextViewport.updateCamera(creatureId, game.gameState)
-    hudViewport.updateCamera(creatureId, game.gameState)
+      creatureId: Option[GameEntityId[Creature]]
+  )(implicit game: CoreGame): Unit = {
+    worldViewport.updateCamera(creatureId)
+    b2DebugViewport.updateCamera(creatureId)
+    worldTextViewport.updateCamera(creatureId)
+    hudViewport.updateCamera(creatureId)
   }
 
   def resize(width: Int, height: Int): Unit = {

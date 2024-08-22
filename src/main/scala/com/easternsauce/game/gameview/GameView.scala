@@ -26,15 +26,15 @@ case class GameView() {
     worldRenderer.init()
   }
 
-  def update(delta: Float, game: CoreGame): Unit = {
-    worldRenderer.update(game.gameState)
+  def update(delta: Float)(implicit game: CoreGame): Unit = {
+    worldRenderer.update()
 
     val creatureId = game.clientCreatureId
 
-    viewportManager.updateCameras(creatureId, game)
+    viewportManager.updateCameras(creatureId)
   }
 
-  def render(delta: Float, game: CoreGame): Unit = {
+  def render(delta: Float)(implicit game: CoreGame): Unit = {
     ScreenUtils.clear(0, 0, 0, 1)
 
     viewportManager.setProjectionMatrices(spriteBatchHolder)

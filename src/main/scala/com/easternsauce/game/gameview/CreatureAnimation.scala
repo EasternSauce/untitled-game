@@ -2,13 +2,13 @@ package com.easternsauce.game.gameview
 
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.{Animation, TextureRegion}
-import com.easternsauce.game.Assets
 import com.easternsauce.game.gamestate.creature.CreatureAnimationType.CreatureAnimationType
 import com.easternsauce.game.gamestate.creature.EquipmentSlotType.EquipmentSlotType
 import com.easternsauce.game.gamestate.creature.{Creature, EquipmentSlotType, FramesDefinition, PrimaryWeaponType}
 import com.easternsauce.game.gamestate.id.GameEntityId
 import com.easternsauce.game.gamestate.{GameState, WorldDirection}
 import com.easternsauce.game.math.{IsometricProjection, Vector2f}
+import com.easternsauce.game.{Assets, CoreGame}
 
 case class CreatureAnimation(
     creatureId: GameEntityId[Creature],
@@ -22,10 +22,10 @@ case class CreatureAnimation(
   private var bowAnimations: Array[Animation[TextureRegion]] = _
   private var texture: Texture = _
 
-  def init(gameState: GameState): Unit = {
+  def init()(implicit game: CoreGame): Unit = {
     val slotType: EquipmentSlotType = EquipmentSlotType.Weapon
 
-    val creature: Creature = gameState.creatures(creatureId)
+    val creature: Creature = game.gameState.creatures(creatureId)
 
     standstillAnimations =
       new Array[Animation[TextureRegion]](WorldDirection.values.size)

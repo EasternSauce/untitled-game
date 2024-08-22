@@ -6,12 +6,12 @@ import com.badlogic.gdx.{Gdx, InputMultiplexer, InputProcessor}
 import com.easternsauce.game.CoreGame
 import com.easternsauce.game.gameview.GameScreen
 
-case class ClientPauseMenuScreen(game: CoreGame) extends GameScreen {
+case class ClientPauseMenuScreen()(implicit game: CoreGame) extends GameScreen {
   private var stage: Stage = _
   private var inputProcessor: InputProcessor = _
 
   override def init(): Unit = {
-    stage = ClientPauseMenuStageBuilder().build(game)
+    stage = ClientPauseMenuStageBuilder().build()
     inputProcessor = buildInputProcessor()
   }
 
@@ -23,7 +23,7 @@ case class ClientPauseMenuScreen(game: CoreGame) extends GameScreen {
     val multiplexer = new InputMultiplexer()
 
     multiplexer.addProcessor(stage)
-    multiplexer.addProcessor(ClientPauseMenuInputProcessor(game))
+    multiplexer.addProcessor(ClientPauseMenuInputProcessor())
 
     multiplexer
   }

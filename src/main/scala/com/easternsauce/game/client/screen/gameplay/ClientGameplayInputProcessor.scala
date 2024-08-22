@@ -4,7 +4,8 @@ import com.badlogic.gdx.Input.Keys
 import com.badlogic.gdx.InputProcessor
 import com.easternsauce.game.CoreGame
 
-case class ClientGameplayInputProcessor(game: CoreGame) extends InputProcessor {
+case class ClientGameplayInputProcessor()(implicit game: CoreGame)
+    extends InputProcessor {
 
   override def keyDown(keycode: Int): Boolean = {
     keycode match {

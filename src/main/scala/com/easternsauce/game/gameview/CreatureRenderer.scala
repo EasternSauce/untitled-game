@@ -1,16 +1,23 @@
 package com.easternsauce.game.gameview
 
+import com.easternsauce.game.CoreGame
 import com.easternsauce.game.gamestate.GameState
 import com.easternsauce.game.gamestate.creature.Creature
 import com.easternsauce.game.gamestate.id.GameEntityId
 import com.easternsauce.game.math.Vector2f
 
+//noinspection SpellCheckingInspection
 case class CreatureRenderer() {
   private var creatureRenderables
       : Map[GameEntityId[Creature], CreatureRenderable] = _
+  private var creatureRenderablesSynchronizer: CreatureRenderablesSynchronizer =
+    _
 
   def init(): Unit = {
     creatureRenderables = Map()
+
+    creatureRenderablesSynchronizer = CreatureRenderablesSynchronizer()
+    creatureRenderablesSynchronizer.init(creatureRenderables)
   }
 
 //  def renderLifeBars(
@@ -78,33 +85,8 @@ case class CreatureRenderer() {
       .map(creatureId => creatureRenderables(creatureId))
   }
 
-  def updateRenderables(gameState: GameState): Unit = {
-    val creatureRenderablesToCreate =
-      gameState.activeCreatureIds -- creatureRenderables.keys.toSet
-    val creatureRendererablesToDestroy =
-      creatureRenderables.keys.toSet -- gameState.activeCreatureIds
-
-    creatureRenderablesToCreate.foreach(createCreatureRenderable(_, gameState))
-    creatureRendererablesToDestroy.foreach(
-      destroyCreatureRenderable(_, gameState)
-    )
-  }
-
-  private def createCreatureRenderable(
-      creatureId: GameEntityId[Creature],
-      gameState: GameState
-  ): Unit = {
-    val creatureRenderer = CreatureRenderable(creatureId)
-    creatureRenderer.init(gameState)
-    creatureRenderables =
-      creatureRenderables.updated(creatureId, creatureRenderer)
-  }
-
-  private def destroyCreatureRenderable(
-      creatureId: GameEntityId[Creature],
-      gameState: GameState
-  ): Unit = {
-    creatureRenderables = creatureRenderables.removed(creatureId)
+  def synchronizeRenderables()(implicit game: CoreGame): Unit = {
+    creatureRenderablesSynchronizer.synchronize()
   }
 
 }

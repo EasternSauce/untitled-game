@@ -9,7 +9,7 @@ import com.easternsauce.game.CoreGame
 
 //noinspection SameParameterValue
 case class ClientStartMenuStageBuilder() {
-  def build(game: CoreGame): Stage = {
+  def build()(implicit game: CoreGame): Stage = {
     val stage = new Stage(new ScreenViewport())
 
     val nameField = createTextField(

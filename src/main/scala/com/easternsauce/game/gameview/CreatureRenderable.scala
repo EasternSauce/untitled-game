@@ -1,5 +1,6 @@
 package com.easternsauce.game.gameview
 
+import com.easternsauce.game.CoreGame
 import com.easternsauce.game.gamestate.GameState
 import com.easternsauce.game.gamestate.creature.CreatureAnimationType.CreatureAnimationType
 import com.easternsauce.game.gamestate.creature.{Creature, CreatureAnimationType, PrimaryWeaponType, SecondaryWeaponType}
@@ -11,8 +12,8 @@ case class CreatureRenderable(creatureId: GameEntityId[Creature])
 
   private var animations: Map[CreatureAnimationType, CreatureAnimation] = _
 
-  def init(gameState: GameState): Unit = {
-    val creature = gameState.creatures(creatureId)
+  def init()(implicit game: CoreGame): Unit = {
+    val creature = game.gameState.creatures(creatureId)
 
     animations = {
       def entry(
@@ -28,7 +29,7 @@ case class CreatureRenderable(creatureId: GameEntityId[Creature])
       creature.params.texturePaths.keys.map(entry(_, creatureId)).toMap
     }
 
-    animations.values.foreach(_.init(gameState))
+    animations.values.foreach(_.init())
   }
 
   override def pos(gameState: GameState): Vector2f = {

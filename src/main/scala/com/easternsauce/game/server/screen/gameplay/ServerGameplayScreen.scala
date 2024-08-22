@@ -3,7 +3,7 @@ package com.easternsauce.game.server.screen.gameplay
 import com.easternsauce.game.CoreGame
 import com.easternsauce.game.gameview.GameScreen
 
-case class ServerGameplayScreen(game: CoreGame) extends GameScreen {
+case class ServerGameplayScreen()(implicit game: CoreGame) extends GameScreen {
 
   override def init(): Unit = {}
 
