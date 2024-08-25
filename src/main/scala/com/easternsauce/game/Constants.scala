@@ -92,4 +92,8 @@ object Constants {
   val RenderShiftY: Float = -0.85f
 
   val DefaultSkinPath: String = "assets/ui/skin/uiskin.json"
+
+  val TimeBetweenGameStateBroadcasts = 0.5f
+
+  val OfflineMode = false
 }

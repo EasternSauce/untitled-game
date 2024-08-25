@@ -3,7 +3,7 @@ package com.easternsauce.game.gamestate
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.Input.Buttons
 import com.easternsauce.game.gamestate.creature.{Creature, CreatureFactory}
-import com.easternsauce.game.gamestate.id.GameEntityId
+import com.easternsauce.game.gamestate.id.{AreaId, GameEntityId}
 import com.easternsauce.game.math.{MousePosTransformations, Vector2f}
 import com.easternsauce.game.{Constants, CoreGame}
 import com.softwaremill.quicklens.{ModifyPimp, QuicklensMapAt}
@@ -12,20 +12,26 @@ case class GameState(
     creatures: Map[GameEntityId[Creature], Creature] = Map(),
     activeCreatureIds: Set[GameEntityId[Creature]] = Set()
 ) {
-  def update(delta: Float)(implicit game: CoreGame): GameState = {
+  def updateForArea(areaId: AreaId, delta: Float)(implicit
+      game: CoreGame
+  ): GameState = {
     this
-      .updateCreatures(delta)
-      .handleCreatePlayers()
+      .updateCreaturesForArea(areaId, delta)
+      .handleCreatePlayers() // TODO: server only?
       .handleClientInput()
   }
 
-  private def updateCreatures(
+  private def updateCreaturesForArea(
+      areaId: AreaId,
       delta: Float
   )(implicit game: CoreGame): GameState = {
     this
       .modify(_.creatures.each)
       .using(creature =>
-        if (activeCreatureIds.contains(creature.id)) {
+        if (
+          activeCreatureIds
+            .contains(creature.id) && creature.currentAreaId == areaId
+        ) {
           creature.update(
             delta,
             game.physics.creatureBodyPositions.get(creature.id)

@@ -8,8 +8,7 @@ abstract class ScreenSwitchableGame extends Game {
   protected var gameplayScreen: GameScreen = _
   protected var startMenuScreen: GameScreen = _
   protected var pauseMenuScreen: GameScreen = _
-  protected var _clientData: ClientData = _
-  protected var clientData: ClientData = _
+  var clientData: ClientData = _
 
   def joinGame(clientId: String, host: String, port: String): Unit = {
     if (clientId.nonEmpty) {
@@ -33,6 +32,10 @@ abstract class ScreenSwitchableGame extends Game {
 
   def pauseGame(): Unit = {
     setScreen(pauseMenuScreen)
+  }
+
+  def startServer(): Unit = {
+    setScreen(gameplayScreen)
   }
 
   protected def init(): Unit

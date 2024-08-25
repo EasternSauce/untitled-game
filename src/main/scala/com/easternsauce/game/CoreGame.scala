@@ -5,12 +5,16 @@ import com.easternsauce.game.gamemap.GameTiledMap
 import com.easternsauce.game.gamephysics.GamePhysics
 import com.easternsauce.game.gamestate.GameState
 import com.easternsauce.game.gamestate.creature.Creature
+import com.easternsauce.game.gamestate.event.GameStateEvent
 import com.easternsauce.game.gamestate.id.{AreaId, GameEntityId}
 import com.easternsauce.game.gameview.GameView
+import com.esotericsoftware.kryonet.EndPoint
 
 import scala.collection.mutable
 
 abstract class CoreGame extends ScreenSwitchableGame {
+
+  protected val endPoint: EndPoint
 
   override def create(): Unit = {
     init()
@@ -27,7 +31,9 @@ abstract class CoreGame extends ScreenSwitchableGame {
   protected def gameplay: Gameplay
 
   def update(delta: Float): Unit = {
-    gameplay.update(delta)
+    val areaId = clientCreatureAreaId.getOrElse(Constants.DefaultAreaId)
+
+    gameplay.updateForArea(areaId, delta)
   }
 
   def close(): Unit = {
@@ -76,6 +82,8 @@ abstract class CoreGame extends ScreenSwitchableGame {
   def setKeyHeld(key: Int, value: Boolean): Unit = {
     gameplay.setKeyHeld(key, value)
   }
+
+  def applyEvent(event: GameStateEvent): Unit = gameplay.applyEvent(event)
 
   override def schedulePlayerToCreate(clientId: String): Unit = {
     gameplay.schedulePlayerToCreate(clientId)

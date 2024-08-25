@@ -1,9 +1,9 @@
 package com.easternsauce.game.server.screen.pausemenu
 
-import com.easternsauce.game.CoreGame
 import com.easternsauce.game.gameview.GameScreen
+import com.easternsauce.game.server.CoreGameServer
 
-case class ServerPauseMenuScreen()(implicit game: CoreGame) extends GameScreen {
+case class ServerPauseMenuScreen(game: CoreGameServer) extends GameScreen {
 
   override def init(): Unit = {}
 

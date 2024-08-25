@@ -3,6 +3,7 @@ package com.easternsauce.game
 import com.easternsauce.game.gamemap.GameTiledMap
 import com.easternsauce.game.gamephysics.GamePhysics
 import com.easternsauce.game.gamestate.GameState
+import com.easternsauce.game.gamestate.event.GameStateEvent
 import com.easternsauce.game.gamestate.id.AreaId
 import com.easternsauce.game.gameview.GameView
 
@@ -23,8 +24,7 @@ case class Gameplay()(implicit game: CoreGame) {
       .toMap
     tiledMaps.values.foreach(_.init())
 
-    gameStateHolder = GameStateHolder()
-    gameStateHolder.gameState = GameState()
+    gameStateHolder = GameStateHolder(GameState())
 
     view = GameView()
     view.init()
@@ -37,14 +37,15 @@ case class Gameplay()(implicit game: CoreGame) {
     keysHeld = mutable.Map()
   }
 
-  def update(delta: Float): Unit = {
-    gameStateHolder.updateGameState(delta)
-
-    val areaId = game.clientCreatureAreaId.getOrElse(Constants.DefaultAreaId)
-
+  def updateForArea(areaId: AreaId, delta: Float): Unit = {
+    gameStateHolder.updateGameStateForArea(areaId, delta)
     physics.updateForArea(areaId)
     view.updateForArea(areaId, delta)
     view.renderForArea(areaId, delta)
+  }
+
+  def applyEvent(event: GameStateEvent): Unit = {
+    gameStateHolder.gameState = event.applyToGameState(gameState)
   }
 
   def schedulePlayerToCreate(clientId: String): Unit = {
