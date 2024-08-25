@@ -1,23 +1,24 @@
 package com.easternsauce.game.gamephysics
 
+import com.easternsauce.game.CoreGame
 import com.easternsauce.game.gamemap.GameTiledMap
-import com.easternsauce.game.gamestate.GameState
 import com.easternsauce.game.gamestate.creature.Creature
 import com.easternsauce.game.gamestate.id.{AreaId, GameEntityId}
 import com.easternsauce.game.math.Vector2f
 
+import scala.collection.mutable
+
 case class GamePhysics() {
-  private var _areaWorlds: Map[AreaId, AreaWorld] = _
+  private var _areaWorlds: mutable.Map[AreaId, AreaWorld] = _
   private var creatureBodyPhysics: CreatureBodyPhysics = _
   private var staticBodyPhysics: StaticBodyPhysics = _
   private var eventQueue: List[PhysicsEvent] = _
   private var collisionQueue: List[GameStateEvent] = _
 
   def init(
-      tiledMaps: Map[AreaId, GameTiledMap],
-      gameState: GameState
-  ): Unit = {
-    _areaWorlds = tiledMaps.map { case (areaId: AreaId, _) =>
+      tiledMaps: mutable.Map[AreaId, GameTiledMap]
+  )(implicit game: CoreGame): Unit = {
+    _areaWorlds = mutable.Map() ++ tiledMaps.map { case (areaId: AreaId, _) =>
       (areaId, AreaWorld(areaId))
     }
     _areaWorlds.values.foreach(_.init(PhysicsContactListener(this)))
@@ -26,51 +27,48 @@ case class GamePhysics() {
     creatureBodyPhysics.init(_areaWorlds)
 
     staticBodyPhysics = StaticBodyPhysics()
-    staticBodyPhysics.init(tiledMaps, _areaWorlds, gameState)
+    staticBodyPhysics.init(tiledMaps, _areaWorlds)
 
     eventQueue = List()
     collisionQueue = List()
   }
 
-  def updateForArea(areaId: AreaId, gameState: GameState): Unit = {
-    _areaWorlds(areaId).update()
+  def updateForArea(areaId: AreaId)(implicit game: CoreGame): Unit = {
+    areaWorlds(areaId).update()
 
-    handleEvents(eventQueue, areaId, gameState)
+    handleEvents(eventQueue, areaId)
 
-    correctBodyPositions(areaId, gameState)
+    correctBodyPositions(areaId)
 
-    synchronizeWithGameState(areaId, gameState)
+    synchronize(areaId)
 
-    updateBodies(areaId, gameState)
+    updateBodies(areaId)
   }
 
-  private def updateBodies(areaId: AreaId, gameState: GameState): Unit = {
-    creatureBodyPhysics.update(areaId, gameState)
+  private def updateBodies(areaId: AreaId)(implicit game: CoreGame): Unit = {
+    creatureBodyPhysics.update(areaId)
   }
 
-  private def synchronizeWithGameState(
-      areaId: AreaId,
-      gameState: GameState
-  ): Unit = {
-    creatureBodyPhysics.synchronize(areaId, gameState)
+  private def synchronize(
+      areaId: AreaId
+  )(implicit game: CoreGame): Unit = {
+    creatureBodyPhysics.synchronize(areaId)
   }
 
   private def correctBodyPositions(
-      areaId: AreaId,
-      gameState: GameState
-  ): Unit = {
-    creatureBodyPhysics.correctBodyPositions(areaId, gameState)
+      areaId: AreaId
+  )(implicit game: CoreGame): Unit = {
+    creatureBodyPhysics.correctBodyPositions(areaId)
   }
 
   private def handleEvents(
       eventsToBeProcessed: List[PhysicsEvent],
-      areaId: AreaId,
-      gameState: GameState
-  ): Unit = {
+      areaId: AreaId
+  )(implicit game: CoreGame): Unit = {
     eventsToBeProcessed.foreach {
       case TeleportEvent(creatureId, pos) =>
         if (
-          gameState.creatures.contains(creatureId) && gameState
+          game.gameState.creatures.contains(creatureId) && game.gameState
             .creatures(creatureId)
             .params
             .currentAreaId == areaId
@@ -79,7 +77,7 @@ case class GamePhysics() {
         }
       case MakeBodySensorEvent(creatureId) =>
         if (
-          gameState.creatures.contains(creatureId) && gameState
+          game.gameState.creatures.contains(creatureId) && game.gameState
             .creatures(creatureId)
             .params
             .currentAreaId == areaId
@@ -88,7 +86,7 @@ case class GamePhysics() {
         }
       case MakeBodyNonSensorEvent(creatureId) =>
         if (
-          gameState.creatures.contains(creatureId) && gameState
+          game.gameState.creatures.contains(creatureId) && game.gameState
             .creatures(creatureId)
             .params
             .currentAreaId == areaId
@@ -117,7 +115,7 @@ case class GamePhysics() {
     collisionQueue = collisionQueue.appendedAll(collisions)
   }
 
-  def areaWorlds: Map[AreaId, AreaWorld] = _areaWorlds
+  def areaWorlds: mutable.Map[AreaId, AreaWorld] = _areaWorlds
 
   def creatureBodyPositions: Map[GameEntityId[Creature], Vector2f] =
     creatureBodyPhysics.creatureBodyPositions

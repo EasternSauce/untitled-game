@@ -1,11 +1,10 @@
 package com.easternsauce.game.gamemap
 
 import com.badlogic.gdx.maps.tiled.{TiledMap, TiledMapTileLayer, TmxMapLoader}
-import com.easternsauce.game.Constants
-import com.easternsauce.game.gamestate.GameState
 import com.easternsauce.game.gamestate.id.AreaId
 import com.easternsauce.game.gameview.GameSpriteBatch
 import com.easternsauce.game.math.Vector2f
+import com.easternsauce.game.{Constants, CoreGame}
 
 case class GameTiledMap(areaId: AreaId) {
   private var tiledMap: TiledMap = _
@@ -50,16 +49,14 @@ case class GameTiledMap(areaId: AreaId) {
     GameMapLayer(layerName, cells.flatten)
   }
 
-  def render(
-      batch: GameSpriteBatch,
-      worldCameraPos: Vector2f,
-      gameState: GameState
+  def render(batch: GameSpriteBatch, worldCameraPos: Vector2f)(implicit
+      game: CoreGame
   ): Unit = {
     for {
       layer <- Constants.LayersByRenderingOrder.flatMap(layers.get(_))
       cell <- layer.cells
     } yield {
-      cell.render(batch, worldCameraPos, gameState)
+      cell.render(batch, worldCameraPos)
     }
   }
 

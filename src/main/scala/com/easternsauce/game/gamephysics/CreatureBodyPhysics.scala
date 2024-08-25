@@ -1,68 +1,40 @@
 package com.easternsauce.game.gamephysics
 
-import com.easternsauce.game.Constants
-import com.easternsauce.game.gamestate.GameState
 import com.easternsauce.game.gamestate.creature.Creature
 import com.easternsauce.game.gamestate.id.{AreaId, GameEntityId}
 import com.easternsauce.game.math.Vector2f
+import com.easternsauce.game.{Constants, CoreGame}
+
+import scala.collection.mutable
 
 case class CreatureBodyPhysics() {
-  private var creatureBodies: Map[GameEntityId[Creature], CreatureBody] = _
-  private var areaWorlds: Map[AreaId, AreaWorld] = _
+  private var creatureBodies
+      : mutable.Map[GameEntityId[Creature], CreatureBody] = _
+  private var areaWorlds: mutable.Map[AreaId, AreaWorld] = _
+  private var creatureBodiesSynchronizer: CreatureBodiesSynchronizer = _
 
-  def init(areaWorlds: Map[AreaId, AreaWorld]): Unit = {
-    creatureBodies = Map()
+  def init(areaWorlds: mutable.Map[AreaId, AreaWorld]): Unit = {
+    creatureBodies = mutable.Map()
     this.areaWorlds = areaWorlds
+    creatureBodiesSynchronizer = CreatureBodiesSynchronizer()
+    creatureBodiesSynchronizer.init(creatureBodies, areaWorlds)
   }
 
-  def update(areaId: AreaId, gameState: GameState): Unit = {
+  def update(areaId: AreaId)(implicit game: CoreGame): Unit = {
     creatureBodies
       .filter { case (creatureId, _) =>
-        gameState.creatures(creatureId).params.currentAreaId == areaId
+        game.gameState.creatures(creatureId).params.currentAreaId == areaId
       }
       .values
-      .foreach(_.update(gameState))
+      .foreach(_.update(game.gameState))
   }
 
-  def synchronize(areaId: AreaId, gameState: GameState): Unit = {
-    val creatureBodiesToCreate =
-      gameState.activeCreatureIds -- creatureBodies.keys.toSet
-    val creatureBodiesToDestroy =
-      creatureBodies.keys.toSet -- gameState.activeCreatureIds
-
-    creatureBodiesToCreate
-      .filter(creatureId =>
-        gameState.creatures(creatureId).params.currentAreaId == areaId
-      )
-      .foreach(createCreatureBody(_, gameState))
-    creatureBodiesToDestroy
-      .filter(creatureId =>
-        !gameState.creatures.contains(creatureId) ||
-          gameState.creatures(creatureId).params.currentAreaId == areaId
-      )
-      .foreach(destroyCreatureBody(_, gameState))
-
-    gameState.activeCreatureIds
-      .filter(creatureId =>
-        gameState.creatures(creatureId).params.currentAreaId == areaId
-      )
-      .foreach(creatureId => {
-        val creature = gameState.creatures(creatureId)
-
-        if (creature.alive) {
-          if (creatureBodies(creature.id).isSensor) {
-            creatureBodies(creature.id).setNonSensor()
-          }
-        } else {
-          if (!creatureBodies(creature.id).isSensor) {
-            creatureBodies(creature.id).setSensor()
-          }
-        }
-      })
+  def synchronize(areaId: AreaId)(implicit game: CoreGame): Unit = {
+    creatureBodiesSynchronizer.synchronizeForArea(areaId)
   }
 
-  def correctBodyPositions(areaId: AreaId, gameState: GameState): Unit = {
-    gameState.creatures.values.foreach(creature =>
+  def correctBodyPositions(areaId: AreaId)(implicit game: CoreGame): Unit = {
+    game.gameState.creatures.values.foreach(creature =>
       if (
         creature.params.currentAreaId == areaId &&
         creatureBodies.contains(creature.id) && creatureBodies(creature.id).pos
@@ -80,31 +52,6 @@ case class CreatureBodyPhysics() {
         (creatureBody.creatureId, pos)
       })
       .toMap
-  }
-
-  private def createCreatureBody(
-      creatureId: GameEntityId[Creature],
-      gameState: GameState
-  ): Unit = {
-    val creature = gameState.creatures(creatureId)
-
-    val creatureBody = CreatureBody(creatureId)
-
-    val areaWorld = areaWorlds(creature.params.currentAreaId)
-
-    creatureBody.init(areaWorld, creature.pos, gameState)
-
-    creatureBodies = creatureBodies.updated(creatureId, creatureBody)
-  }
-
-  private def destroyCreatureBody(
-      creatureId: GameEntityId[Creature],
-      gameState: GameState
-  ): Unit = {
-    if (creatureBodies.contains(creatureId)) {
-      creatureBodies(creatureId).onRemove()
-      creatureBodies = creatureBodies.removed(creatureId)
-    }
   }
 
   def setBodyPos(creatureId: GameEntityId[Creature], pos: Vector2f): Unit = {

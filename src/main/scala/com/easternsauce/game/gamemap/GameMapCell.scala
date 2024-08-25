@@ -9,16 +9,14 @@ import com.easternsauce.game.math.{IsometricProjection, Vector2f}
 
 case class GameMapCell(tiledCell: Cell, areaId: AreaId, pos: Vector2f)
     extends Renderable {
-  override def pos(gameState: GameState): Vector2f = pos
+  override def pos()(implicit game: CoreGame): Vector2f = pos
 
   override def areaId(gameState: GameState): AreaId = areaId
 
   override def renderPriority(gameState: GameState): Boolean = false
 
-  override def render(
-      batch: GameSpriteBatch,
-      worldCameraPos: Vector2f,
-      gameState: GameState
+  override def render(batch: GameSpriteBatch, worldCameraPos: Vector2f)(implicit
+      game: CoreGame
   ): Unit = {
     val textureRegion = tiledCell.getTile.getTextureRegion
     val textureWidth = textureRegion.getRegionWidth

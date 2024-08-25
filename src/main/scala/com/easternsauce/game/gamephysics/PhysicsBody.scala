@@ -1,7 +1,9 @@
 package com.easternsauce.game.gamephysics
 
 import com.badlogic.gdx.physics.box2d.Body
+import com.easternsauce.game.CoreGame
 import com.easternsauce.game.gamestate.GameState
+import com.easternsauce.game.gamestate.id.AreaId
 import com.easternsauce.game.math.Vector2f
 
 trait PhysicsBody {
@@ -9,7 +11,7 @@ trait PhysicsBody {
   protected var areaWorld: AreaWorld = _
   protected var sensor: Boolean = _
 
-  def init(areaWorld: AreaWorld, pos: Vector2f, gameState: GameState): Unit
+  def init(areaWorld: AreaWorld, pos: Vector2f)(implicit game: CoreGame): Unit
 
   def update(gameState: GameState): Unit
 
@@ -38,4 +40,6 @@ trait PhysicsBody {
   }
 
   def onRemove(): Unit
+
+  def areaId: AreaId = areaWorld.areaId
 }

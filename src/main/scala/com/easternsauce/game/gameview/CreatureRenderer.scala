@@ -1,20 +1,21 @@
 package com.easternsauce.game.gameview
 
 import com.easternsauce.game.CoreGame
-import com.easternsauce.game.gamestate.GameState
 import com.easternsauce.game.gamestate.creature.Creature
-import com.easternsauce.game.gamestate.id.GameEntityId
+import com.easternsauce.game.gamestate.id.{AreaId, GameEntityId}
 import com.easternsauce.game.math.Vector2f
+
+import scala.collection.mutable
 
 //noinspection SpellCheckingInspection
 case class CreatureRenderer() {
   private var creatureRenderables
-      : Map[GameEntityId[Creature], CreatureRenderable] = _
+      : mutable.Map[GameEntityId[Creature], CreatureRenderable] = _
   private var creatureRenderablesSynchronizer: CreatureRenderablesSynchronizer =
     _
 
   def init(): Unit = {
-    creatureRenderables = Map()
+    creatureRenderables = mutable.Map()
 
     creatureRenderablesSynchronizer = CreatureRenderablesSynchronizer()
     creatureRenderablesSynchronizer.init(creatureRenderables)
@@ -43,50 +44,52 @@ case class CreatureRenderer() {
 //    )
 //  }
 
-  def renderAliveCreatures(
+  def renderAliveCreaturesForArea(
+      areaId: AreaId,
       worldSpriteBatch: GameSpriteBatch,
-      worldCameraPos: Vector2f,
-      gameState: GameState
-  ): Unit = {
-    renderablesForAliveCreatures(gameState)
-      .foreach(_.render(worldSpriteBatch, worldCameraPos, gameState))
+      worldCameraPos: Vector2f
+  )(implicit game: CoreGame): Unit = {
+    renderablesForAliveCreaturesInArea(areaId)
+      .foreach(_.render(worldSpriteBatch, worldCameraPos))
   }
 
   def renderDeadCreatures(
+      areaId: AreaId,
       worldSpriteBatch: GameSpriteBatch,
-      worldCameraPos: Vector2f,
-      gameState: GameState
-  ): Unit = {
-    renderablesForDeadCreatures(gameState)
-      .foreach(_.render(worldSpriteBatch, worldCameraPos, gameState))
+      worldCameraPos: Vector2f
+  )(implicit game: CoreGame): Unit = {
+    renderablesForDeadCreaturesInArea(areaId)
+      .foreach(_.render(worldSpriteBatch, worldCameraPos))
   }
 
-  private def renderablesForAliveCreatures(
-      gameState: GameState
+  private def renderablesForAliveCreaturesInArea(areaId: AreaId)(implicit
+      game: CoreGame
   ): List[CreatureRenderable] = {
-    gameState.creatures
+    game.gameState.creatures
       .filter { case (_, creature) =>
-        creature.alive && creatureRenderables.contains(creature.id)
+        creature.alive && creature.currentAreaId == areaId && creatureRenderables
+          .contains(creature.id)
       }
       .keys
       .toList
       .map(creatureId => creatureRenderables(creatureId))
   }
 
-  private def renderablesForDeadCreatures(
-      gameState: GameState
+  private def renderablesForDeadCreaturesInArea(areaId: AreaId)(implicit
+      game: CoreGame
   ): List[CreatureRenderable] = {
-    gameState.creatures
+    game.gameState.creatures
       .filter { case (_, creature) =>
-        !creature.alive && creatureRenderables.contains(creature.id)
+        !creature.alive && creature.currentAreaId == areaId && creatureRenderables
+          .contains(creature.id)
       }
       .keys
       .toList
       .map(creatureId => creatureRenderables(creatureId))
   }
 
-  def synchronizeRenderables()(implicit game: CoreGame): Unit = {
-    creatureRenderablesSynchronizer.synchronize()
+  def synchronizeRenderables(areaId: AreaId)(implicit game: CoreGame): Unit = {
+    creatureRenderablesSynchronizer.synchronizeForArea(areaId)
   }
 
 }

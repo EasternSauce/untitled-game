@@ -3,14 +3,17 @@ package com.easternsauce.game
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.Texture
 
+import scala.collection.mutable
+
 object Assets {
-  private var textures: Map[String, Texture] = Map[String, Texture]()
+  private val textures: mutable.Map[String, Texture] =
+    mutable.Map[String, Texture]()
 
   def texture(texturePath: String): Texture = {
     if (textures.contains(texturePath)) {
       textures(texturePath)
     } else {
-      textures = textures.updated(
+      textures.update(
         texturePath,
         new Texture(Gdx.files.internal("assets/" + texturePath + ".png"))
       )

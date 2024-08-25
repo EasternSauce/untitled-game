@@ -1,6 +1,7 @@
 package com.easternsauce.game.gamephysics
 
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType
+import com.easternsauce.game.CoreGame
 import com.easternsauce.game.gamestate.GameState
 import com.easternsauce.game.gamestate.creature.Creature
 import com.easternsauce.game.gamestate.id.GameEntityId
@@ -9,9 +10,11 @@ import com.easternsauce.game.math.Vector2f
 case class CreatureBody(creatureId: GameEntityId[Creature])
     extends PhysicsBody {
 
-  def init(areaWorld: AreaWorld, pos: Vector2f, gameState: GameState): Unit = {
+  def init(areaWorld: AreaWorld, pos: Vector2f)(implicit
+      game: CoreGame
+  ): Unit = {
     this.b2Body = {
-      val creature = gameState.creatures(creatureId)
+      val creature = game.gameState.creatures(creatureId)
 
       import com.badlogic.gdx.physics.box2d._
 

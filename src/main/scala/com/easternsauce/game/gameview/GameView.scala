@@ -3,6 +3,7 @@ package com.easternsauce.game.gameview
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.utils.ScreenUtils
+import com.easternsauce.game.gamestate.id.AreaId
 import com.easternsauce.game.{Constants, CoreGame}
 
 case class GameView() {
@@ -26,23 +27,27 @@ case class GameView() {
     worldRenderer.init()
   }
 
-  def update(delta: Float)(implicit game: CoreGame): Unit = {
-    worldRenderer.update()
+  def updateForArea(areaId: AreaId, delta: Float)(implicit
+      game: CoreGame
+  ): Unit = {
+    worldRenderer.update(areaId)
 
     val creatureId = game.clientCreatureId
 
     viewportManager.updateCameras(creatureId)
   }
 
-  def render(delta: Float)(implicit game: CoreGame): Unit = {
+  def renderForArea(areaId: AreaId, delta: Float)(implicit
+      game: CoreGame
+  ): Unit = {
     ScreenUtils.clear(0, 0, 0, 1)
 
     viewportManager.setProjectionMatrices(spriteBatchHolder)
 
-    worldRenderer.drawCurrentWorld(
+    worldRenderer.renderForArea(
+      areaId,
       spriteBatchHolder,
-      viewportManager.getWorldCameraPos,
-      game
+      viewportManager.getWorldCameraPos
     )
 
     if (Constants.EnableDebug) {

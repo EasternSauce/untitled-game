@@ -32,8 +32,8 @@ case class CreatureRenderable(creatureId: GameEntityId[Creature])
     animations.values.foreach(_.init())
   }
 
-  override def pos(gameState: GameState): Vector2f = {
-    val creature = gameState.creatures(creatureId)
+  override def pos()(implicit game: CoreGame): Vector2f = {
+    val creature = game.gameState.creatures(creatureId)
 
     creature.pos
   }
@@ -44,23 +44,21 @@ case class CreatureRenderable(creatureId: GameEntityId[Creature])
     creature.params.currentAreaId
   }
 
-  override def render(
-      batch: GameSpriteBatch,
-      worldCameraPos: Vector2f,
-      gameState: GameState
+  override def render(batch: GameSpriteBatch, worldCameraPos: Vector2f)(implicit
+      game: CoreGame
   ): Unit = {
-    val creature = gameState.creatures(creatureId)
+    val creature = game.gameState.creatures(creatureId)
 
     if (creature.invisible) {
-      animations(CreatureAnimationType.Body).render(batch, gameState)
+      animations(CreatureAnimationType.Body).render(batch)
       if (!creature.params.renderBodyOnly) {
-        animations(CreatureAnimationType.Head).render(batch, gameState)
+        animations(CreatureAnimationType.Head).render(batch)
       }
       if (creature.params.primaryWeaponType != PrimaryWeaponType.None) {
-        animations(CreatureAnimationType.Weapon).render(batch, gameState)
+        animations(CreatureAnimationType.Weapon).render(batch)
       }
       if (creature.params.secondaryWeaponType == SecondaryWeaponType.Shield) {
-        animations(CreatureAnimationType.Shield).render(batch, gameState)
+        animations(CreatureAnimationType.Shield).render(batch)
       }
     }
   }

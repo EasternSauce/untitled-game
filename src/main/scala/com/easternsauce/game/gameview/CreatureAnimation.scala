@@ -2,11 +2,11 @@ package com.easternsauce.game.gameview
 
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.{Animation, TextureRegion}
+import com.easternsauce.game.gamestate.WorldDirection
 import com.easternsauce.game.gamestate.creature.CreatureAnimationType.CreatureAnimationType
 import com.easternsauce.game.gamestate.creature.EquipmentSlotType.EquipmentSlotType
 import com.easternsauce.game.gamestate.creature.{Creature, EquipmentSlotType, FramesDefinition, PrimaryWeaponType}
 import com.easternsauce.game.gamestate.id.GameEntityId
-import com.easternsauce.game.gamestate.{GameState, WorldDirection}
 import com.easternsauce.game.math.{IsometricProjection, Vector2f}
 import com.easternsauce.game.{Assets, CoreGame}
 
@@ -113,8 +113,8 @@ case class CreatureAnimation(
     }
   }
 
-  def render(batch: GameSpriteBatch, gameState: GameState): Unit = {
-    val creature = gameState.creatures(creatureId)
+  def render(batch: GameSpriteBatch)(implicit game: CoreGame): Unit = {
+    val creature = game.gameState.creatures(creatureId)
 
     val frame =
       if (

@@ -6,44 +6,45 @@ import com.easternsauce.game.gamestate.GameState
 import com.easternsauce.game.gamestate.id.AreaId
 import com.easternsauce.game.gameview.GameView
 
+import scala.collection.mutable
+
 case class Gameplay()(implicit game: CoreGame) {
 
-  var tiledMaps: Map[AreaId, GameTiledMap] = _
+  var tiledMaps: mutable.Map[AreaId, GameTiledMap] = _
   var view: GameView = _
   var physics: GamePhysics = _
-  var gameState: GameState = _
+  var gameStateHolder: GameStateHolder = _
   var playersToCreate: List[String] = _
-  var keysHeld: Map[Int, Boolean] = _
+  var keysHeld: mutable.Map[Int, Boolean] = _
 
   def init(): Unit = {
-    tiledMaps = Constants.MapAreaNames
+    tiledMaps = mutable.Map() ++ Constants.MapAreaNames
       .map(name => (AreaId(name), GameTiledMap(AreaId(name))))
       .toMap
     tiledMaps.values.foreach(_.init())
 
-    gameState = GameState()
+    gameStateHolder = GameStateHolder()
+    gameStateHolder.gameState = GameState()
 
     view = GameView()
     view.init()
 
     physics = GamePhysics()
-    physics.init(tiledMaps, gameState)
+    physics.init(tiledMaps)
 
     playersToCreate = List()
 
-    keysHeld = Map()
+    keysHeld = mutable.Map()
   }
 
   def update(delta: Float): Unit = {
-    gameState = gameState.update(delta)
+    gameStateHolder.updateGameState(delta)
 
-    physics.updateForArea(
-      game.clientCreatureAreaId.getOrElse(Constants.DefaultAreaId),
-      gameState
-    )
+    val areaId = game.clientCreatureAreaId.getOrElse(Constants.DefaultAreaId)
 
-    view.update(delta)
-    view.render(delta)
+    physics.updateForArea(areaId)
+    view.updateForArea(areaId, delta)
+    view.renderForArea(areaId, delta)
   }
 
   def schedulePlayerToCreate(clientId: String): Unit = {
@@ -51,6 +52,8 @@ case class Gameplay()(implicit game: CoreGame) {
   }
 
   def keyHeld(key: Int): Boolean = keysHeld(key)
-  def setKeyHeld(key: Int, value: Boolean): Unit = keysHeld =
-    keysHeld.updated(key, value)
+  def setKeyHeld(key: Int, value: Boolean): Unit =
+    keysHeld.update(key, value)
+
+  def gameState: GameState = gameStateHolder.gameState
 }

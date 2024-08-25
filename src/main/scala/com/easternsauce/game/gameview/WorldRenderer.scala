@@ -1,8 +1,7 @@
 package com.easternsauce.game.gameview
 
 import com.easternsauce.game.CoreGame
-import com.easternsauce.game.gamemap.GameTiledMap
-import com.easternsauce.game.gamestate.GameState
+import com.easternsauce.game.gamestate.id.AreaId
 import com.easternsauce.game.math.Vector2f
 
 case class WorldRenderer() {
@@ -13,25 +12,19 @@ case class WorldRenderer() {
     creatureRenderer.init()
   }
 
-  def drawCurrentWorld(
+  def renderForArea(
+      areaId: AreaId,
       spriteBatchHolder: SpriteBatchHolder,
-      worldCameraPos: Vector2f,
+      worldCameraPos: Vector2f
+  )(implicit
       game: CoreGame
   ): Unit = {
     spriteBatchHolder.worldSpriteBatch.begin()
 
-    val clientCreatureAreaId = game.clientCreatureId
-      .filter(game.gameState.creatures.contains(_))
-      .map(game.gameState.creatures(_))
-      .map(_.currentAreaId)
-
-    clientCreatureAreaId.foreach(areaId =>
-      renderWorldElementsByPriority(
-        spriteBatchHolder.worldSpriteBatch,
-        worldCameraPos,
-        game.gameTiledMaps(areaId),
-        game.gameState
-      )
+    renderWorldElementsInAreaByPriority(
+      areaId,
+      spriteBatchHolder.worldSpriteBatch,
+      worldCameraPos
     )
 
     spriteBatchHolder.worldSpriteBatch.end()
@@ -41,39 +34,30 @@ case class WorldRenderer() {
     spriteBatchHolder.worldTextSpriteBatch.end()
   }
 
-  private def renderWorldElementsByPriority(
+  private def renderWorldElementsInAreaByPriority(
+      areaId: AreaId,
       worldSpriteBatch: GameSpriteBatch,
-      worldCameraPos: Vector2f,
-      gameTiledMap: GameTiledMap,
-      gameState: GameState
-  ): Unit = {
+      worldCameraPos: Vector2f
+  )(implicit game: CoreGame): Unit = {
 
-    gameTiledMap.render(
-      worldSpriteBatch,
-      worldCameraPos,
-      gameState
-    )
+    game.tiledMaps(areaId).render(worldSpriteBatch, worldCameraPos)
 
-    renderDynamicElements(
+    renderDynamicElementsForArea(areaId, worldSpriteBatch, worldCameraPos)
+  }
+
+  private def renderDynamicElementsForArea(
+      areaId: AreaId,
+      worldSpriteBatch: GameSpriteBatch,
+      worldCameraPos: Vector2f
+  )(implicit game: CoreGame): Unit = {
+    creatureRenderer.renderAliveCreaturesForArea(
+      areaId,
       worldSpriteBatch,
-      worldCameraPos,
-      gameState
+      worldCameraPos
     )
   }
 
-  private def renderDynamicElements(
-      worldSpriteBatch: GameSpriteBatch,
-      worldCameraPos: Vector2f,
-      gameState: GameState
-  ): Unit = {
-    creatureRenderer.renderAliveCreatures(
-      worldSpriteBatch,
-      worldCameraPos,
-      gameState
-    )
-  }
-
-  def update()(implicit game: CoreGame): Unit = {
-    creatureRenderer.synchronizeRenderables()
+  def update(areaId: AreaId)(implicit game: CoreGame): Unit = {
+    creatureRenderer.synchronizeRenderables(areaId)
   }
 }
