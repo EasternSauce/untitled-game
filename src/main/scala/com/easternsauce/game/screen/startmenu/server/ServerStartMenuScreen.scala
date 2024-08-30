@@ -1,18 +1,18 @@
-package com.easternsauce.game.client.screen.startmenu
+package com.easternsauce.game.screen.startmenu.server
 
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.utils.ScreenUtils
-import com.easternsauce.game.client.CoreGameClient
 import com.easternsauce.game.gameview.GameScreen
+import com.easternsauce.game.server.CoreGameServer
 
-case class ClientStartMenuScreen(game: CoreGameClient) extends GameScreen {
-  implicit private val _game: CoreGameClient = game
+case class ServerStartMenuScreen(game: CoreGameServer) extends GameScreen {
+  implicit val _game: CoreGameServer = game
 
   private var stage: Stage = _
 
   override def init(): Unit = {
-    stage = ClientStartMenuStageBuilder().build()
+    stage = ServerStartMenuStageBuilder().build()
   }
 
   override def show(): Unit = {

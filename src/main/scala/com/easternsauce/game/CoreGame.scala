@@ -1,6 +1,7 @@
 package com.easternsauce.game
 
 import com.badlogic.gdx.Gdx
+import com.easternsauce.game.connectivity.GameConnectivity
 import com.easternsauce.game.gamemap.GameTiledMap
 import com.easternsauce.game.gamephysics.GamePhysics
 import com.easternsauce.game.gamestate.GameState
@@ -8,13 +9,13 @@ import com.easternsauce.game.gamestate.creature.Creature
 import com.easternsauce.game.gamestate.event.GameStateEvent
 import com.easternsauce.game.gamestate.id.{AreaId, GameEntityId}
 import com.easternsauce.game.gameview.GameView
-import com.esotericsoftware.kryonet.EndPoint
+import com.esotericsoftware.kryonet.Listener
 
 import scala.collection.mutable
 
 abstract class CoreGame extends ScreenSwitchableGame {
 
-  protected val endPoint: EndPoint
+  protected val connectivity: GameConnectivity
 
   override def create(): Unit = {
     init()
@@ -61,6 +62,10 @@ abstract class CoreGame extends ScreenSwitchableGame {
 
   def gameState: GameState = {
     gameplay.gameState
+  }
+
+  def listener: Listener = {
+    connectivity.listener
   }
 
   def playersToCreate: List[String] = {

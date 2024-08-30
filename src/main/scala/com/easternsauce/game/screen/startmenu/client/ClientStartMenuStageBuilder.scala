@@ -1,4 +1,4 @@
-package com.easternsauce.game.client.screen.startmenu
+package com.easternsauce.game.screen.startmenu.client
 
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.scenes.scene2d.ui.{Skin, TextButton, TextField}

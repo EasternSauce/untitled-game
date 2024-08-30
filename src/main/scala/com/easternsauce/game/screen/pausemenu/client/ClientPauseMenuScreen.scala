@@ -1,4 +1,4 @@
-package com.easternsauce.game.client.screen.pausemenu
+package com.easternsauce.game.screen.pausemenu.client
 
 import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.utils.ScreenUtils

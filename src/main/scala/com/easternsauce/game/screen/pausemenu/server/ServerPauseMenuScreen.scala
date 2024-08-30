@@ -1,4 +1,4 @@
-package com.easternsauce.game.server.screen.pausemenu
+package com.easternsauce.game.screen.pausemenu.server
 
 import com.easternsauce.game.gameview.GameScreen
 import com.easternsauce.game.server.CoreGameServer

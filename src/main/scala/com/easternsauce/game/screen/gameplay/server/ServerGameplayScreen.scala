@@ -1,4 +1,4 @@
-package com.easternsauce.game.server.screen.gameplay
+package com.easternsauce.game.screen.gameplay.server
 
 import com.easternsauce.game.gameview.GameScreen
 import com.easternsauce.game.server.CoreGameServer

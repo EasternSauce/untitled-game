@@ -1,4 +1,4 @@
-package com.easternsauce.game.client.screen.pausemenu
+package com.easternsauce.game.screen.pausemenu.client
 
 import com.badlogic.gdx.Input.Keys
 import com.badlogic.gdx.InputProcessor

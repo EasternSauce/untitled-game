@@ -1,4 +1,4 @@
-package com.easternsauce.game.client.screen.gameplay
+package com.easternsauce.game.screen.gameplay.client
 
 import com.badlogic.gdx.Input.Keys
 import com.badlogic.gdx.InputProcessor

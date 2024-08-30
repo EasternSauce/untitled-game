@@ -1,9 +1,10 @@
-package com.easternsauce.game.server
+package com.easternsauce.game.connectivity
 
 import com.easternsauce.game.command.{ActionsPerformCommand, RegisterClientRequestCommand, RegisterClientResponseCommand}
 import com.easternsauce.game.gamestate.creature.Creature
 import com.easternsauce.game.gamestate.event.PlayerDisconnectEvent
 import com.easternsauce.game.gamestate.id.GameEntityId
+import com.easternsauce.game.server.CoreGameServer
 import com.esotericsoftware.kryonet.FrameworkMessage.KeepAlive
 import com.esotericsoftware.kryonet.{Connection, Listener}
 

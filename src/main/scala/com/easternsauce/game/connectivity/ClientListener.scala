@@ -1,6 +1,7 @@
-package com.easternsauce.game.client
+package com.easternsauce.game.connectivity
 
 import com.easternsauce.game.GameStateHolder
+import com.easternsauce.game.client.CoreGameClient
 import com.easternsauce.game.command.{ActionsPerformCommand, RegisterClientResponseCommand}
 import com.esotericsoftware.kryonet.FrameworkMessage.KeepAlive
 import com.esotericsoftware.kryonet.{Connection, Listener}

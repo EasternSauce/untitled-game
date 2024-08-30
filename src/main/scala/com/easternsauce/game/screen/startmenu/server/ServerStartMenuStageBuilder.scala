@@ -1,4 +1,4 @@
-package com.easternsauce.game.client.screen.pausemenu
+package com.easternsauce.game.screen.startmenu.server
 
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.scenes.scene2d.ui.{Skin, TextButton}
@@ -8,19 +8,19 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport
 import com.easternsauce.game.CoreGame
 
 //noinspection SameParameterValue
-case class ClientPauseMenuStageBuilder() {
+case class ServerStartMenuStageBuilder() {
   def build()(implicit game: CoreGame): Stage = {
     val stage = new Stage(new ScreenViewport())
 
-    val resumeButton = createButton(
+    val startButton = createButton(
       x = Gdx.graphics.getWidth / 2 - 100,
       y = 400,
       width = 200,
       height = 50,
-      text = "Resume",
+      text = "Start server",
       listener = new ClickListener() {
         override def clicked(event: InputEvent, x: Float, y: Float): Unit = {
-          game.resumeGame()
+          game.startServer()
         }
       },
       skin = game.view.skin
@@ -40,7 +40,7 @@ case class ClientPauseMenuStageBuilder() {
       skin = game.view.skin
     )
 
-    stage.addActor(resumeButton)
+    stage.addActor(startButton)
     stage.addActor(exitButton)
 
     stage

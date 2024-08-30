@@ -1,12 +1,12 @@
 package com.easternsauce.game.client
 
-import com.easternsauce.game.client.screen.gameplay.ClientGameplayScreen
-import com.easternsauce.game.client.screen.pausemenu.ClientPauseMenuScreen
-import com.easternsauce.game.client.screen.startmenu.ClientStartMenuScreen
+import com.easternsauce.game.connectivity.GameClientConnectivity
 import com.easternsauce.game.gamestate.GameState
-import com.easternsauce.game.{Constants, CoreGame, Gameplay}
-import com.esotericsoftware.kryonet.{Client, KryoSerialization}
-import com.twitter.chill.{Kryo, ScalaKryoInstantiator}
+import com.easternsauce.game.screen.gameplay.client.ClientGameplayScreen
+import com.easternsauce.game.screen.pausemenu.client.ClientPauseMenuScreen
+import com.easternsauce.game.screen.startmenu.client.ClientStartMenuScreen
+import com.easternsauce.game.{CoreGame, Gameplay}
+import com.esotericsoftware.kryonet.Client
 
 case class CoreGameClient() extends CoreGame {
   implicit val game: CoreGame = this
@@ -14,21 +14,10 @@ case class CoreGameClient() extends CoreGame {
   var clientId: Option[String] = None
   var clientRegistered = false
 
-  override protected val endPoint: Client = {
-    if (!Constants.OfflineMode) {
-      val kryo: Kryo = {
-        val instantiator = new ScalaKryoInstantiator
-        instantiator.setRegistrationRequired(false)
-        instantiator.newKryo()
-
-      }
-      new Client(8192 * 100, 2048 * 100, new KryoSerialization(kryo))
-    } else {
-      null
-    }
-  }
-
   private var _gameplay: Gameplay = _
+
+  override protected val connectivity: GameClientConnectivity =
+    GameClientConnectivity(this)
 
   override protected def init(): Unit = {
     gameplayScreen = ClientGameplayScreen(this)
@@ -42,8 +31,8 @@ case class CoreGameClient() extends CoreGame {
   def overrideGameState(gameState: GameState): Unit =
     gameplay.gameStateHolder.gameState = gameState
 
-  def client: Client = endPoint
-  val listener: ClientListener = ClientListener(this)
+  def client: Client = connectivity.endPoint
 
   override protected def gameplay: Gameplay = _gameplay
+
 }

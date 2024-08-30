@@ -1,14 +1,17 @@
 package com.easternsauce.game.server
 
-import com.easternsauce.game.server.screen.gameplay.ServerGameplayScreen
-import com.easternsauce.game.server.screen.pausemenu.ServerPauseMenuScreen
-import com.easternsauce.game.server.screen.startmenu.ServerStartMenuScreen
+import com.easternsauce.game.connectivity.GameServerConnectivity
+import com.easternsauce.game.screen.gameplay.server.ServerGameplayScreen
+import com.easternsauce.game.screen.pausemenu.server.ServerPauseMenuScreen
+import com.easternsauce.game.screen.startmenu.server.ServerStartMenuScreen
 import com.easternsauce.game.{CoreGame, GameStateBroadcaster, Gameplay}
-import com.esotericsoftware.kryonet.{KryoSerialization, Server}
-import com.twitter.chill.{Kryo, ScalaKryoInstantiator}
+import com.esotericsoftware.kryonet.Server
 
 case class CoreGameServer() extends CoreGame {
   implicit val game: CoreGame = this
+
+  override protected val connectivity: GameServerConnectivity =
+    GameServerConnectivity(this)
 
   private var _gameplay: Gameplay = _
 
@@ -18,18 +21,7 @@ case class CoreGameServer() extends CoreGame {
 
   private var clientCounter = 0
 
-  override protected val endPoint: Server = {
-    val kryo: Kryo = {
-      val instantiator = new ScalaKryoInstantiator
-      instantiator.setRegistrationRequired(false)
-      instantiator.newKryo()
-    }
-
-    new Server(16384 * 100, 2048 * 100, new KryoSerialization(kryo))
-  }
-
-  private def server: Server = endPoint
-  private val listener: ServerListener = ServerListener(this)
+  private def server: Server = connectivity.endPoint
 
   def runServer(): Unit = {
     server.start()
