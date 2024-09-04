@@ -2,6 +2,7 @@ package com.easternsauce.game.screen.gameplay.client
 
 import com.badlogic.gdx.Gdx
 import com.easternsauce.game.client.CoreGameClient
+import com.easternsauce.game.command.RegisterClientRequestCommand
 import com.easternsauce.game.gameview.GameScreen
 
 case class ClientGameplayScreen(game: CoreGameClient) extends GameScreen {
@@ -28,6 +29,10 @@ case class ClientGameplayScreen(game: CoreGameClient) extends GameScreen {
       )
 
       game.client.addListener(game.listener)
+
+      game.client.sendTCP(
+        RegisterClientRequestCommand(game.clientData.clientId)
+      )
     }
   }
 

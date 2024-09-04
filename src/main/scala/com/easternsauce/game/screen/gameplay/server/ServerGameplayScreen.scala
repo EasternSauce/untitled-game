@@ -16,6 +16,8 @@ case class ServerGameplayScreen(game: CoreGameServer) extends GameScreen {
         }
       }).start()
       serverRunning = true
+
+      game.startBroadcaster()
     }
   }
 

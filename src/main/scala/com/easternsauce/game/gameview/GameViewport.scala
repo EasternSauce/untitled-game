@@ -43,12 +43,16 @@ case class GameViewport() {
   )(implicit game: CoreGame): Unit = {
     val camPosition = camera.position
 
-    val cameraPos = creatureId
+    val creatureCameraPos = creatureId
       .filter(game.gameState.creatures.contains)
       .map(game.gameState.creatures(_).pos)
-      .getOrElse(Vector2f(0, 0))
 
-    val pos = coordinateTransformation(cameraPos)
+    val anyCreatureCameraPos =
+      game.gameState.creatures.values.headOption.map(_.pos)
+
+    val pos = coordinateTransformation(
+      creatureCameraPos.orElse(anyCreatureCameraPos).getOrElse(Vector2f(0, 0))
+    )
 
     camPosition.x = (math.floor(pos.x * 100) / 100).toFloat
     camPosition.y = (math.floor(pos.y * 100) / 100).toFloat

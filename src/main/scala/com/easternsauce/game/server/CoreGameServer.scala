@@ -65,4 +65,14 @@ case class CoreGameServer() extends CoreGame {
     Map.from(_clientConnectionIds)
   }
 
+  def startBroadcaster(): Unit = {
+    gameStateBroadcaster.start(server)
+  }
+
+  override def dispose(): Unit = {
+    super.dispose()
+    server.stop()
+
+    gameStateBroadcaster.stop()
+  }
 }
