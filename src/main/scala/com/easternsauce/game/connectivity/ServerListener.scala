@@ -18,7 +18,7 @@ case class ServerListener(game: CoreGameServer) extends Listener {
       val playerDisconnectEvent = PlayerDisconnectEvent(
         GameEntityId[Creature](disconnectedCreatureId)
       )
-      game.applyEvent(playerDisconnectEvent)
+      game.applyEvents(List(playerDisconnectEvent))
 
       game.unregisterClient(disconnectedCreatureId, connection.getID)
     }
@@ -30,8 +30,8 @@ case class ServerListener(game: CoreGameServer) extends Listener {
         val clientId = maybeClientId.getOrElse(game.generateNewClientId())
         game.registerClient(clientId, connection.getID)
         connection.sendTCP(RegisterClientResponseCommand(clientId))
-      case ActionsPerformCommand(actions) =>
-        actions.foreach(game.applyEvent)
+      case ActionsPerformCommand(events) =>
+        game.applyEvents(events)
       case _: KeepAlive =>
     }
   }

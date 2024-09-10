@@ -1,7 +1,9 @@
 package com.easternsauce.game.client
 
+import com.easternsauce.game.command.ActionsPerformCommand
 import com.easternsauce.game.connectivity.GameClientConnectivity
 import com.easternsauce.game.gamestate.GameState
+import com.easternsauce.game.gamestate.event.GameStateEvent
 import com.easternsauce.game.screen.gameplay.client.ClientGameplayScreen
 import com.easternsauce.game.screen.pausemenu.client.ClientPauseMenuScreen
 import com.easternsauce.game.screen.startmenu.client.ClientStartMenuScreen
@@ -30,9 +32,26 @@ case class CoreGameClient() extends CoreGame {
   def overrideGameState(gameState: GameState): Unit =
     gameplay.gameStateHolder.gameState = gameState
 
+
+  override def sendEvent(event: GameStateEvent): Unit = {
+    client.sendTCP(
+      ActionsPerformCommand(
+        List(event)
+      )
+    )
+  }
+
   def client: Client = connectivity.endPoint
 
   override protected def gameplay: Gameplay = _gameplay
+
+  override def applyBroadcastedEvents(gameState: GameState): GameState = {
+    val updatedGameState = gameState.applyEvents(broadcastEventsQueue.toList)
+
+    broadcastEventsQueue.clear()
+
+    updatedGameState
+  }
 
   override def dispose(): Unit = {
     super.dispose()

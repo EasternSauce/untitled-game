@@ -12,10 +12,13 @@ import com.easternsauce.game.gameview.GameView
 import com.esotericsoftware.kryonet.Listener
 
 import scala.collection.mutable
+import scala.collection.mutable.ListBuffer
 
 abstract class CoreGame extends ScreenSwitchableGame {
 
   protected val connectivity: GameConnectivity
+
+  protected var broadcastEventsQueue: ListBuffer[GameStateEvent] = _
 
   override def create(): Unit = {
     init()
@@ -25,6 +28,8 @@ abstract class CoreGame extends ScreenSwitchableGame {
     pauseMenuScreen.init()
 
     clientData = ClientData()
+
+    broadcastEventsQueue = ListBuffer()
 
     setScreen(startMenuScreen)
   }
@@ -69,11 +74,11 @@ abstract class CoreGame extends ScreenSwitchableGame {
   }
 
   def playersToCreate: List[String] = {
-    gameplay.playersToCreate
+    gameplay.playersToCreate.toList
   }
 
   def clearPlayersToCreate(): Unit = {
-    gameplay.playersToCreate = List()
+    gameplay.playersToCreate.clear()
   }
 
   def tiledMaps: mutable.Map[AreaId, GameTiledMap] = {
@@ -88,9 +93,15 @@ abstract class CoreGame extends ScreenSwitchableGame {
     gameplay.setKeyHeld(key, value)
   }
 
-  def applyEvent(event: GameStateEvent): Unit = gameplay.applyEvent(event)
+  def applyBroadcastedEvents(gameState: GameState): GameState
+
+  def sendEvent(event: GameStateEvent): Unit // TODO: does it duplicate applyEvent?
+
+  def applyEvents(events: List[GameStateEvent]): Unit = gameplay.applyEvents(events)
 
   override def schedulePlayerToCreate(clientId: String): Unit = {
     gameplay.schedulePlayerToCreate(clientId)
   }
+
+
 }

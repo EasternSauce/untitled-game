@@ -22,7 +22,7 @@ case class GameTiledMap(areaId: AreaId) {
 
     val iterator = tiledMap.getLayers.iterator()
 
-    var layerNames: List[String] = List()
+    var layerNames: List[String] = List() // TODO ????
 
     while (iterator.hasNext) {
       layerNames = layerNames.appended(iterator.next().getName)

@@ -12,8 +12,8 @@ case class ClientListener(game: CoreGameClient) extends Listener {
     obj match {
       case GameStateHolder(gameState) =>
         game.overrideGameState(gameState)
-      case ActionsPerformCommand(actions) =>
-        actions.foreach(game.applyEvent)
+      case ActionsPerformCommand(events) =>
+        game.applyEvents(events)
       case RegisterClientResponseCommand(clientId) =>
         game.clientData.clientId = Some(clientId)
         game.clientRegistered = true

@@ -7,13 +7,14 @@ import com.easternsauce.game.gamestate.id.{AreaId, GameEntityId}
 import com.easternsauce.game.math.Vector2f
 
 import scala.collection.mutable
+import scala.collection.mutable.ListBuffer
 
 case class GamePhysics() {
   private var _areaWorlds: mutable.Map[AreaId, AreaWorld] = _
   private var creatureBodyPhysics: CreatureBodyPhysics = _
   private var staticBodyPhysics: StaticBodyPhysics = _
-  private var eventQueue: List[PhysicsEvent] = _
-  private var collisionQueue: List[GameStateEvent] = _
+  private var eventQueue: ListBuffer[PhysicsEvent] = _
+  private var collisionQueue: ListBuffer[GameStateEvent] = _
 
   def init(
       tiledMaps: mutable.Map[AreaId, GameTiledMap]
@@ -29,14 +30,14 @@ case class GamePhysics() {
     staticBodyPhysics = StaticBodyPhysics()
     staticBodyPhysics.init(tiledMaps, _areaWorlds)
 
-    eventQueue = List()
-    collisionQueue = List()
+    eventQueue = ListBuffer()
+    collisionQueue = ListBuffer()
   }
 
   def updateForArea(areaId: AreaId)(implicit game: CoreGame): Unit = {
     areaWorlds(areaId).update()
 
-    handleEvents(eventQueue, areaId)
+    handleEvents(eventQueue.toList, areaId)
 
     correctBodyPositions(areaId)
 
@@ -102,17 +103,17 @@ case class GamePhysics() {
   def pollCollisionEvents(): List[GameStateEvent] = {
     val collisionEvents = List().appendedAll(collisionQueue)
 
-    collisionQueue = List()
+    collisionQueue.clear()
 
     collisionEvents
   }
 
   def scheduleEvents(events: List[PhysicsEvent]): Unit = {
-    eventQueue = eventQueue.appendedAll(events)
+    eventQueue.addAll(events)
   }
 
   def scheduleCollisions(collisions: List[GameStateEvent]): Unit = {
-    collisionQueue = collisionQueue.appendedAll(collisions)
+    collisionQueue.addAll(collisions)
   }
 
   def areaWorlds: mutable.Map[AreaId, AreaWorld] = _areaWorlds

@@ -1,6 +1,8 @@
 package com.easternsauce.game.server
 
 import com.easternsauce.game.connectivity.GameServerConnectivity
+import com.easternsauce.game.gamestate.GameState
+import com.easternsauce.game.gamestate.event.GameStateEvent
 import com.easternsauce.game.screen.gameplay.server.ServerGameplayScreen
 import com.easternsauce.game.screen.pausemenu.server.ServerPauseMenuScreen
 import com.easternsauce.game.screen.startmenu.server.ServerStartMenuScreen
@@ -69,10 +71,21 @@ case class CoreGameServer() extends CoreGame {
     gameStateBroadcaster.start(server)
   }
 
+  override def sendEvent(event: GameStateEvent): Unit = {}
+
+  override def applyBroadcastedEvents(gameState: GameState): GameState = {
+    val updatedGameState = gameState.applyEvents(broadcastEventsQueue.toList)
+
+    broadcastEventsQueue.clear()
+
+    updatedGameState
+  }
+
   override def dispose(): Unit = {
     super.dispose()
     server.stop()
 
     gameStateBroadcaster.stop()
   }
+
 }

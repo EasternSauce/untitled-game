@@ -3,6 +3,7 @@ package com.easternsauce.game.gamestate
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.Input.Buttons
 import com.easternsauce.game.gamestate.creature.{Creature, CreatureFactory}
+import com.easternsauce.game.gamestate.event.GameStateEvent
 import com.easternsauce.game.gamestate.id.{AreaId, GameEntityId}
 import com.easternsauce.game.math.{MousePosTransformations, Vector2f}
 import com.easternsauce.game.{Constants, CoreGame}
@@ -15,10 +16,16 @@ case class GameState(
   def updateForArea(areaId: AreaId, delta: Float)(implicit
       game: CoreGame
   ): GameState = {
-    this
+    val updatedGameState = this
       .updateCreaturesForArea(areaId, delta)
       .handleCreatePlayers() // TODO: server only?
       .handleClientInput()
+
+    game.applyBroadcastedEvents(updatedGameState)
+  }
+
+  def applyEvents(events: List[GameStateEvent]) = {
+    events.foldLeft(this){case (gameState, event) => event.applyToGameState(gameState)}
   }
 
   private def updateCreaturesForArea(

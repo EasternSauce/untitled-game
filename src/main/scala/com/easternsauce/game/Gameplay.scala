@@ -15,7 +15,7 @@ case class Gameplay()(implicit game: CoreGame) {
   var view: GameView = _
   var physics: GamePhysics = _
   var gameStateHolder: GameStateHolder = _
-  var playersToCreate: List[String] = _
+  var playersToCreate: mutable.ListBuffer[String] = _
   var keysHeld: mutable.Map[Int, Boolean] = _
 
   def init(): Unit = {
@@ -32,7 +32,7 @@ case class Gameplay()(implicit game: CoreGame) {
     physics = GamePhysics()
     physics.init(tiledMaps)
 
-    playersToCreate = List()
+    playersToCreate = mutable.ListBuffer()
 
     keysHeld = mutable.Map()
   }
@@ -44,12 +44,12 @@ case class Gameplay()(implicit game: CoreGame) {
     view.renderForArea(areaId, delta)
   }
 
-  def applyEvent(event: GameStateEvent): Unit = {
-    gameStateHolder.gameState = event.applyToGameState(gameState)
+  def applyEvents(events: List[GameStateEvent]): Unit = {
+    gameStateHolder.gameState.applyEvents(events)
   }
 
   def schedulePlayerToCreate(clientId: String): Unit = {
-    playersToCreate = playersToCreate.appended(clientId)
+    playersToCreate.addOne(clientId)
   }
 
   def keyHeld(key: Int): Boolean = keysHeld(key)
