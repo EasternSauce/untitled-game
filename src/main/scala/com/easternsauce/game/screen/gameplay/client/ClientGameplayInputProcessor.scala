@@ -10,7 +10,7 @@ case class ClientGameplayInputProcessor()(implicit game: CoreGame)
   override def keyDown(keycode: Int): Boolean = {
     keycode match {
       case keycode =>
-        game.setKeyHeld(keycode, value = true)
+        game.gameplay.setKeyHeld(keycode, value = true)
     }
 
     keycode match {
@@ -24,7 +24,7 @@ case class ClientGameplayInputProcessor()(implicit game: CoreGame)
   override def keyUp(keycode: Int): Boolean = {
     keycode match {
       case keycode =>
-        game.setKeyHeld(keycode, value = false)
+        game.gameplay.setKeyHeld(keycode, value = false)
     }
     false
   }
@@ -41,7 +41,7 @@ case class ClientGameplayInputProcessor()(implicit game: CoreGame)
   ): Boolean = {
     button match {
       case button =>
-        game.setKeyHeld(button, value = true)
+        game.gameplay.setKeyHeld(button, value = true)
     }
     true
   }
@@ -54,7 +54,7 @@ case class ClientGameplayInputProcessor()(implicit game: CoreGame)
   ): Boolean = {
     button match {
       case button =>
-        game.setKeyHeld(button, value = false)
+        game.gameplay.setKeyHeld(button, value = false)
     }
     true
   }

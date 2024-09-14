@@ -40,7 +40,7 @@ case class GameState(
         ) {
           creature.update(
             delta,
-            game.physics.creatureBodyPositions.get(creature.id)
+            game.gameplay.physics.creatureBodyPositions.get(creature.id)
           )
         } else {
           creature
@@ -49,9 +49,9 @@ case class GameState(
   }
 
   private def handleCreatePlayers()(implicit game: CoreGame): GameState = {
-    val playersToCreate = game.playersToCreate
+    val playersToCreate = game.gameplay.playersToCreate
 
-    game.clearPlayersToCreate()
+    game.gameplay.clearPlayersToCreate()
 
     playersToCreate.foldLeft(this) { case (gameState, name) =>
       val creatureId = GameEntityId[Creature](name)

@@ -102,7 +102,7 @@ case class CoreGameServer() extends CoreGame {
     updatedGameState
   }
 
-  override protected def gameplay: Gameplay = _gameplay
+  override def gameplay: Gameplay = _gameplay
   override protected def connectivity: GameServerConnectivity = _connectivity
   private def server: Server = connectivity.endPoint
 

@@ -23,7 +23,7 @@ case class ClientPauseMenuStageBuilder() {
           game.setGameplayScreen()
         }
       },
-      skin = game.view.skin
+      skin = game.gameplay.view.skin
     )
 
     val exitButton = createButton(
@@ -37,7 +37,7 @@ case class ClientPauseMenuStageBuilder() {
           game.close()
         }
       },
-      skin = game.view.skin
+      skin = game.gameplay.view.skin
     )
 
     stage.addActor(resumeButton)

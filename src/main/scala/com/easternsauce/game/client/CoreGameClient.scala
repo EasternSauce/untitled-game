@@ -56,7 +56,7 @@ case class CoreGameClient() extends CoreGame {
   }
 
   override protected def handleInputs(): Unit = {
-    if (keyHeld(Buttons.LEFT)) {
+    if (gameplay.keyHeld(Buttons.LEFT)) {
       val clientCreature = clientCreatureId
         .filter(gameState.creatures.contains)
         .map(gameState.creatures(_))
@@ -106,7 +106,7 @@ case class CoreGameClient() extends CoreGame {
     clientRegistered = true
   }
 
-  override protected def gameplay: Gameplay = _gameplay
+  override def gameplay: Gameplay = _gameplay
   override protected def connectivity: GameClientConnectivity = _connectivity
   def client: Client = _connectivity.endPoint
 

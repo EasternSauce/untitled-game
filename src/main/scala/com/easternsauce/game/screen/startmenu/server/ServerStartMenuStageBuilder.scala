@@ -23,7 +23,7 @@ case class ServerStartMenuStageBuilder() {
           game.setGameplayScreen()
         }
       },
-      skin = game.view.skin
+      skin = game.gameplay.view.skin
     )
 
     val exitButton = createButton(
@@ -37,7 +37,7 @@ case class ServerStartMenuStageBuilder() {
           game.close()
         }
       },
-      skin = game.view.skin
+      skin = game.gameplay.view.skin
     )
 
     stage.addActor(startButton)

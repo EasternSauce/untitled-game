@@ -31,7 +31,7 @@ case class ServerGameplayScreen(game: CoreGameServer) extends GameScreen {
   }
 
   override def resize(width: Int, height: Int): Unit = {
-    game.view.resize(width, height)
+    game.gameplay.view.resize(width, height)
   }
 
   override def pause(): Unit = {}

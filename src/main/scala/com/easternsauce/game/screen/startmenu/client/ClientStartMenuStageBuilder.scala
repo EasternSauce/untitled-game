@@ -18,7 +18,7 @@ case class ClientStartMenuStageBuilder() {
       width = 200,
       height = 50,
       text = "name",
-      skin = game.view.skin
+      skin = game.gameplay.view.skin
     )
 
     val hostField = createTextField(
@@ -27,7 +27,7 @@ case class ClientStartMenuStageBuilder() {
       width = 125,
       height = 50,
       text = "host",
-      skin = game.view.skin
+      skin = game.gameplay.view.skin
     )
 
     val portField = createTextField(
@@ -36,7 +36,7 @@ case class ClientStartMenuStageBuilder() {
       width = 75,
       height = 50,
       text = "port",
-      skin = game.view.skin
+      skin = game.gameplay.view.skin
     )
 
     val joinButton = createButton(
@@ -57,7 +57,7 @@ case class ClientStartMenuStageBuilder() {
           }
         }
       },
-      skin = game.view.skin
+      skin = game.gameplay.view.skin
     )
 
     val exitButton = createButton(
@@ -71,7 +71,7 @@ case class ClientStartMenuStageBuilder() {
           game.close()
         }
       },
-      skin = game.view.skin
+      skin = game.gameplay.view.skin
     )
 
     stage.addActor(nameField)
