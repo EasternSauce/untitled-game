@@ -1,6 +1,6 @@
 package com.easternsauce.game
 
-import com.badlogic.gdx.Gdx
+import com.badlogic.gdx.{Game, Gdx}
 import com.easternsauce.game.connectivity.GameConnectivity
 import com.easternsauce.game.gamemap.GameTiledMap
 import com.easternsauce.game.gamephysics.GamePhysics
@@ -8,15 +8,23 @@ import com.easternsauce.game.gamestate.GameState
 import com.easternsauce.game.gamestate.creature.Creature
 import com.easternsauce.game.gamestate.event.GameStateEvent
 import com.easternsauce.game.gamestate.id.{AreaId, GameEntityId}
-import com.easternsauce.game.gameview.GameView
+import com.easternsauce.game.gameview.{GameScreen, GameView}
 import com.esotericsoftware.kryonet.Listener
 
 import scala.collection.mutable
 import scala.collection.mutable.ListBuffer
 
-abstract class CoreGame extends ScreenSwitchableGame {
+abstract class CoreGame extends Game {
+
+  protected var gameplayScreen: GameScreen = _
+  protected var startMenuScreen: GameScreen = _
+  protected var pauseMenuScreen: GameScreen = _
+
+  var clientData: ClientData = _
 
   protected var broadcastEventsQueue: ListBuffer[GameStateEvent] = _
+
+  protected def init(): Unit
 
   override def create(): Unit = {
     init()
@@ -102,7 +110,29 @@ abstract class CoreGame extends ScreenSwitchableGame {
   def applyEventsToGameState(events: List[GameStateEvent]): Unit =
     gameplay.applyEventsToGameState(events)
 
-  override def schedulePlayerToCreate(clientId: String): Unit = {
+  def setClientData(clientId: String, host: String, port: String): Unit = {
+    if (clientId.nonEmpty) {
+      clientData.clientId = Some(clientId)
+    }
+    if (host.nonEmpty) {
+      clientData.host = Some(host)
+    }
+    if (port.nonEmpty) {
+      clientData.port = Some(port)
+    }
+
+    clientData.clientId.foreach(schedulePlayerToCreate)
+  }
+
+  def setPauseScreen(): Unit = {
+    setScreen(pauseMenuScreen)
+  }
+
+  def setGameplayScreen(): Unit = {
+    setScreen(gameplayScreen)
+  }
+
+  def schedulePlayerToCreate(clientId: String): Unit = {
     gameplay.schedulePlayerToCreate(clientId)
   }
 
