@@ -16,8 +16,6 @@ import scala.collection.mutable.ListBuffer
 
 abstract class CoreGame extends ScreenSwitchableGame {
 
-  protected val connectivity: GameConnectivity
-
   protected var broadcastEventsQueue: ListBuffer[GameStateEvent] = _
 
   override def create(): Unit = {
@@ -34,6 +32,7 @@ abstract class CoreGame extends ScreenSwitchableGame {
     setScreen(startMenuScreen)
   }
 
+  protected def connectivity: GameConnectivity
   protected def gameplay: Gameplay
 
   def update(delta: Float): Unit

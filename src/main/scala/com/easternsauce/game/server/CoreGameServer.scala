@@ -13,25 +13,15 @@ import com.esotericsoftware.kryonet.Server
 case class CoreGameServer() extends CoreGame {
   implicit val game: CoreGame = this
 
-  override protected val connectivity: GameServerConnectivity =
-    GameServerConnectivity(this)
-
-  private var _gameplay: Gameplay = _
-
   private val gameStateBroadcaster: GameStateBroadcaster = GameStateBroadcaster(
     this
   )
 
+  private var _gameplay: Gameplay = _
+  private var _connectivity: GameServerConnectivity = _
+
   private var clientCounter = 0
-
-  private def server: Server = connectivity.endPoint
-
-  def runServer(): Unit = {
-    server.start()
-    server.bind(54555, 54777)
-
-    server.addListener(listener)
-  }
+  private var _clientConnectionIds: Map[String, Int] = Map()
 
   override protected def init(): Unit = {
     gameplayScreen = ServerGameplayScreen(this)
@@ -40,36 +30,8 @@ case class CoreGameServer() extends CoreGame {
 
     _gameplay = Gameplay()
     _gameplay.init()
-  }
 
-  def generateNewClientId(): String = {
-    val id = "client" + clientCounter
-
-    clientCounter = clientCounter + 1
-
-    id
-  }
-
-  override protected def gameplay: Gameplay = _gameplay
-
-  private var _clientConnectionIds: Map[String, Int] = Map()
-
-  def registerClient(clientId: String, connectionId: Int): Unit = {
-    _clientConnectionIds = _clientConnectionIds.updated(clientId, connectionId)
-
-    gameplay.schedulePlayerToCreate(clientId)
-  }
-
-  def unregisterClient(clientId: String, connectionId: Int): Unit = {
-    _clientConnectionIds = _clientConnectionIds.removed(clientId)
-  }
-
-  def clientConnectionIds: Map[String, Int] = {
-    Map.from(_clientConnectionIds)
-  }
-
-  def startBroadcaster(): Unit = {
-    gameStateBroadcaster.start(server)
+    _connectivity = GameServerConnectivity(this)
   }
 
   override def update(delta: Float): Unit = {
@@ -90,6 +52,41 @@ case class CoreGameServer() extends CoreGame {
     broadcastEventsQueue.clear()
   }
 
+  def runServer(): Unit = {
+    server.start()
+    server.bind(54555, 54777)
+
+    server.addListener(listener)
+  }
+
+  def generateNewClientId(): String = {
+    val id = "client" + clientCounter
+
+    clientCounter = clientCounter + 1
+
+    id
+  }
+
+  def registerClient(clientId: String, connectionId: Int): Unit = {
+    _clientConnectionIds = _clientConnectionIds.updated(clientId, connectionId)
+
+    gameplay.schedulePlayerToCreate(clientId)
+  }
+
+  def unregisterClient(clientId: String, connectionId: Int): Unit = {
+    _clientConnectionIds = _clientConnectionIds.removed(clientId)
+  }
+
+  def clientConnectionIds: Map[String, Int] = {
+    Map.from(_clientConnectionIds)
+  }
+
+  def startBroadcaster(): Unit = {
+    gameStateBroadcaster.start(server)
+  }
+
+  override protected def handleInputs(): Unit = {}
+
   override def sendEvent(event: GameStateEvent): Unit = {}
 
   override def processBroadcastEventsForArea(
@@ -101,7 +98,9 @@ case class CoreGameServer() extends CoreGame {
     updatedGameState
   }
 
-  override protected def handleInputs(): Unit = {}
+  override protected def gameplay: Gameplay = _gameplay
+  override protected def connectivity: GameServerConnectivity = _connectivity
+  private def server: Server = connectivity.endPoint
 
   override def dispose(): Unit = {
     super.dispose()
@@ -109,5 +108,4 @@ case class CoreGameServer() extends CoreGame {
 
     gameStateBroadcaster.stop()
   }
-
 }

@@ -20,9 +20,7 @@ case class CoreGameClient() extends CoreGame {
   var clientRegistered = false
 
   private var _gameplay: Gameplay = _
-
-  override protected val connectivity: GameClientConnectivity =
-    GameClientConnectivity(this)
+  private var _connectivity: GameClientConnectivity = _
 
   override protected def init(): Unit = {
     gameplayScreen = ClientGameplayScreen(this)
@@ -31,18 +29,9 @@ case class CoreGameClient() extends CoreGame {
 
     _gameplay = Gameplay()
     _gameplay.init()
+
+    _connectivity = GameClientConnectivity(this)
   }
-
-  def overrideGameState(gameState: GameState): Unit =
-    gameplay.gameStateHolder.gameState = gameState
-
-  override def sendEvent(event: GameStateEvent): Unit = {
-    broadcastEventsQueue.addOne(event)
-  }
-
-  def client: Client = connectivity.endPoint
-
-  override protected def gameplay: Gameplay = _gameplay
 
   override def update(delta: Float): Unit = {
     val areaId = clientCreatureAreaId.getOrElse(Constants.DefaultAreaId)
@@ -62,22 +51,8 @@ case class CoreGameClient() extends CoreGame {
     broadcastEventsQueue.clear()
   }
 
-  override def processBroadcastEventsForArea(
-      areaId: AreaId,
-      gameState: GameState
-  ): GameState = {
-    val events = broadcastEventsQueue.toList.filter {
-      case event: AreaGameStateEvent => event.areaId == areaId
-      case _                         => false
-    }
-
-    val updatedGameState = gameState.applyEvents(events)
-
-    if (events.nonEmpty) {
-      client.sendTCP(ActionsPerformCommand(events))
-    }
-
-    updatedGameState
+  def overrideGameState(gameState: GameState): Unit = {
+    gameplay.gameStateHolder.gameState = gameState
   }
 
   override protected def handleInputs(): Unit = {
@@ -102,8 +77,34 @@ case class CoreGameClient() extends CoreGame {
         )
       }
     }
-
   }
+
+  override def sendEvent(event: GameStateEvent): Unit = {
+    broadcastEventsQueue.addOne(event)
+  }
+
+  override def processBroadcastEventsForArea(
+      areaId: AreaId,
+      gameState: GameState
+  ): GameState = {
+    val events = broadcastEventsQueue.toList.filter {
+      case event: AreaGameStateEvent => event.areaId == areaId
+      case _                         => false
+    }
+
+    val updatedGameState = gameState.applyEvents(events)
+
+    if (events.nonEmpty) {
+      client.sendTCP(ActionsPerformCommand(events))
+    }
+
+    updatedGameState
+  }
+
+  override protected def gameplay: Gameplay = _gameplay
+  override protected def connectivity: GameClientConnectivity = _connectivity
+  def client: Client = _connectivity.endPoint
+
   override def dispose(): Unit = {
     super.dispose()
     if (client != null) {
