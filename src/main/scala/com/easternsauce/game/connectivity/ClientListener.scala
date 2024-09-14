@@ -14,8 +14,7 @@ case class ClientListener(game: CoreGameClient) extends Listener {
       case ActionsPerformCommand(events) =>
         game.applyEventsToGameState(events)
       case RegisterClientResponseCommand(clientId) =>
-        game.clientData.clientId = Some(clientId)
-        game.clientRegistered = true
+        game.registerClient(clientId)
       case _: KeepAlive =>
     }
   }

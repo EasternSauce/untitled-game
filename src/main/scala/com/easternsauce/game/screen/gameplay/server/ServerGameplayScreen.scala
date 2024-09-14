@@ -19,11 +19,7 @@ case class ServerGameplayScreen(game: CoreGameServer) extends GameScreen {
     Gdx.input.setInputProcessor(inputProcessor)
 
     if (!serverRunning) {
-      new Thread(new Runnable() {
-        override def run(): Unit = {
-          game.runServer()
-        }
-      }).start()
+      game.runServer()
       serverRunning = true
 
       game.startBroadcaster()

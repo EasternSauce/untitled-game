@@ -17,7 +17,7 @@ import com.esotericsoftware.kryonet.Client
 case class CoreGameClient() extends CoreGame {
   implicit val game: CoreGame = this
 
-  var clientRegistered = false
+  private var clientRegistered = false
 
   private var _gameplay: Gameplay = _
   private var _connectivity: GameClientConnectivity = _
@@ -99,6 +99,11 @@ case class CoreGameClient() extends CoreGame {
     }
 
     updatedGameState
+  }
+
+  def registerClient(clientId: String): Unit = {
+    clientData.clientId = Some(clientId)
+    clientRegistered = true
   }
 
   override protected def gameplay: Gameplay = _gameplay

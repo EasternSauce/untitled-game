@@ -15,7 +15,7 @@ case class ClientGameplayInputProcessor()(implicit game: CoreGame)
 
     keycode match {
       case Keys.ESCAPE =>
-        game.pauseGame()
+        game.setPauseScreen()
         true
       case _ => false
     }

@@ -8,7 +8,7 @@ case class ClientPauseMenuInputProcessor()(implicit game: CoreGame)
     extends InputProcessor {
   override def keyDown(keycode: Int): Boolean = {
     keycode match {
-      case Keys.ESCAPE => game.resumeGame()
+      case Keys.ESCAPE => game.setGameplayScreen()
     }
     true
   }

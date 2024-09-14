@@ -20,7 +20,7 @@ case class ClientPauseMenuStageBuilder() {
       text = "Resume",
       listener = new ClickListener() {
         override def clicked(event: InputEvent, x: Float, y: Float): Unit = {
-          game.resumeGame()
+          game.setGameplayScreen()
         }
       },
       skin = game.view.skin

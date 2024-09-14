@@ -53,10 +53,14 @@ case class CoreGameServer() extends CoreGame {
   }
 
   def runServer(): Unit = {
-    server.start()
-    server.bind(54555, 54777)
+    new Thread(new Runnable() {
+      override def run(): Unit = {
+        server.start()
+        server.bind(54555, 54777)
 
-    server.addListener(listener)
+        server.addListener(listener)
+      }
+    }).start()
   }
 
   def generateNewClientId(): String = {

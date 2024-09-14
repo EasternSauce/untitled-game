@@ -20,7 +20,7 @@ case class ServerStartMenuStageBuilder() {
       text = "Start server",
       listener = new ClickListener() {
         override def clicked(event: InputEvent, x: Float, y: Float): Unit = {
-          game.startServer()
+          game.setGameplayScreen()
         }
       },
       skin = game.view.skin
