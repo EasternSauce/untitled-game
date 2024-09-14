@@ -41,11 +41,14 @@ case class Gameplay()(implicit game: CoreGame) {
     gameStateHolder.updateGameStateForArea(areaId, delta)
     physics.updateForArea(areaId)
     view.updateForArea(areaId, delta)
+  }
+
+  def renderForArea(areaId: AreaId, delta: Float): Unit = {
     view.renderForArea(areaId, delta)
   }
 
-  def applyEvents(events: List[GameStateEvent]): Unit = {
-    gameStateHolder.gameState.applyEvents(events)
+  def applyEventsToGameState(events: List[GameStateEvent]): Unit = {
+    gameStateHolder.gameState = gameStateHolder.gameState.applyEvents(events)
   }
 
   def schedulePlayerToCreate(clientId: String): Unit = {

@@ -1,5 +1,5 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="GameClientLauncher" type="Application" factoryName="Application">
+  <configuration default="false" name="GameClientLauncher" type="Application" factoryName="Application" singleton="false">
     <option name="MAIN_CLASS_NAME" value="com.easternsauce.game.client.GameClientLauncher" />
     <module name="untitled-game" />
     <option name="VM_PARAMETERS" value="--add-opens java.base/java.util=ALL-UNNAMED --add-opens java.base/java.lang.invoke=ALL-UNNAMED" />

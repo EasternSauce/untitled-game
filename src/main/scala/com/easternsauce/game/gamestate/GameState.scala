@@ -1,11 +1,9 @@
 package com.easternsauce.game.gamestate
 
-import com.badlogic.gdx.Gdx
-import com.badlogic.gdx.Input.Buttons
 import com.easternsauce.game.gamestate.creature.{Creature, CreatureFactory}
 import com.easternsauce.game.gamestate.event.GameStateEvent
 import com.easternsauce.game.gamestate.id.{AreaId, GameEntityId}
-import com.easternsauce.game.math.{MousePosTransformations, Vector2f}
+import com.easternsauce.game.math.Vector2f
 import com.easternsauce.game.{Constants, CoreGame}
 import com.softwaremill.quicklens.{ModifyPimp, QuicklensMapAt}
 
@@ -19,13 +17,14 @@ case class GameState(
     val updatedGameState = this
       .updateCreaturesForArea(areaId, delta)
       .handleCreatePlayers() // TODO: server only?
-      .handleClientInput()
 
-    game.applyBroadcastedEvents(updatedGameState)
+    game.processBroadcastEventsForArea(areaId, updatedGameState)
   }
 
-  def applyEvents(events: List[GameStateEvent]) = {
-    events.foldLeft(this){case (gameState, event) => event.applyToGameState(gameState)}
+  def applyEvents(events: List[GameStateEvent]): GameState = {
+    events.foldLeft(this) { case (gameState, event) =>
+      event.applyToGameState(gameState)
+    }
   }
 
   private def updateCreaturesForArea(
@@ -83,37 +82,6 @@ case class GameState(
           .modify(_.activeCreatureIds)
           .using(_ + creatureId)
       }
-    }
-  }
-
-  private def handleClientInput()(implicit game: CoreGame): GameState = {
-    val clientCreature = game.clientCreatureId
-      .filter(this.creatures.contains)
-      .map(this.creatures(_))
-
-    if (clientCreature.nonEmpty && game.keyHeld(Buttons.LEFT)) {
-      val creature = clientCreature.get
-      val vectorTowardsDestination =
-        creature.pos.vectorTowards(creature.params.destination)
-
-      val destination = MousePosTransformations.mouseWorldPos(
-        Gdx.input.getX.toFloat,
-        Gdx.input.getY.toFloat,
-        creature.pos
-      )
-
-      this
-        .modify(_.creatures.at(creature.id))
-        .using(
-          _.modify(_.params.destination)
-            .setTo(destination)
-        )
-        .modify(_.creatures.at(creature.id).params.facingVector)
-        .setToIf(vectorTowardsDestination.length > 0)(
-          vectorTowardsDestination
-        )
-    } else {
-      this
     }
   }
 }

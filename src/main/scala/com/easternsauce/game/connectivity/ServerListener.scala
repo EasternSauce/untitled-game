@@ -6,7 +6,7 @@ import com.easternsauce.game.gamestate.event.PlayerDisconnectEvent
 import com.easternsauce.game.gamestate.id.GameEntityId
 import com.easternsauce.game.server.CoreGameServer
 import com.esotericsoftware.kryonet.FrameworkMessage.KeepAlive
-import com.esotericsoftware.kryonet.{Connection, Listener}
+import com.esotericsoftware.kryonet.{Connection, Listener, Server}
 
 case class ServerListener(game: CoreGameServer) extends Listener {
   override def disconnected(connection: Connection): Unit = {
@@ -18,7 +18,7 @@ case class ServerListener(game: CoreGameServer) extends Listener {
       val playerDisconnectEvent = PlayerDisconnectEvent(
         GameEntityId[Creature](disconnectedCreatureId)
       )
-      game.applyEvents(List(playerDisconnectEvent))
+      game.applyEventsToGameState(List(playerDisconnectEvent))
 
       game.unregisterClient(disconnectedCreatureId, connection.getID)
     }
@@ -31,7 +31,11 @@ case class ServerListener(game: CoreGameServer) extends Listener {
         game.registerClient(clientId, connection.getID)
         connection.sendTCP(RegisterClientResponseCommand(clientId))
       case ActionsPerformCommand(events) =>
-        game.applyEvents(events)
+        game.applyEventsToGameState(events)
+
+        connection.getEndPoint
+          .asInstanceOf[Server]
+          .sendToAllExceptTCP(connection.getID, ActionsPerformCommand(events))
       case _: KeepAlive =>
     }
   }

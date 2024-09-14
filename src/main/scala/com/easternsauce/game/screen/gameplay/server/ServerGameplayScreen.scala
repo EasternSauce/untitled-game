@@ -1,14 +1,23 @@
 package com.easternsauce.game.screen.gameplay.server
 
+import com.badlogic.gdx.Gdx
 import com.easternsauce.game.gameview.GameScreen
 import com.easternsauce.game.server.CoreGameServer
 
 case class ServerGameplayScreen(game: CoreGameServer) extends GameScreen {
+  implicit private val _game: CoreGameServer = game
+
   private var serverRunning = false
 
-  override def init(): Unit = {}
+  private var inputProcessor: ServerGameplayInputProcessor = _
+
+  override def init(): Unit = {
+    inputProcessor = ServerGameplayInputProcessor()
+  }
 
   override def show(): Unit = {
+    Gdx.input.setInputProcessor(inputProcessor)
+
     if (!serverRunning) {
       new Thread(new Runnable() {
         override def run(): Unit = {

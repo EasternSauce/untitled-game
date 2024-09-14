@@ -57,14 +57,17 @@ case class ViewportManager() {
     hudViewport.updateSize(width, height)
   }
 
-  def createHudStage(hudBatch: GameSpriteBatch): Stage =
+  def createHudStage(hudBatch: GameSpriteBatch): Stage = {
     hudViewport.createStage(hudBatch)
+  }
 
-  def renderDebug(areaWorld: AreaWorld): Unit =
+  def renderDebug(areaWorld: AreaWorld): Unit = {
     areaWorld.renderDebug(b2DebugViewport)
+  }
 
-  def unprojectHudCamera(screenCoords: Vector3): Unit =
+  def unprojectHudCamera(screenCoords: Vector3): Unit = {
     hudViewport.unprojectCamera(screenCoords)
+  }
 
   def getWorldCameraPos: Vector2f = worldViewport.getCameraPos
 

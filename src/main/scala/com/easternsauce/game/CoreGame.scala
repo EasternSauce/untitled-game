@@ -36,11 +36,9 @@ abstract class CoreGame extends ScreenSwitchableGame {
 
   protected def gameplay: Gameplay
 
-  def update(delta: Float): Unit = {
-    val areaId = clientCreatureAreaId.getOrElse(Constants.DefaultAreaId)
+  def update(delta: Float): Unit
 
-    gameplay.updateForArea(areaId, delta)
-  }
+  protected def handleInputs(): Unit
 
   def close(): Unit = {
     Gdx.app.exit()
@@ -93,15 +91,20 @@ abstract class CoreGame extends ScreenSwitchableGame {
     gameplay.setKeyHeld(key, value)
   }
 
-  def applyBroadcastedEvents(gameState: GameState): GameState
+  def processBroadcastEventsForArea(
+      area: AreaId,
+      gameState: GameState
+  ): GameState
 
-  def sendEvent(event: GameStateEvent): Unit // TODO: does it duplicate applyEvent?
+  def sendEvent(
+      event: GameStateEvent
+  ): Unit // TODO: does it duplicate applyEvent?
 
-  def applyEvents(events: List[GameStateEvent]): Unit = gameplay.applyEvents(events)
+  def applyEventsToGameState(events: List[GameStateEvent]): Unit =
+    gameplay.applyEventsToGameState(events)
 
   override def schedulePlayerToCreate(clientId: String): Unit = {
     gameplay.schedulePlayerToCreate(clientId)
   }
-
 
 }

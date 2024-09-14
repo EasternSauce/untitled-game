@@ -2,14 +2,15 @@ package com.easternsauce.game.gamestate.event
 
 import com.easternsauce.game.gamestate.GameState
 import com.easternsauce.game.gamestate.creature.Creature
-import com.easternsauce.game.gamestate.id.GameEntityId
+import com.easternsauce.game.gamestate.id.{AreaId, GameEntityId}
 import com.easternsauce.game.math.Vector2f
 import com.softwaremill.quicklens.{ModifyPimp, QuicklensMapAt}
 
-class CreatureGoToEvent(
+case class CreatureGoToEvent(
     creatureId: GameEntityId[Creature],
+    areaId: AreaId,
     destination: Vector2f
-) extends GameStateEvent {
+) extends AreaGameStateEvent {
 
   override def applyToGameState(gameState: GameState): GameState = {
     if (

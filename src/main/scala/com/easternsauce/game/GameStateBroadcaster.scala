@@ -1,5 +1,6 @@
 package com.easternsauce.game
 
+import com.easternsauce.game.command.OverrideGameStateCommand
 import com.easternsauce.game.server.CoreGameServer
 import com.esotericsoftware.kryonet.{Connection, Server}
 
@@ -28,14 +29,14 @@ case class GameStateBroadcaster(game: CoreGameServer) {
           broadcastToConnection(connection)
         }
       } catch {
-        case e: InterruptedException =>
+        case _: InterruptedException =>
 
         // do nothing
       }
     }
   }
 
-  def broadcastToConnection(connection: Connection): Unit = {
-    connection.sendTCP(GameStateHolder(game.gameState))
+  private def broadcastToConnection(connection: Connection): Unit = {
+    connection.sendTCP(OverrideGameStateCommand(game.gameState))
   }
 }

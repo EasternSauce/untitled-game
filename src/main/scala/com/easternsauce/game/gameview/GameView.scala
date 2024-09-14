@@ -51,9 +51,7 @@ case class GameView() {
     )
 
     if (Constants.EnableDebug) {
-      game.clientCreatureAreaId.foreach(areaId =>
-        viewportManager.renderDebug(game.physics.areaWorlds(areaId))
-      )
+      viewportManager.renderDebug(game.physics.areaWorlds(areaId))
     }
   }
 
