@@ -2,7 +2,7 @@ package com.easternsauce.game.screen.pausemenu.client
 
 import com.badlogic.gdx.Input.Keys
 import com.badlogic.gdx.InputProcessor
-import com.easternsauce.game.CoreGame
+import com.easternsauce.game.core.CoreGame
 
 case class ClientPauseMenuInputProcessor()(implicit game: CoreGame)
     extends InputProcessor {

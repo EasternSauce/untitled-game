@@ -5,10 +5,11 @@ import com.badlogic.gdx.math.Vector3
 import com.badlogic.gdx.physics.box2d.{Box2DDebugRenderer, World}
 import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.utils.viewport.FitViewport
+import com.easternsauce.game.Constants
+import com.easternsauce.game.core.CoreGame
 import com.easternsauce.game.gamestate.creature.Creature
 import com.easternsauce.game.gamestate.id.GameEntityId
 import com.easternsauce.game.math.Vector2f
-import com.easternsauce.game.{Constants, CoreGame}
 
 case class GameViewport() {
 

@@ -1,5 +1,6 @@
-package com.easternsauce.game
+package com.easternsauce.game.core
 
+import com.easternsauce.game.Constants
 import com.easternsauce.game.gamemap.GameTiledMap
 import com.easternsauce.game.gamephysics.GamePhysics
 import com.easternsauce.game.gamestate.GameState
@@ -64,7 +65,8 @@ case class Gameplay()(implicit game: CoreGame) {
     _playersToCreate.toList
   }
 
-  def overrideGameState(gameState: GameState): Unit = gameStateHolder.gameState = gameState
+  def overrideGameState(gameState: GameState): Unit =
+    gameStateHolder.gameState = gameState
 
   def clearPlayersToCreate(): Unit = {
     _playersToCreate.clear()

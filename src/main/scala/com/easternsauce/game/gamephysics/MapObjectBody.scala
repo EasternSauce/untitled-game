@@ -2,7 +2,7 @@ package com.easternsauce.game.gamephysics
 
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType
 import com.badlogic.gdx.physics.box2d.{BodyDef, FixtureDef, PolygonShape}
-import com.easternsauce.game.CoreGame
+import com.easternsauce.game.core.CoreGame
 import com.easternsauce.game.gamestate.GameState
 import com.easternsauce.game.math.Vector2f
 

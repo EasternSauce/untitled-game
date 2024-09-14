@@ -2,8 +2,10 @@ package com.easternsauce.game.client
 
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.Input.Buttons
+import com.easternsauce.game.Constants
 import com.easternsauce.game.command.ActionsPerformCommand
 import com.easternsauce.game.connectivity.GameClientConnectivity
+import com.easternsauce.game.core.{CoreGame, Gameplay}
 import com.easternsauce.game.gamestate.GameState
 import com.easternsauce.game.gamestate.event.{AreaGameStateEvent, CreatureGoToEvent, GameStateEvent, OperationalGameStateEvent}
 import com.easternsauce.game.gamestate.id.AreaId
@@ -11,7 +13,6 @@ import com.easternsauce.game.math.MousePosTransformations
 import com.easternsauce.game.screen.gameplay.client.ClientGameplayScreen
 import com.easternsauce.game.screen.pausemenu.client.ClientPauseMenuScreen
 import com.easternsauce.game.screen.startmenu.client.ClientStartMenuScreen
-import com.easternsauce.game.{Constants, CoreGame, Gameplay}
 import com.esotericsoftware.kryonet.Client
 
 case class CoreGameClient() extends CoreGame {

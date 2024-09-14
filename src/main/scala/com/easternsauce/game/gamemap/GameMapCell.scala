@@ -2,6 +2,7 @@ package com.easternsauce.game.gamemap
 
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer.Cell
 import com.easternsauce.game._
+import com.easternsauce.game.core.CoreGame
 import com.easternsauce.game.gamestate.GameState
 import com.easternsauce.game.gamestate.id.AreaId
 import com.easternsauce.game.gameview.{GameSpriteBatch, Renderable}

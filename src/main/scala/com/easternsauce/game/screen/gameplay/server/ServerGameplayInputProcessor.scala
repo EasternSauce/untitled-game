@@ -1,7 +1,7 @@
 package com.easternsauce.game.screen.gameplay.server
 
 import com.badlogic.gdx.InputProcessor
-import com.easternsauce.game.CoreGame
+import com.easternsauce.game.core.CoreGame
 
 case class ServerGameplayInputProcessor()(implicit game: CoreGame)
     extends InputProcessor {

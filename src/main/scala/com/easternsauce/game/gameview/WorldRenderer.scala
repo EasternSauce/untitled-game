@@ -1,6 +1,6 @@
 package com.easternsauce.game.gameview
 
-import com.easternsauce.game.CoreGame
+import com.easternsauce.game.core.CoreGame
 import com.easternsauce.game.gamestate.id.AreaId
 import com.easternsauce.game.math.Vector2f
 

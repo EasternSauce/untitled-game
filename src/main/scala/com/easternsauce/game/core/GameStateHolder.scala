@@ -1,4 +1,4 @@
-package com.easternsauce.game
+package com.easternsauce.game.core
 
 import com.easternsauce.game.gamestate.GameState
 import com.easternsauce.game.gamestate.id.AreaId

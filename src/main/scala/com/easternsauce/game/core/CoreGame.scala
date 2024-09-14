@@ -1,4 +1,4 @@
-package com.easternsauce.game
+package com.easternsauce.game.core
 
 import com.badlogic.gdx.{Game, Gdx}
 import com.easternsauce.game.connectivity.GameConnectivity
@@ -37,16 +37,9 @@ abstract class CoreGame extends Game {
     setScreen(startMenuScreen)
   }
 
-  protected def connectivity: GameConnectivity
-  def gameplay: Gameplay
-
   def update(delta: Float): Unit
 
   protected def handleInputs(): Unit
-
-  def close(): Unit = {
-    Gdx.app.exit()
-  }
 
   def clientCreatureId: Option[GameEntityId[Creature]] = {
     clientData.clientId.map(GameEntityId[Creature])
@@ -102,6 +95,13 @@ abstract class CoreGame extends Game {
 
   def schedulePlayerToCreate(clientId: String): Unit = {
     gameplay.schedulePlayerToCreate(clientId)
+  }
+
+  protected def connectivity: GameConnectivity
+  def gameplay: Gameplay
+
+  def close(): Unit = {
+    Gdx.app.exit()
   }
 
 }

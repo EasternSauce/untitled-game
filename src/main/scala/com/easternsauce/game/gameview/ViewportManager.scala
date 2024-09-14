@@ -2,7 +2,7 @@ package com.easternsauce.game.gameview
 
 import com.badlogic.gdx.math.Vector3
 import com.badlogic.gdx.scenes.scene2d.Stage
-import com.easternsauce.game.CoreGame
+import com.easternsauce.game.core.CoreGame
 import com.easternsauce.game.gamephysics.AreaWorld
 import com.easternsauce.game.gamestate.creature.Creature
 import com.easternsauce.game.gamestate.id.GameEntityId

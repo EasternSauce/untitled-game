@@ -1,10 +1,11 @@
 package com.easternsauce.game.gamestate
 
+import com.easternsauce.game.Constants
+import com.easternsauce.game.core.CoreGame
 import com.easternsauce.game.gamestate.creature.{Creature, CreatureFactory}
 import com.easternsauce.game.gamestate.event.GameStateEvent
 import com.easternsauce.game.gamestate.id.{AreaId, GameEntityId}
 import com.easternsauce.game.math.Vector2f
-import com.easternsauce.game.{Constants, CoreGame}
 import com.softwaremill.quicklens.{ModifyPimp, QuicklensMapAt}
 
 case class GameState(

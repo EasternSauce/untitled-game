@@ -1,4 +1,4 @@
-package com.easternsauce.game
+package com.easternsauce.game.core
 
 case class ClientData(
     var clientId: Option[String] = None,

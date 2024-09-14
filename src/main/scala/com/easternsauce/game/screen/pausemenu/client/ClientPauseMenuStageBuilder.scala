@@ -5,7 +5,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.{Skin, TextButton}
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
 import com.badlogic.gdx.scenes.scene2d.{InputEvent, Stage}
 import com.badlogic.gdx.utils.viewport.ScreenViewport
-import com.easternsauce.game.CoreGame
+import com.easternsauce.game.core.CoreGame
 
 //noinspection SameParameterValue
 case class ClientPauseMenuStageBuilder() {

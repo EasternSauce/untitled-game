@@ -1,7 +1,7 @@
-package com.easternsauce.game
+package com.easternsauce.game.server
 
+import com.easternsauce.game.Constants
 import com.easternsauce.game.command.OverrideGameStateCommand
-import com.easternsauce.game.server.CoreGameServer
 import com.esotericsoftware.kryonet.{Connection, Server}
 
 case class GameStateBroadcaster(game: CoreGameServer) {
