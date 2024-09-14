@@ -52,7 +52,7 @@ case class CoreGameClient() extends CoreGame {
   }
 
   def overrideGameState(gameState: GameState): Unit = {
-    gameplay.gameStateHolder.gameState = gameState
+    gameplay.overrideGameState(gameState)
   }
 
   override protected def handleInputs(): Unit = {

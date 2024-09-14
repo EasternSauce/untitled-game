@@ -11,26 +11,26 @@ import scala.collection.mutable
 
 case class Gameplay()(implicit game: CoreGame) {
 
-  var tiledMaps: mutable.Map[AreaId, GameTiledMap] = _
-  var view: GameView = _
-  var physics: GamePhysics = _
-  var gameStateHolder: GameStateHolder = _
+  private var _tiledMaps: mutable.Map[AreaId, GameTiledMap] = _
+  private var _view: GameView = _
+  private var _physics: GamePhysics = _
+  private var gameStateHolder: GameStateHolder = _
   private var _playersToCreate: mutable.ListBuffer[String] = _
-  var keysHeld: mutable.Map[Int, Boolean] = _
+  private var keysHeld: mutable.Map[Int, Boolean] = _
 
   def init(): Unit = {
-    tiledMaps = mutable.Map() ++ Constants.MapAreaNames
+    _tiledMaps = mutable.Map() ++ Constants.MapAreaNames
       .map(name => (AreaId(name), GameTiledMap(AreaId(name))))
       .toMap
-    tiledMaps.values.foreach(_.init())
+    _tiledMaps.values.foreach(_.init())
 
     gameStateHolder = GameStateHolder(GameState())
 
-    view = GameView()
-    view.init()
+    _view = GameView()
+    _view.init()
 
-    physics = GamePhysics()
-    physics.init(tiledMaps)
+    _physics = GamePhysics()
+    _physics.init(_tiledMaps)
 
     _playersToCreate = mutable.ListBuffer()
 
@@ -39,12 +39,12 @@ case class Gameplay()(implicit game: CoreGame) {
 
   def updateForArea(areaId: AreaId, delta: Float): Unit = {
     gameStateHolder.updateGameStateForArea(areaId, delta)
-    physics.updateForArea(areaId)
-    view.updateForArea(areaId, delta)
+    _physics.updateForArea(areaId)
+    _view.updateForArea(areaId, delta)
   }
 
   def renderForArea(areaId: AreaId, delta: Float): Unit = {
-    view.renderForArea(areaId, delta)
+    _view.renderForArea(areaId, delta)
   }
 
   def applyEventsToGameState(events: List[GameStateEvent]): Unit = {
@@ -64,9 +64,17 @@ case class Gameplay()(implicit game: CoreGame) {
     _playersToCreate.toList
   }
 
+  def overrideGameState(gameState: GameState): Unit = gameStateHolder.gameState = gameState
+
   def clearPlayersToCreate(): Unit = {
     _playersToCreate.clear()
   }
 
   def gameState: GameState = gameStateHolder.gameState
+
+  def tiledMaps: Map[AreaId, GameTiledMap] = _tiledMaps.toMap
+
+  def view: GameView = _view
+
+  def physics: GamePhysics = _physics
 }
