@@ -50,10 +50,16 @@ case class CoreGameClient() extends CoreGame {
     gameplay.applyEventsToGameState(operationalEvents)
 
     broadcastEventsQueue.clear()
+
+    scheduledOverrideGameState.foreach { gameState =>
+      gameplay.overrideGameState(gameState)
+      clientCreatureAreaId.foreach(gameplay.physics.correctBodyPositions(_))
+      scheduledOverrideGameState = None
+    }
   }
 
-  def overrideGameState(gameState: GameState): Unit = {
-    gameplay.overrideGameState(gameState)
+  def scheduleOverrideGameState(gameState: GameState): Unit = {
+    scheduledOverrideGameState = Some(gameState)
   }
 
   override protected def handleInputs(): Unit = {

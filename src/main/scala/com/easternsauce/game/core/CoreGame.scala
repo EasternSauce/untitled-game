@@ -19,6 +19,8 @@ abstract class CoreGame extends Game {
 
   protected var broadcastEventsQueue: ListBuffer[GameStateEvent] = _
 
+  protected var scheduledOverrideGameState: Option[GameState] = _
+
   var clientData: ClientData = _
 
   protected def init(): Unit
@@ -33,6 +35,8 @@ abstract class CoreGame extends Game {
     clientData = ClientData()
 
     broadcastEventsQueue = ListBuffer()
+
+    scheduledOverrideGameState = None
 
     setScreen(startMenuScreen)
   }

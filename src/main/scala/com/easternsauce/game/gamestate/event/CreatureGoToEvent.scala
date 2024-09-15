@@ -27,9 +27,13 @@ case class CreatureGoToEvent(
         .using(
           _.modify(_.params.destination)
             .setTo(destination)
+            .modify(_.params.facingVector)
+            .setToIf(vectorTowardsDestination.length > 0)(
+              vectorTowardsDestination
+            )
+            .modify(_.params.destinationReached)
+            .setTo(false)
         )
-        .modify(_.creatures.at(creatureId).params.facingVector)
-        .setToIf(vectorTowardsDestination.length > 0)(vectorTowardsDestination)
     } else {
       gameState
     }

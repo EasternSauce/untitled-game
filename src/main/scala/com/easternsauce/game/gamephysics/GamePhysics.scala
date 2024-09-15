@@ -56,7 +56,7 @@ case class GamePhysics() {
     creatureBodyPhysics.synchronize(areaId)
   }
 
-  private def correctBodyPositions(
+  def correctBodyPositions(
       areaId: AreaId
   )(implicit game: CoreGame): Unit = {
     creatureBodyPhysics.correctBodyPositions(areaId)

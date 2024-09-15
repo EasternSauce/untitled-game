@@ -65,8 +65,9 @@ case class Gameplay()(implicit game: CoreGame) {
     _playersToCreate.toList
   }
 
-  def overrideGameState(gameState: GameState): Unit =
+  def overrideGameState(gameState: GameState): Unit = {
     gameStateHolder.gameState = gameState
+  }
 
   def clearPlayersToCreate(): Unit = {
     _playersToCreate.clear()

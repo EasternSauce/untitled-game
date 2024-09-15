@@ -1,5 +1,6 @@
 package com.easternsauce.game.gamestate.creature
 
+import com.easternsauce.game.core.CoreGame
 import com.easternsauce.game.gamestate.WorldDirection.WorldDirection
 import com.easternsauce.game.gamestate.id.{AreaId, GameEntityId}
 import com.easternsauce.game.gamestate.{GameEntity, WorldDirection}
@@ -25,7 +26,7 @@ case class Creature(params: CreatureParams) extends GameEntity {
   def update(
       delta: Float,
       newPos: Option[Vector2f]
-  ): Creature = {
+  )(implicit game: CoreGame): Creature = {
     this
       .updateTimers(delta)
       .updateMovement(newPos)
@@ -41,22 +42,27 @@ case class Creature(params: CreatureParams) extends GameEntity {
       .using(_.update(delta))
   }
 
-  private def updateMovement(newPos: Option[Vector2f]): Creature = {
+  private def updateMovement(
+      newPos: Option[Vector2f]
+  )(implicit game: CoreGame): Creature = {
     val vectorTowardsDest = pos.vectorTowards(params.destination)
 
-    val velocity = if (!alive) {
-      Vector2f(0, 0)
-    } else if (vectorTowardsDest.length > 0.4f) {
-      vectorTowardsDest.withLength(params.baseSpeed)
-    } else {
-      vectorTowardsDest.withLength(0f)
-    }
+    val movementStopCondition = vectorTowardsDest.length <= 0.4f
+
+    val velocity =
+      if (alive && !params.destinationReached && !movementStopCondition) {
+        vectorTowardsDest.withLength(params.baseSpeed)
+      } else {
+        Vector2f(0f, 0f)
+      }
 
     this
       .modify(_.params.pos)
       .setToIf(newPos.nonEmpty)(newPos.get)
       .modify(_.params.velocity)
       .setTo(velocity)
+      .modify(_.params.destinationReached)
+      .setToIf(movementStopCondition)(true)
   }
 
   def currentAreaId: AreaId = params.currentAreaId

@@ -10,7 +10,7 @@ case class ClientListener(game: CoreGameClient) extends Listener {
   override def received(connection: Connection, obj: Any): Unit = {
     obj match {
       case OverrideGameStateCommand(gameState) =>
-        game.overrideGameState(gameState)
+        game.scheduleOverrideGameState(gameState)
       case ActionsPerformCommand(events) =>
         game.applyEventsToGameState(events)
       case RegisterClientResponseCommand(clientId) =>

@@ -32,5 +32,6 @@ case class CreatureParams(
     animationTimer: SimpleTimer = SimpleTimer(running = true),
     attackAnimationTimer: SimpleTimer = SimpleTimer(running = false),
     deathAnimationTimer: SimpleTimer = SimpleTimer(running = false),
-    respawnDelayInProgress: Boolean = false
+    respawnDelayInProgress: Boolean = false,
+    destinationReached: Boolean = true
 ) {}
