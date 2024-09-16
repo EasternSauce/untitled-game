@@ -7,8 +7,9 @@ import com.easternsauce.game.command.ActionsPerformCommand
 import com.easternsauce.game.connectivity.GameClientConnectivity
 import com.easternsauce.game.core.{CoreGame, Gameplay}
 import com.easternsauce.game.gamestate.GameState
-import com.easternsauce.game.gamestate.event.{AreaGameStateEvent, CreatureGoToEvent, GameStateEvent, OperationalGameStateEvent}
+import com.easternsauce.game.gamestate.event.{CreatureGoToEvent, GameStateEvent}
 import com.easternsauce.game.gamestate.id.AreaId
+import com.easternsauce.game.gameview.GameScreen
 import com.easternsauce.game.math.MousePosTransformations
 import com.easternsauce.game.screen.gameplay.client.ClientGameplayScreen
 import com.easternsauce.game.screen.pausemenu.client.ClientPauseMenuScreen
@@ -23,10 +24,14 @@ case class CoreGameClient() extends CoreGame {
   private var _gameplay: Gameplay = _
   private var _connectivity: GameClientConnectivity = _
 
+  private var _gameplayScreen: GameScreen = _
+  private var _startMenuScreen: GameScreen = _
+  private var _pauseMenuScreen: GameScreen = _
+
   override protected def init(): Unit = {
-    gameplayScreen = ClientGameplayScreen(this)
-    startMenuScreen = ClientStartMenuScreen(this)
-    pauseMenuScreen = ClientPauseMenuScreen(this)
+    _gameplayScreen = ClientGameplayScreen(this)
+    _startMenuScreen = ClientStartMenuScreen(this)
+    _pauseMenuScreen = ClientPauseMenuScreen(this)
 
     _gameplay = Gameplay()
     _gameplay.init()
@@ -42,15 +47,14 @@ case class CoreGameClient() extends CoreGame {
     gameplay.updateForArea(areaId, delta)
     gameplay.renderForArea(areaId, delta)
 
-    val operationalEvents = broadcastEventsQueue.toList.filter {
-      case _: OperationalGameStateEvent => true
-      case _                            => false
-    }
+    gameplay.applyEventsToGameState(gameEventProcessor.queuedOperationalEvents)
 
-    gameplay.applyEventsToGameState(operationalEvents)
+    gameEventProcessor.clearEventQueues()
 
-    broadcastEventsQueue.clear()
+    processGameStateOverride()
+  }
 
+  private def processGameStateOverride(): Unit = {
     scheduledOverrideGameState.foreach { gameState =>
       gameplay.overrideGameState(gameState)
       clientCreatureAreaId.foreach(gameplay.physics.correctBodyPositions(_))
@@ -75,7 +79,7 @@ case class CoreGameClient() extends CoreGame {
           creature.pos
         )
 
-        sendEvent(
+        sendBroadcastEvent(
           CreatureGoToEvent(
             creature.id,
             creature.currentAreaId,
@@ -86,18 +90,15 @@ case class CoreGameClient() extends CoreGame {
     }
   }
 
-  override def sendEvent(event: GameStateEvent): Unit = {
-    broadcastEventsQueue.addOne(event)
+  override def sendBroadcastEvent(event: GameStateEvent): Unit = {
+    gameEventProcessor.sendBroadcastEvent(event)
   }
 
   override def processBroadcastEventsForArea(
       areaId: AreaId,
       gameState: GameState
   ): GameState = {
-    val events = broadcastEventsQueue.toList.filter {
-      case event: AreaGameStateEvent => event.areaId == areaId
-      case _                         => false
-    }
+    val events = gameEventProcessor.queuedAreaEvents(areaId)
 
     val updatedGameState = gameState.applyEvents(events)
 
@@ -116,6 +117,10 @@ case class CoreGameClient() extends CoreGame {
   override def gameplay: Gameplay = _gameplay
   override protected def connectivity: GameClientConnectivity = _connectivity
   def client: Client = _connectivity.endPoint
+
+  override protected def gameplayScreen: GameScreen = _gameplayScreen
+  override protected def startMenuScreen: GameScreen = _startMenuScreen
+  override protected def pauseMenuScreen: GameScreen = _pauseMenuScreen
 
   override def dispose(): Unit = {
     super.dispose()

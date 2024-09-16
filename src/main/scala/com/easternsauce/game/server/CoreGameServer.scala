@@ -4,8 +4,9 @@ import com.easternsauce.game.Constants
 import com.easternsauce.game.connectivity.GameServerConnectivity
 import com.easternsauce.game.core.{CoreGame, Gameplay}
 import com.easternsauce.game.gamestate.GameState
-import com.easternsauce.game.gamestate.event.{GameStateEvent, OperationalGameStateEvent}
+import com.easternsauce.game.gamestate.event.GameStateEvent
 import com.easternsauce.game.gamestate.id.AreaId
+import com.easternsauce.game.gameview.GameScreen
 import com.easternsauce.game.screen.gameplay.server.ServerGameplayScreen
 import com.easternsauce.game.screen.pausemenu.server.ServerPauseMenuScreen
 import com.easternsauce.game.screen.startmenu.server.ServerStartMenuScreen
@@ -24,10 +25,14 @@ case class CoreGameServer() extends CoreGame {
   private var clientCounter = 0
   private var _clientConnectionIds: Map[String, Int] = Map()
 
+  private var _gameplayScreen: GameScreen = _
+  private var _startMenuScreen: GameScreen = _
+  private var _pauseMenuScreen: GameScreen = _
+
   override protected def init(): Unit = {
-    gameplayScreen = ServerGameplayScreen(this)
-    startMenuScreen = ServerStartMenuScreen(this)
-    pauseMenuScreen = ServerPauseMenuScreen(this)
+    _gameplayScreen = ServerGameplayScreen(this)
+    _startMenuScreen = ServerStartMenuScreen(this)
+    _pauseMenuScreen = ServerPauseMenuScreen(this)
 
     _gameplay = Gameplay()
     _gameplay.init()
@@ -43,14 +48,9 @@ case class CoreGameServer() extends CoreGame {
     areaIds.foreach(gameplay.updateForArea(_, delta))
     gameplay.renderForArea(Constants.DefaultAreaId, delta)
 
-    val operationalEvents = broadcastEventsQueue.toList.filter {
-      case _: OperationalGameStateEvent => true
-      case _                            => false
-    }
+    gameplay.applyEventsToGameState(gameEventProcessor.queuedOperationalEvents)
 
-    gameplay.applyEventsToGameState(operationalEvents)
-
-    broadcastEventsQueue.clear()
+    gameEventProcessor.clearEventQueues()
   }
 
   def runServer(): Unit = {
@@ -92,13 +92,14 @@ case class CoreGameServer() extends CoreGame {
 
   override protected def handleInputs(): Unit = {}
 
-  override def sendEvent(event: GameStateEvent): Unit = {}
+  override def sendBroadcastEvent(event: GameStateEvent): Unit = {}
 
   override def processBroadcastEventsForArea(
       areaId: AreaId,
       gameState: GameState
   ): GameState = {
-    val updatedGameState = gameState.applyEvents(broadcastEventsQueue.toList)
+    val updatedGameState =
+      gameState.applyEvents(gameEventProcessor.queuedAreaEvents(areaId))
 
     updatedGameState
   }
@@ -106,6 +107,10 @@ case class CoreGameServer() extends CoreGame {
   override def gameplay: Gameplay = _gameplay
   override protected def connectivity: GameServerConnectivity = _connectivity
   private def server: Server = connectivity.endPoint
+
+  override protected def gameplayScreen: GameScreen = _gameplayScreen
+  override protected def startMenuScreen: GameScreen = _startMenuScreen
+  override protected def pauseMenuScreen: GameScreen = _pauseMenuScreen
 
   override def dispose(): Unit = {
     super.dispose()

@@ -9,15 +9,9 @@ import com.easternsauce.game.gamestate.id.{AreaId, GameEntityId}
 import com.easternsauce.game.gameview.GameScreen
 import com.esotericsoftware.kryonet.Listener
 
-import scala.collection.mutable.ListBuffer
-
 abstract class CoreGame extends Game {
 
-  protected var gameplayScreen: GameScreen = _
-  protected var startMenuScreen: GameScreen = _
-  protected var pauseMenuScreen: GameScreen = _
-
-  protected var broadcastEventsQueue: ListBuffer[GameStateEvent] = _
+  protected var gameEventProcessor: GameEventProcessor = _
 
   protected var scheduledOverrideGameState: Option[GameState] = _
 
@@ -34,7 +28,8 @@ abstract class CoreGame extends Game {
 
     clientData = ClientData()
 
-    broadcastEventsQueue = ListBuffer()
+    gameEventProcessor = GameEventProcessor()
+    gameEventProcessor.init()
 
     scheduledOverrideGameState = None
 
@@ -67,7 +62,7 @@ abstract class CoreGame extends Game {
       gameState: GameState
   ): GameState
 
-  def sendEvent(
+  def sendBroadcastEvent(
       event: GameStateEvent
   ): Unit // TODO: does it duplicate applyEvent?
 
@@ -103,6 +98,10 @@ abstract class CoreGame extends Game {
 
   protected def connectivity: GameConnectivity
   def gameplay: Gameplay
+
+  protected def gameplayScreen: GameScreen
+  protected def startMenuScreen: GameScreen
+  protected def pauseMenuScreen: GameScreen
 
   def close(): Unit = {
     Gdx.app.exit()
