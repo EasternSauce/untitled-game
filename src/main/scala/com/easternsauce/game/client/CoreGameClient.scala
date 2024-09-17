@@ -96,10 +96,6 @@ case class CoreGameClient() extends CoreGame {
     gameEventProcessor.sendBroadcastEvents(events)
   }
 
-  override def sendLocalEvents(events: List[GameStateEvent]): Unit = {
-    gameEventProcessor.sendLocalEvents(events)
-  }
-
   override def processBroadcastEventsForArea(
       areaId: AreaId,
       gameState: GameState

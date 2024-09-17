@@ -66,7 +66,9 @@ abstract class CoreGame extends Game {
       events: List[GameStateEvent]
   ): Unit // TODO: does it duplicate applyEvent?
 
-  def sendLocalEvents(events: List[GameStateEvent]): Unit
+  def sendLocalEvents(events: List[GameStateEvent]): Unit = {
+    gameEventProcessor.sendLocalEvents(events)
+  }
 
   def applyEventsToGameState(events: List[GameStateEvent]): Unit = {
     gameplay.applyEventsToGameState(events)

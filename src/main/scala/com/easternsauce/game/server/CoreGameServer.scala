@@ -1,6 +1,7 @@
 package com.easternsauce.game.server
 
 import com.easternsauce.game.Constants
+import com.easternsauce.game.command.{ActionsPerformCommand, GameCommand}
 import com.easternsauce.game.connectivity.GameServerConnectivity
 import com.easternsauce.game.core.{CoreGame, Gameplay}
 import com.easternsauce.game.gamestate.GameState
@@ -23,6 +24,7 @@ case class CoreGameServer() extends CoreGame {
   private var _connectivity: GameServerConnectivity = _
 
   private var clientCounter = 0
+
   private var _clientConnectionIds: Map[String, Int] = Map()
 
   private var _gameplayScreen: GameScreen = _
@@ -51,6 +53,17 @@ case class CoreGameServer() extends CoreGame {
     gameplay.applyEventsToGameState(gameEventProcessor.queuedOperationalEvents)
 
     gameEventProcessor.clearEventQueues()
+  }
+
+  def sendCommandToAllClientsExcept(
+      connectionId: Int,
+      command: GameCommand
+  ): Unit = {
+    server.sendToAllExceptTCP(connectionId, command)
+  }
+
+  def sendCommandToAllClients(command: ActionsPerformCommand): Unit = {
+    server.sendToAllTCP(command)
   }
 
   def runServer(): Unit = {
