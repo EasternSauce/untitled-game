@@ -53,7 +53,7 @@ case class Gameplay()(implicit game: CoreGame) {
   }
 
   def schedulePlayerToCreate(clientId: String): Unit = {
-    _playersToCreate.addOne(clientId)
+    _playersToCreate += clientId
   }
 
   def keyHeld(key: Int): Boolean = keysHeld.getOrElse(key, false)

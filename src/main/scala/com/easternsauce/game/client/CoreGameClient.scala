@@ -79,19 +79,25 @@ case class CoreGameClient() extends CoreGame {
           creature.pos
         )
 
-        sendBroadcastEvent(
-          CreatureGoToEvent(
-            creature.id,
-            creature.currentAreaId,
-            destination
+        sendBroadcastEvents(
+          List(
+            CreatureGoToEvent(
+              creature.id,
+              creature.currentAreaId,
+              destination
+            )
           )
         )
       }
     }
   }
 
-  override def sendBroadcastEvent(event: GameStateEvent): Unit = {
-    gameEventProcessor.sendBroadcastEvent(event)
+  override def sendBroadcastEvents(events: List[GameStateEvent]): Unit = {
+    gameEventProcessor.sendBroadcastEvents(events)
+  }
+
+  override def sendLocalEvents(events: List[GameStateEvent]): Unit = {
+    gameEventProcessor.sendLocalEvents(events)
   }
 
   override def processBroadcastEventsForArea(

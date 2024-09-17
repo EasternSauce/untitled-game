@@ -62,9 +62,11 @@ abstract class CoreGame extends Game {
       gameState: GameState
   ): GameState
 
-  def sendBroadcastEvent(
-      event: GameStateEvent
+  def sendBroadcastEvents(
+      events: List[GameStateEvent]
   ): Unit // TODO: does it duplicate applyEvent?
+
+  def sendLocalEvents(events: List[GameStateEvent]): Unit
 
   def applyEventsToGameState(events: List[GameStateEvent]): Unit = {
     gameplay.applyEventsToGameState(events)

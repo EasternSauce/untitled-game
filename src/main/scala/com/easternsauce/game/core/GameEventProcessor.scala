@@ -7,30 +7,37 @@ import scala.collection.mutable.ListBuffer
 
 case class GameEventProcessor() {
   protected var broadcastEventsQueue: ListBuffer[GameStateEvent] = _
+  protected var localEventsQueue: ListBuffer[GameStateEvent] = _
 
   def init(): Unit = {
     broadcastEventsQueue = ListBuffer()
+    localEventsQueue = ListBuffer()
   }
 
   def queuedOperationalEvents: List[GameStateEvent] =
-    broadcastEventsQueue.toList.filter {
+    (broadcastEventsQueue.toList ++ localEventsQueue.toList).filter {
       case _: OperationalGameStateEvent => true
       case _                            => false
     }
 
   def queuedAreaEvents(areaId: AreaId): List[GameStateEvent] = {
-    broadcastEventsQueue.toList.filter {
+    (broadcastEventsQueue.toList ++ localEventsQueue.toList).filter {
       case event: AreaGameStateEvent => event.areaId == areaId
       case _                         => false
     }
   }
 
-  def sendBroadcastEvent(event: GameStateEvent): Unit = {
-    broadcastEventsQueue.addOne(event)
+  def sendBroadcastEvents(events: List[GameStateEvent]): Unit = {
+    broadcastEventsQueue ++= events
+  }
+
+  def sendLocalEvents(events: List[GameStateEvent]): Unit = {
+    localEventsQueue ++= events
   }
 
   def clearEventQueues(): Unit = {
     broadcastEventsQueue.clear()
+    localEventsQueue.clear()
   }
 
 }

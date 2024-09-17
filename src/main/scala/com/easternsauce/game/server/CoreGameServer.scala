@@ -92,7 +92,9 @@ case class CoreGameServer() extends CoreGame {
 
   override protected def handleInputs(): Unit = {}
 
-  override def sendBroadcastEvent(event: GameStateEvent): Unit = {}
+  override def sendBroadcastEvents(events: List[GameStateEvent]): Unit = {}
+
+  override def sendLocalEvents(events: List[GameStateEvent]): Unit = {}
 
   override def processBroadcastEventsForArea(
       areaId: AreaId,
@@ -118,4 +120,5 @@ case class CoreGameServer() extends CoreGame {
 
     gameStateBroadcaster.stop()
   }
+
 }
