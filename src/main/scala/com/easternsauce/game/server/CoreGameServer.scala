@@ -107,8 +107,6 @@ case class CoreGameServer() extends CoreGame {
 
   override def sendBroadcastEvents(events: List[GameStateEvent]): Unit = {}
 
-  override def sendLocalEvents(events: List[GameStateEvent]): Unit = {}
-
   override def processBroadcastEventsForArea(
       areaId: AreaId,
       gameState: GameState

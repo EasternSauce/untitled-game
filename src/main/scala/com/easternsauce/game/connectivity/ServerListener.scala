@@ -18,8 +18,8 @@ case class ServerListener(game: CoreGameServer) extends Listener {
       val playerDisconnectEvent = PlayerDisconnectEvent(
         GameEntityId[Creature](disconnectedCreatureId)
       )
-      game.applyEventsToGameState(List(playerDisconnectEvent))
-      //game.sendLocalEvents(List(playerDisconnectEvent)) TODO: doesnt work! why?
+
+      game.sendLocalEvents(List(playerDisconnectEvent))
 
       game.sendCommandToAllClients(
         ActionsPerformCommand(List(playerDisconnectEvent))
