@@ -3,12 +3,11 @@ package com.easternsauce.game.client
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.Input.Buttons
 import com.easternsauce.game.Constants
-import com.easternsauce.game.command.ActionsPerformCommand
+import com.easternsauce.game.command.ActionsPerformRequestCommand
 import com.easternsauce.game.connectivity.GameClientConnectivity
 import com.easternsauce.game.core.{CoreGame, Gameplay}
 import com.easternsauce.game.gamestate.GameState
 import com.easternsauce.game.gamestate.event.{CreatureGoToEvent, GameStateEvent}
-import com.easternsauce.game.gamestate.id.AreaId
 import com.easternsauce.game.gameview.GameScreen
 import com.easternsauce.game.math.MousePosTransformations
 import com.easternsauce.game.screen.gameplay.client.ClientGameplayScreen
@@ -47,7 +46,18 @@ case class CoreGameClient() extends CoreGame {
     gameplay.updateForArea(areaId, delta)
     gameplay.renderForArea(areaId, delta)
 
-    gameplay.applyEventsToGameState(gameEventProcessor.queuedOperationalEvents)
+    val broadcastEvents =
+      gameEventProcessor.queuedAreaBroadcastEventsForArea(areaId)
+
+    if (broadcastEvents.nonEmpty) {
+      client.sendTCP(ActionsPerformRequestCommand(broadcastEvents))
+    }
+
+    gameplay.applyEventsToGameState(
+      gameEventProcessor.queuedAreaLocalEventsForArea(
+        areaId
+      ) ++ gameEventProcessor.queuedOperationalEvents
+    )
 
     gameEventProcessor.clearEventQueues()
 
@@ -94,21 +104,6 @@ case class CoreGameClient() extends CoreGame {
 
   override def sendBroadcastEvents(events: List[GameStateEvent]): Unit = {
     gameEventProcessor.sendBroadcastEvents(events)
-  }
-
-  override def processBroadcastEventsForArea(
-      areaId: AreaId,
-      gameState: GameState
-  ): GameState = {
-    val events = gameEventProcessor.queuedAreaEvents(areaId)
-
-    val updatedGameState = gameState.applyEvents(events)
-
-    if (events.nonEmpty) {
-      client.sendTCP(ActionsPerformCommand(events))
-    }
-
-    updatedGameState
   }
 
   def registerClient(clientId: String): Unit = {

@@ -1,6 +1,6 @@
 package com.easternsauce.game.connectivity
 
-import com.easternsauce.game.command.{ActionsPerformCommand, RegisterClientRequestCommand, RegisterClientResponseCommand}
+import com.easternsauce.game.command.{ActionsPerformCommand, ActionsPerformRequestCommand, RegisterClientRequestCommand, RegisterClientResponseCommand}
 import com.easternsauce.game.gamestate.creature.Creature
 import com.easternsauce.game.gamestate.event.PlayerDisconnectEvent
 import com.easternsauce.game.gamestate.id.GameEntityId
@@ -35,7 +35,7 @@ case class ServerListener(game: CoreGameServer) extends Listener {
         val clientId = maybeClientId.getOrElse(game.generateNewClientId())
         game.registerClient(clientId, connection.getID)
         connection.sendTCP(RegisterClientResponseCommand(clientId))
-      case ActionsPerformCommand(events) =>
+      case ActionsPerformRequestCommand(events) =>
         game.applyEventsToGameState(events)
 
         game.sendCommandToAllClientsExcept(

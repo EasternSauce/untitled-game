@@ -6,8 +6,8 @@ import com.easternsauce.game.gamestate.id.AreaId
 import scala.collection.mutable.ListBuffer
 
 case class GameEventProcessor() {
-  protected var broadcastEventsQueue: ListBuffer[GameStateEvent] = _
-  protected var localEventsQueue: ListBuffer[GameStateEvent] = _
+  private var broadcastEventsQueue: ListBuffer[GameStateEvent] = _
+  private var localEventsQueue: ListBuffer[GameStateEvent] = _
 
   def init(): Unit = {
     broadcastEventsQueue = ListBuffer()
@@ -20,10 +20,24 @@ case class GameEventProcessor() {
       case _                            => false
     }
 
-  def queuedAreaEvents(areaId: AreaId): List[GameStateEvent] = {
-    (broadcastEventsQueue.toList ++ localEventsQueue.toList).filter {
+  def queuedAreaBroadcastEventsForArea(areaId: AreaId): List[GameStateEvent] = {
+    broadcastEventsQueue.toList.filter {
       case event: AreaGameStateEvent => event.areaId == areaId
       case _                         => false
+    }
+  }
+
+  def queuedAreaLocalEventsForArea(areaId: AreaId): List[GameStateEvent] = {
+    localEventsQueue.toList.filter {
+      case event: AreaGameStateEvent => event.areaId == areaId
+      case _                         => false
+    }
+  }
+
+  def queuedAreaEvents: List[GameStateEvent] = {
+    (broadcastEventsQueue.toList ++ localEventsQueue.toList).filter {
+      case _: AreaGameStateEvent => true
+      case _                     => false
     }
   }
 

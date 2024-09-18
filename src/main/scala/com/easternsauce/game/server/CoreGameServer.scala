@@ -4,7 +4,6 @@ import com.easternsauce.game.Constants
 import com.easternsauce.game.command.{ActionsPerformCommand, GameCommand}
 import com.easternsauce.game.connectivity.GameServerConnectivity
 import com.easternsauce.game.core.{CoreGame, Gameplay}
-import com.easternsauce.game.gamestate.GameState
 import com.easternsauce.game.gamestate.event.GameStateEvent
 import com.easternsauce.game.gamestate.id.AreaId
 import com.easternsauce.game.gameview.GameScreen
@@ -50,7 +49,9 @@ case class CoreGameServer() extends CoreGame {
     areaIds.foreach(gameplay.updateForArea(_, delta))
     gameplay.renderForArea(Constants.DefaultAreaId, delta)
 
-    gameplay.applyEventsToGameState(gameEventProcessor.queuedOperationalEvents)
+    gameplay.applyEventsToGameState(
+      gameEventProcessor.queuedAreaEvents ++ gameEventProcessor.queuedOperationalEvents
+    )
 
     gameEventProcessor.clearEventQueues()
   }
@@ -106,16 +107,6 @@ case class CoreGameServer() extends CoreGame {
   override protected def handleInputs(): Unit = {}
 
   override def sendBroadcastEvents(events: List[GameStateEvent]): Unit = {}
-
-  override def processBroadcastEventsForArea(
-      areaId: AreaId,
-      gameState: GameState
-  ): GameState = {
-    val updatedGameState =
-      gameState.applyEvents(gameEventProcessor.queuedAreaEvents(areaId))
-
-    updatedGameState
-  }
 
   override def gameplay: Gameplay = _gameplay
   override protected def connectivity: GameServerConnectivity = _connectivity

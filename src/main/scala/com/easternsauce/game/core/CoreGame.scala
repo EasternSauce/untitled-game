@@ -57,11 +57,6 @@ abstract class CoreGame extends Game {
     connectivity.listener
   }
 
-  def processBroadcastEventsForArea(
-      area: AreaId,
-      gameState: GameState
-  ): GameState
-
   def sendBroadcastEvents(
       events: List[GameStateEvent]
   ): Unit // TODO: does it duplicate applyEvent?

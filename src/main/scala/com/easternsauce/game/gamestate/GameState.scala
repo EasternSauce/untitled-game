@@ -15,11 +15,10 @@ case class GameState(
   def updateForArea(areaId: AreaId, delta: Float)(implicit
       game: CoreGame
   ): GameState = {
-    val updatedGameState = this
+    this
       .updateCreaturesForArea(areaId, delta)
       .handleCreatePlayers() // TODO: server only?
 
-    game.processBroadcastEventsForArea(areaId, updatedGameState)
   }
 
   def applyEvents(events: List[GameStateEvent]): GameState = {
