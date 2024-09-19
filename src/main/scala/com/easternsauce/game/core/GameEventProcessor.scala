@@ -10,48 +10,54 @@ case class GameEventProcessor() {
   private var localEventsQueue: ListBuffer[GameStateEvent] = _
 
   def init(): Unit = {
-    broadcastEventsQueue = ListBuffer()
-    localEventsQueue = ListBuffer()
-  }
-
-  def queuedOperationalEvents: List[GameStateEvent] =
-    (broadcastEventsQueue.toList ++ localEventsQueue.toList).filter {
-      case _: OperationalGameStateEvent => true
-      case _                            => false
-    }
-
-  def queuedAreaBroadcastEventsForArea(areaId: AreaId): List[GameStateEvent] = {
-    broadcastEventsQueue.toList.filter {
-      case event: AreaGameStateEvent => event.areaId == areaId
-      case _                         => false
+    this.synchronized {
+      broadcastEventsQueue = ListBuffer()
+      localEventsQueue = ListBuffer()
     }
   }
 
-  def queuedAreaLocalEventsForArea(areaId: AreaId): List[GameStateEvent] = {
-    localEventsQueue.toList.filter {
-      case event: AreaGameStateEvent => event.areaId == areaId
-      case _                         => false
+  def broadcastEventsForArea(areaId: AreaId): List[GameStateEvent] = {
+    this.synchronized {
+      broadcastEventsQueue.toList.filter {
+        case event: AreaGameStateEvent => event.areaId == areaId
+        case _                         => false
+      }
     }
   }
 
-  def queuedAreaEvents: List[GameStateEvent] = {
-    (broadcastEventsQueue.toList ++ localEventsQueue.toList).filter {
-      case _: AreaGameStateEvent => true
-      case _                     => false
+  def areaEvents(areaId: AreaId): List[GameStateEvent] = {
+    this.synchronized {
+      localEventsQueue.toList.filter {
+        case event: AreaGameStateEvent    => event.areaId == areaId
+        case _: OperationalGameStateEvent => true
+        case _                            => false
+      }
+    }
+  }
+
+  def allEvents: List[GameStateEvent] = {
+    this.synchronized {
+      broadcastEventsQueue.toList ++ localEventsQueue.toList
     }
   }
 
   def sendBroadcastEvents(events: List[GameStateEvent]): Unit = {
-    broadcastEventsQueue ++= events
+    this.synchronized {
+      broadcastEventsQueue ++= events
+    }
   }
 
   def sendLocalEvents(events: List[GameStateEvent]): Unit = {
-    localEventsQueue ++= events
+    this.synchronized {
+      localEventsQueue ++= events
+    }
   }
 
   def clearEventQueues(): Unit = {
-    broadcastEventsQueue.clear()
-    localEventsQueue.clear()
+    this.synchronized {
+      broadcastEventsQueue.clear()
+      localEventsQueue.clear()
+    }
   }
 
 }

@@ -1,7 +1,7 @@
 package com.easternsauce.game.server
 
 import com.easternsauce.game.Constants
-import com.easternsauce.game.command.{ActionsPerformCommand, GameCommand}
+import com.easternsauce.game.command.ActionsPerformCommand
 import com.easternsauce.game.connectivity.GameServerConnectivity
 import com.easternsauce.game.core.{CoreGame, Gameplay}
 import com.easternsauce.game.gamestate.event.GameStateEvent
@@ -49,18 +49,13 @@ case class CoreGameServer() extends CoreGame {
     areaIds.foreach(gameplay.updateForArea(_, delta))
     gameplay.renderForArea(Constants.DefaultAreaId, delta)
 
-    gameplay.applyEventsToGameState(
-      gameEventProcessor.queuedAreaEvents ++ gameEventProcessor.queuedOperationalEvents
-    )
-
-    gameEventProcessor.clearEventQueues()
+    processEvents()
   }
 
-  def sendCommandToAllClientsExcept(
-      connectionId: Int,
-      command: GameCommand
-  ): Unit = {
-    server.sendToAllExceptTCP(connectionId, command)
+  private def processEvents(): Unit = {
+    gameplay.applyEventsToGameState(gameEventProcessor.allEvents)
+
+    gameEventProcessor.clearEventQueues()
   }
 
   def sendCommandToAllClients(command: ActionsPerformCommand): Unit = {

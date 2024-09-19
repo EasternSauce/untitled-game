@@ -36,10 +36,9 @@ case class ServerListener(game: CoreGameServer) extends Listener {
         game.registerClient(clientId, connection.getID)
         connection.sendTCP(RegisterClientResponseCommand(clientId))
       case ActionsPerformRequestCommand(events) =>
-        game.applyEventsToGameState(events)
+        game.sendLocalEvents(events)
 
-        game.sendCommandToAllClientsExcept(
-          connection.getID,
+        game.sendCommandToAllClients(
           ActionsPerformCommand(events)
         )
       case _: KeepAlive =>
