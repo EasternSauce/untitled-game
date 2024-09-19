@@ -53,9 +53,9 @@ case class CoreGameServer() extends CoreGame {
   }
 
   private def processEvents(): Unit = {
-    gameplay.applyEventsToGameState(gameEventProcessor.allEvents)
+    gameplay.applyEventsToGameState(eventQueueContainer.allEvents)
 
-    gameEventProcessor.clearEventQueues()
+    eventQueueContainer.clearEventQueues()
   }
 
   def sendCommandToAllClients(command: ActionsPerformCommand): Unit = {

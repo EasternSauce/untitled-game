@@ -15,7 +15,7 @@ case class Gameplay()(implicit game: CoreGame) {
   private var _tiledMaps: mutable.Map[AreaId, GameTiledMap] = _
   private var _view: GameView = _
   private var _physics: GamePhysics = _
-  private var gameStateHolder: GameStateHolder = _
+  private var gameStateHolder: GameStateContainer = _
   private var _playersToCreate: mutable.ListBuffer[String] = _
   private var keysHeld: mutable.Map[Int, Boolean] = _
 
@@ -25,7 +25,7 @@ case class Gameplay()(implicit game: CoreGame) {
       .toMap
     _tiledMaps.values.foreach(_.init())
 
-    gameStateHolder = GameStateHolder(GameState())
+    gameStateHolder = GameStateContainer(GameState())
 
     _view = GameView()
     _view.init()
@@ -39,7 +39,7 @@ case class Gameplay()(implicit game: CoreGame) {
   }
 
   def updateForArea(areaId: AreaId, delta: Float): Unit = {
-    gameStateHolder.updateGameStateForArea(areaId, delta)
+    gameStateHolder.updateForArea(areaId, delta)
     _physics.updateForArea(areaId)
     _view.updateForArea(areaId, delta)
   }
@@ -49,7 +49,7 @@ case class Gameplay()(implicit game: CoreGame) {
   }
 
   def applyEventsToGameState(events: List[GameStateEvent]): Unit = {
-    gameStateHolder.gameState = gameStateHolder.gameState.applyEvents(events)
+    gameStateHolder.applyEvents(events)
   }
 
   def schedulePlayerToCreate(clientId: String): Unit = {
@@ -66,7 +66,7 @@ case class Gameplay()(implicit game: CoreGame) {
   }
 
   def overrideGameState(gameState: GameState): Unit = {
-    gameStateHolder.gameState = gameState
+    gameStateHolder.forceOverride(gameState)
   }
 
   def clearPlayersToCreate(): Unit = {

@@ -54,17 +54,17 @@ case class CoreGameClient() extends CoreGame {
 
   private def processEvents(areaId: AreaId): Unit = {
     val broadcastEvents =
-      gameEventProcessor.broadcastEventsForArea(areaId)
+      eventQueueContainer.broadcastEventsForArea(areaId)
 
     if (broadcastEvents.nonEmpty) {
       client.sendTCP(ActionsPerformRequestCommand(broadcastEvents))
     }
 
     gameplay.applyEventsToGameState(
-      gameEventProcessor.areaEvents(areaId)
+      eventQueueContainer.areaEvents(areaId)
     )
 
-    gameEventProcessor.clearEventQueues()
+    eventQueueContainer.clearEventQueues()
   }
 
   private def processGameStateOverride(): Unit = {
@@ -106,7 +106,7 @@ case class CoreGameClient() extends CoreGame {
   }
 
   override def sendBroadcastEvents(events: List[GameStateEvent]): Unit = {
-    gameEventProcessor.sendBroadcastEvents(events)
+    eventQueueContainer.sendBroadcastEvents(events)
   }
 
   def registerClient(clientId: String): Unit = {

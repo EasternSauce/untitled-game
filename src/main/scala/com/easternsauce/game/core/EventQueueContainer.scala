@@ -5,7 +5,7 @@ import com.easternsauce.game.gamestate.id.AreaId
 
 import scala.collection.mutable.ListBuffer
 
-case class GameEventProcessor() {
+case class EventQueueContainer() {
   private var broadcastEventsQueue: ListBuffer[GameStateEvent] = _
   private var localEventsQueue: ListBuffer[GameStateEvent] = _
 

@@ -11,7 +11,7 @@ import com.esotericsoftware.kryonet.Listener
 
 abstract class CoreGame extends Game {
 
-  protected var gameEventProcessor: GameEventProcessor = _
+  protected var eventQueueContainer: EventQueueContainer = _
 
   protected var scheduledOverrideGameState: Option[GameState] = _
 
@@ -28,8 +28,8 @@ abstract class CoreGame extends Game {
 
     clientData = ClientData()
 
-    gameEventProcessor = GameEventProcessor()
-    gameEventProcessor.init()
+    eventQueueContainer = EventQueueContainer()
+    eventQueueContainer.init()
 
     scheduledOverrideGameState = None
 
@@ -62,7 +62,7 @@ abstract class CoreGame extends Game {
   ): Unit // TODO: does it duplicate applyEvent?
 
   def sendLocalEvents(events: List[GameStateEvent]): Unit = {
-    gameEventProcessor.sendLocalEvents(events)
+    eventQueueContainer.sendLocalEvents(events)
   }
 
   def applyEventsToGameState(events: List[GameStateEvent]): Unit = {
