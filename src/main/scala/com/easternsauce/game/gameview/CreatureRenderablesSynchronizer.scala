@@ -37,9 +37,9 @@ case class CreatureRenderablesSynchronizer() {
   private def createCreatureRenderable(
       creatureId: GameEntityId[Creature]
   )(implicit game: CoreGame): Unit = {
-    val creatureRenderer = CreatureRenderable(creatureId)
-    creatureRenderer.init()
-    creatureRenderables.update(creatureId, creatureRenderer)
+    val creatureRenderable = CreatureRenderable(creatureId)
+    creatureRenderable.init()
+    creatureRenderables.update(creatureId, creatureRenderable)
   }
 
   private def destroyCreatureRenderable(

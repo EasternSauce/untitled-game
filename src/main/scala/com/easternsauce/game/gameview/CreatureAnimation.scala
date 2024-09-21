@@ -28,18 +28,6 @@ case class CreatureAnimation(
 
     val creature: Creature = game.gameState.creatures(creatureId)
 
-    standstillAnimations =
-      new Array[Animation[TextureRegion]](WorldDirection.values.size)
-
-    attackAnimations =
-      new Array[Animation[TextureRegion]](WorldDirection.values.size)
-
-    walkAnimations =
-      new Array[Animation[TextureRegion]](WorldDirection.values.size)
-
-    deathAnimations =
-      new Array[Animation[TextureRegion]](WorldDirection.values.size)
-
     texture =
       Assets.texture(creature.params.texturePaths(creatureAnimationType))
 
@@ -90,15 +78,15 @@ case class CreatureAnimation(
   private def loadAnimations(
       frameWidth: Int,
       frameHeight: Int,
-      frames: FramesDefinition
+      framesDefinition: FramesDefinition
   ): Array[Animation[TextureRegion]] = {
     for {
       i <- (0 until WorldDirection.values.size).toArray
     } yield {
-      val standstillFrames =
+      val frames =
         for {
           j <-
-            (frames.start until frames.start + frames.count).toArray
+            (framesDefinition.start until framesDefinition.start + framesDefinition.count).toArray
         } yield new TextureRegion(
           texture,
           j * frameWidth,
@@ -108,8 +96,8 @@ case class CreatureAnimation(
         )
 
       new Animation[TextureRegion](
-        frames.frameDuration,
-        standstillFrames: _*
+        framesDefinition.frameDuration,
+        frames: _*
       )
     }
   }

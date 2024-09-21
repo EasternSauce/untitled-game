@@ -2,6 +2,7 @@ package com.easternsauce.game.gamestate
 
 import com.easternsauce.game.Constants
 import com.easternsauce.game.core.CoreGame
+import com.easternsauce.game.gamestate.ability.Ability
 import com.easternsauce.game.gamestate.creature.{Creature, CreatureFactory}
 import com.easternsauce.game.gamestate.event.GameStateEvent
 import com.easternsauce.game.gamestate.id.{AreaId, GameEntityId}
@@ -10,6 +11,7 @@ import com.softwaremill.quicklens.{ModifyPimp, QuicklensMapAt}
 
 case class GameState(
     creatures: Map[GameEntityId[Creature], Creature] = Map(),
+    abilities: Map[GameEntityId[Ability], Ability] = Map(),
     activeCreatureIds: Set[GameEntityId[Creature]] = Set()
 ) {
   def updateForArea(areaId: AreaId, delta: Float)(implicit

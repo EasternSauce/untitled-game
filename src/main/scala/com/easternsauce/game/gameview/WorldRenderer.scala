@@ -6,10 +6,13 @@ import com.easternsauce.game.math.Vector2f
 
 case class WorldRenderer() {
   private var creatureRenderer: CreatureRenderer = _
+  private var abilityRenderer: AbilityRenderer = _
 
   def init(): Unit = {
     creatureRenderer = CreatureRenderer()
     creatureRenderer.init()
+    abilityRenderer = AbilityRenderer()
+    abilityRenderer.init()
   }
 
   def renderForArea(
@@ -50,6 +53,12 @@ case class WorldRenderer() {
       worldSpriteBatch: GameSpriteBatch,
       worldCameraPos: Vector2f
   )(implicit game: CoreGame): Unit = {
+    abilityRenderer.renderAbilitiesForArea(
+      areaId,
+      worldSpriteBatch,
+      worldCameraPos
+    )
+
     creatureRenderer.renderAliveCreaturesForArea(
       areaId,
       worldSpriteBatch,
