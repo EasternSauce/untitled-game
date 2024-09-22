@@ -48,6 +48,17 @@ case class GameState(
           creature
         }
       )
+      .modify(_.abilities.each)
+      .using(ability =>
+        if (ability.currentAreaId == areaId) {
+          ability.update(
+            delta,
+            game.gameplay.physics.abilityBodyPositions.get(ability.id)
+          )
+        } else {
+          ability
+        }
+      )
   }
 
   private def handleCreatePlayers()(implicit game: CoreGame): GameState = {

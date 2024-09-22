@@ -10,8 +10,8 @@ case class AbilityParams(
     currentAreaId: AreaId,
     creatureId: GameEntityId[Creature],
     pos: Vector2f,
-    facingVector: Vector2f = Vector2f(1, 0),
+    facingVector: Vector2f = Vector2f(0, 1),
     damage: Float,
     animationTimer: SimpleTimer = SimpleTimer(running = true),
-    velocity: Vector2f = Vector2f(0, 0)
+    velocity: Vector2f = Vector2f(0, 1)
 ) {}

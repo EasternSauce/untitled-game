@@ -59,12 +59,17 @@ case class AbilityAnimation(abilityId: GameEntityId[Ability]) {
       Vector2f(ability.pos.x, ability.pos.y)
     )
 
+    val angle = IsometricProjection
+      .translatePosIsoToScreen(ability.params.facingVector)
+      .angleDeg
+
     batch.draw(
       frame,
       pos.x - ability.textureSize / 2f,
       pos.y - ability.textureSize / 2f,
       ability.textureSize,
-      ability.textureSize
+      ability.textureSize,
+      angle
     )
 
   }

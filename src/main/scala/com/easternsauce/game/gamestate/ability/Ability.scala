@@ -7,8 +7,6 @@ import com.easternsauce.game.gamestate.{GameEntity, WorldDirection}
 import com.easternsauce.game.math.Vector2f
 import com.softwaremill.quicklens.ModifyPimp
 
-import scala.util.chaining.scalaUtilChainingOps
-
 trait Ability extends GameEntity {
   val params: AbilityParams
 
@@ -34,14 +32,16 @@ trait Ability extends GameEntity {
       newPos: Option[Vector2f]
   ): Ability = {
     updateTimers(delta)
+      .updateMovement(newPos)
       .updateFacingVector()
-      .pipe(ability =>
-        if (newPos.nonEmpty) {
-          ability
-            .modify(_.params.pos)
-            .setTo(newPos.get)
-        } else { ability }
-      )
+  }
+
+  private def updateMovement(newPos: Option[Vector2f]): Ability = {
+    if (newPos.nonEmpty) {
+      this
+        .modify(_.params.pos)
+        .setTo(newPos.get)
+    } else { this }
   }
 
   private def updateTimers(delta: Float): Ability = {

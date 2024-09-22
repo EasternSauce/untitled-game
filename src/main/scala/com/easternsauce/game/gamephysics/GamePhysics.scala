@@ -2,6 +2,7 @@ package com.easternsauce.game.gamephysics
 
 import com.easternsauce.game.core.CoreGame
 import com.easternsauce.game.gamemap.GameTiledMap
+import com.easternsauce.game.gamestate.ability.Ability
 import com.easternsauce.game.gamestate.creature.Creature
 import com.easternsauce.game.gamestate.id.{AreaId, GameEntityId}
 import com.easternsauce.game.math.Vector2f
@@ -127,5 +128,8 @@ case class GamePhysics() {
 
   def creatureBodyPositions: Map[GameEntityId[Creature], Vector2f] =
     creatureBodyPhysics.creatureBodyPositions
+
+  def abilityBodyPositions: Map[GameEntityId[Ability], Vector2f] =
+    abilityBodyPhysics.abilityBodyPositions
 
 }
