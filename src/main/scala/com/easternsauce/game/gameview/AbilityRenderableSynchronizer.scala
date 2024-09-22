@@ -7,7 +7,7 @@ import com.easternsauce.game.gamestate.id.{AreaId, GameEntityId}
 import scala.collection.mutable
 
 //noinspection SpellCheckingInspection
-case class AbilityRenderablesSynchronizer() {
+case class AbilityRenderableSynchronizer() {
   private var abilityRenderables
       : mutable.Map[GameEntityId[Ability], AbilityRenderable] = _
 

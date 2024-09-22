@@ -11,8 +11,6 @@ case class AbilityRenderable(abilityId: GameEntityId[Ability])
   private var animation: AbilityAnimation = _
 
   def init()(implicit game: CoreGame): Unit = {
-    val ability = game.gameState.abilities(abilityId)
-
     animation = AbilityAnimation(abilityId)
 
     animation.init()

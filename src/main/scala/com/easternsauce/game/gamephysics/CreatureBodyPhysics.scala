@@ -12,13 +12,13 @@ case class CreatureBodyPhysics() {
   private var creatureBodies
       : mutable.Map[GameEntityId[Creature], CreatureBody] = _
   private var areaWorlds: mutable.Map[AreaId, AreaWorld] = _
-  private var creatureBodiesSynchronizer: CreatureBodiesSynchronizer = _
+  private var creatureBodySynchronizer: CreatureBodySynchronizer = _
 
   def init(areaWorlds: mutable.Map[AreaId, AreaWorld]): Unit = {
     creatureBodies = mutable.Map()
     this.areaWorlds = areaWorlds
-    creatureBodiesSynchronizer = CreatureBodiesSynchronizer()
-    creatureBodiesSynchronizer.init(creatureBodies, areaWorlds)
+    creatureBodySynchronizer = CreatureBodySynchronizer()
+    creatureBodySynchronizer.init(creatureBodies, areaWorlds)
   }
 
   def update(areaId: AreaId)(implicit game: CoreGame): Unit = {
@@ -31,7 +31,7 @@ case class CreatureBodyPhysics() {
   }
 
   def synchronize(areaId: AreaId)(implicit game: CoreGame): Unit = {
-    creatureBodiesSynchronizer.synchronizeForArea(areaId)
+    creatureBodySynchronizer.synchronizeForArea(areaId)
   }
 
   def correctBodyPositions(areaId: AreaId)(implicit game: CoreGame): Unit = {

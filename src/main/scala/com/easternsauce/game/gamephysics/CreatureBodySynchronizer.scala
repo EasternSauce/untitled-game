@@ -7,7 +7,7 @@ import com.easternsauce.game.gamestate.id.{AreaId, GameEntityId}
 
 import scala.collection.mutable
 
-case class CreatureBodiesSynchronizer() {
+case class CreatureBodySynchronizer() {
   private var creatureBodies
       : mutable.Map[GameEntityId[Creature], CreatureBody] = _
   private var areaWorlds: mutable.Map[AreaId, AreaWorld] = _

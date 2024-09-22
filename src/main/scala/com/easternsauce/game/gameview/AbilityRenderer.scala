@@ -7,17 +7,18 @@ import com.easternsauce.game.math.Vector2f
 
 import scala.collection.mutable
 
+//noinspection SpellCheckingInspection
 case class AbilityRenderer() {
   private var abilityRenderables
       : mutable.Map[GameEntityId[Ability], AbilityRenderable] = _
-  private var abilityRenderablesSynchronizer: AbilityRenderablesSynchronizer =
+  private var abilityRenderableSynchronizer: AbilityRenderableSynchronizer =
     _
 
   def init(): Unit = {
     abilityRenderables = mutable.Map()
 
-    abilityRenderablesSynchronizer = AbilityRenderablesSynchronizer()
-    abilityRenderablesSynchronizer.init(abilityRenderables)
+    abilityRenderableSynchronizer = AbilityRenderableSynchronizer()
+    abilityRenderableSynchronizer.init(abilityRenderables)
   }
 
   def renderAbilitiesForArea(
@@ -42,4 +43,7 @@ case class AbilityRenderer() {
       .map(abilityId => abilityRenderables(abilityId))
   }
 
+  def synchronizeRenderables(areaId: AreaId)(implicit game: CoreGame): Unit = {
+    abilityRenderableSynchronizer.synchronizeForArea(areaId)
+  }
 }

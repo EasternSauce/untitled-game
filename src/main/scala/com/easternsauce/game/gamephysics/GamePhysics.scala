@@ -11,6 +11,7 @@ import scala.collection.mutable.ListBuffer
 
 case class GamePhysics() {
   private var _areaWorlds: mutable.Map[AreaId, AreaWorld] = _
+  private var abilityBodyPhysics: AbilityBodyPhysics = _
   private var creatureBodyPhysics: CreatureBodyPhysics = _
   private var staticBodyPhysics: StaticBodyPhysics = _
   private var eventQueue: ListBuffer[PhysicsEvent] = _
@@ -23,6 +24,9 @@ case class GamePhysics() {
       (areaId, AreaWorld(areaId))
     }
     _areaWorlds.values.foreach(_.init(PhysicsContactListener(this)))
+
+    abilityBodyPhysics = AbilityBodyPhysics()
+    abilityBodyPhysics.init(_areaWorlds)
 
     creatureBodyPhysics = CreatureBodyPhysics()
     creatureBodyPhysics.init(_areaWorlds)
@@ -47,18 +51,21 @@ case class GamePhysics() {
   }
 
   private def updateBodies(areaId: AreaId)(implicit game: CoreGame): Unit = {
+    abilityBodyPhysics.update(areaId)
     creatureBodyPhysics.update(areaId)
   }
 
   private def synchronize(
       areaId: AreaId
   )(implicit game: CoreGame): Unit = {
+    abilityBodyPhysics.synchronize(areaId)
     creatureBodyPhysics.synchronize(areaId)
   }
 
   def correctBodyPositions(
       areaId: AreaId
   )(implicit game: CoreGame): Unit = {
+    abilityBodyPhysics.correctBodyPositions(areaId)
     creatureBodyPhysics.correctBodyPositions(areaId)
   }
 

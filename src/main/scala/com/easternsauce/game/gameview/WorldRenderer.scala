@@ -67,6 +67,7 @@ case class WorldRenderer() {
   }
 
   def update(areaId: AreaId)(implicit game: CoreGame): Unit = {
+    abilityRenderer.synchronizeRenderables(areaId)
     creatureRenderer.synchronizeRenderables(areaId)
   }
 }

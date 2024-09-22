@@ -11,14 +11,14 @@ import scala.collection.mutable
 case class CreatureRenderer() {
   private var creatureRenderables
       : mutable.Map[GameEntityId[Creature], CreatureRenderable] = _
-  private var creatureRenderablesSynchronizer: CreatureRenderablesSynchronizer =
+  private var creatureRenderableSynchronizer: CreatureRenderableSynchronizer =
     _
 
   def init(): Unit = {
     creatureRenderables = mutable.Map()
 
-    creatureRenderablesSynchronizer = CreatureRenderablesSynchronizer()
-    creatureRenderablesSynchronizer.init(creatureRenderables)
+    creatureRenderableSynchronizer = CreatureRenderableSynchronizer()
+    creatureRenderableSynchronizer.init(creatureRenderables)
   }
 
 //  def renderLifeBars(
@@ -89,7 +89,7 @@ case class CreatureRenderer() {
   }
 
   def synchronizeRenderables(areaId: AreaId)(implicit game: CoreGame): Unit = {
-    creatureRenderablesSynchronizer.synchronizeForArea(areaId)
+    creatureRenderableSynchronizer.synchronizeForArea(areaId)
   }
 
 }
