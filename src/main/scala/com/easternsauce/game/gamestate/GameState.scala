@@ -2,7 +2,7 @@ package com.easternsauce.game.gamestate
 
 import com.easternsauce.game.Constants
 import com.easternsauce.game.core.CoreGame
-import com.easternsauce.game.gamestate.ability.Ability
+import com.easternsauce.game.gamestate.ability.{Ability, AbilityParams, Arrow}
 import com.easternsauce.game.gamestate.creature.{Creature, CreatureFactory}
 import com.easternsauce.game.gamestate.event.GameStateEvent
 import com.easternsauce.game.gamestate.id.{AreaId, GameEntityId}
@@ -58,6 +58,8 @@ case class GameState(
     playersToCreate.foldLeft(this) { case (gameState, name) =>
       val creatureId = GameEntityId[Creature](name)
 
+      val abilityId = GameEntityId[Ability]("meh")
+
       if (gameState.creatures.contains(creatureId)) {
         gameState
           .modify(_.activeCreatureIds)
@@ -73,8 +75,8 @@ case class GameState(
                   creatureId,
                   Constants.DefaultAreaId,
                   Vector2f(
-                    5f + 3f * Math.random().toFloat,
-                    415f + 3f * Math.random().toFloat
+                    5f,
+                    415f
                   ),
                   player = true,
                   8f
@@ -83,6 +85,24 @@ case class GameState(
           )
           .modify(_.activeCreatureIds)
           .using(_ + creatureId)
+          .modify(_.abilities)
+          .using(
+            _.updated(
+              abilityId,
+              Arrow(
+                AbilityParams(
+                  id = abilityId,
+                  currentAreaId = Constants.DefaultAreaId,
+                  creatureId = creatureId,
+                  pos = Vector2f(
+                    5f,
+                    418f
+                  ),
+                  damage = 0f
+                )
+              )
+            )
+          )
       }
     }
   }

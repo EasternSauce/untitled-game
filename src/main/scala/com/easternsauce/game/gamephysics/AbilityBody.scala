@@ -15,7 +15,7 @@ case class AbilityBody(abilityId: GameEntityId[Ability]) extends PhysicsBody {
   ): Unit = {
     this.b2Body = createBody(areaWorld, pos, game)
     this.areaWorld = areaWorld
-    this.sensor = false
+    this.sensor = true
   }
 
   private def createBody(
@@ -36,10 +36,12 @@ case class AbilityBody(abilityId: GameEntityId[Ability]) extends PhysicsBody {
 
     val fixtureDef = new FixtureDef()
     val shape = new CircleShape()
-    shape.setRadius(ability.worldWidth)
+    shape.setRadius(ability.bodyRadius)
     fixtureDef.shape = shape
 
     body.createFixture(fixtureDef)
+
+    body.getFixtureList.get(0).setSensor(true)
 
     body
 

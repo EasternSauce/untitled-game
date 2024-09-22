@@ -14,10 +14,9 @@ trait Ability extends GameEntity {
 
   val textureFileName: String
 
-  val worldWidth: Int
-  val worldHeight: Int
-  val textureWidth: Int
-  val textureHeight: Int
+  val textureSize: Int
+  val bodyRadius: Float
+
   val framesDefinition: FramesDefinition
 
   val speed: Float = 0f

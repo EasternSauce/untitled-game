@@ -133,10 +133,10 @@ case class CreatureAnimation(
 
     batch.draw(
       frame,
-      pos.x - creature.params.size / 2f,
-      pos.y - creature.params.size / 2f + creature.params.spriteVerticalShift,
-      creature.params.size,
-      creature.params.size
+      pos.x - creature.params.textureSize / 2f,
+      pos.y - creature.params.textureSize / 2f + creature.params.spriteVerticalShift,
+      creature.params.textureSize,
+      creature.params.textureSize
     )
   }
 }

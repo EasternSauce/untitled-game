@@ -4,63 +4,56 @@ import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.{Animation, TextureRegion}
 import com.easternsauce.game.Assets
 import com.easternsauce.game.core.CoreGame
-import com.easternsauce.game.gamestate.WorldDirection
 import com.easternsauce.game.gamestate.ability.Ability
 import com.easternsauce.game.gamestate.creature.FramesDefinition
 import com.easternsauce.game.gamestate.id.GameEntityId
 import com.easternsauce.game.math.{IsometricProjection, Vector2f}
 
 case class AbilityAnimation(abilityId: GameEntityId[Ability]) {
-  private var animations: Array[Animation[TextureRegion]] = _
+  private var animation: Animation[TextureRegion] = _
   private var texture: Texture = _
 
   def init()(implicit game: CoreGame): Unit = {
     val ability: Ability = game.gameState.abilities(abilityId)
 
-    animations = new Array[Animation[TextureRegion]](WorldDirection.values.size)
-    texture = Assets.texture(ability.textureFileName)
+    texture = Assets.texture("ability/" + ability.textureFileName)
 
-    animations = loadAnimations(
-      ability.textureWidth,
-      ability.textureHeight,
+    animation = loadAnimation(
+      ability.textureSize,
+      ability.textureSize,
       ability.framesDefinition
     )
 
   }
 
-  private def loadAnimations(
+  private def loadAnimation(
       frameWidth: Int,
       frameHeight: Int,
       framesDefinition: FramesDefinition
-  ): Array[Animation[TextureRegion]] = {
-    for {
-      i <- (0 until WorldDirection.values.size).toArray
-    } yield {
-      val frames =
-        for {
-          j <-
-            (framesDefinition.start until framesDefinition.start + framesDefinition.count).toArray
-        } yield new TextureRegion(
-          texture,
-          j * frameWidth,
-          i * frameHeight,
-          frameWidth,
-          frameHeight
-        )
+  ): Animation[TextureRegion] = {
 
-      new Animation[TextureRegion](
-        framesDefinition.frameDuration,
-        frames: _*
-      )
-    }
+    val frames = for {
+      j <-
+        (framesDefinition.start until framesDefinition.start + framesDefinition.count).toArray
+    } yield new TextureRegion(
+      texture,
+      j * frameWidth,
+      0,
+      frameWidth,
+      frameHeight
+    )
+
+    new Animation[TextureRegion](
+      framesDefinition.frameDuration,
+      frames: _*
+    )
+
   }
 
   def render(batch: GameSpriteBatch)(implicit game: CoreGame): Unit = {
     val ability = game.gameState.abilities(abilityId)
 
-    val frame =
-      animations(ability.facingDirection.id)
-        .getKeyFrame(ability.params.animationTimer.time, false)
+    val frame = animation.getKeyFrame(ability.params.animationTimer.time, false)
 
     val pos = IsometricProjection.translatePosIsoToScreen(
       Vector2f(ability.pos.x, ability.pos.y)
@@ -68,10 +61,10 @@ case class AbilityAnimation(abilityId: GameEntityId[Ability]) {
 
     batch.draw(
       frame,
-      pos.x - ability.worldWidth / 2f,
-      pos.y - ability.worldHeight / 2f,
-      ability.worldWidth,
-      ability.worldHeight
+      pos.x - ability.textureSize / 2f,
+      pos.y - ability.textureSize / 2f,
+      ability.textureSize,
+      ability.textureSize
     )
 
   }

@@ -14,7 +14,7 @@ case class CreatureParams(
     velocity: Vector2f = Vector2f(0, 0),
     destination: Vector2f,
     lastPos: Vector2f,
-    size: Int,
+    textureSize: Int,
     spriteVerticalShift: Float,
     bodyRadius: Float,
     player: Boolean,

@@ -30,7 +30,7 @@ object CreatureFactory {
         CreatureAnimationType.Weapon -> "creature/hero/shortbow",
         CreatureAnimationType.Shield -> "creature/hero/shield"
       ),
-      size = 128,
+      textureSize = 128,
       spriteVerticalShift = 10f,
       bodyRadius = 0.3f,
       animationDefinition = Constants.HumanAnimationDefinition,
@@ -59,7 +59,7 @@ object CreatureFactory {
       texturePaths = Map(
         CreatureAnimationType.Body -> "creature/rat/rat"
       ),
-      size = 192,
+      textureSize = 192,
       spriteVerticalShift = 35f,
       bodyRadius = 0.6f,
       animationDefinition = Constants.RatAnimationDefinition,
@@ -88,7 +88,7 @@ object CreatureFactory {
       texturePaths = Map(
         CreatureAnimationType.Body -> "creature/zombie/zombie"
       ),
-      size = 128,
+      textureSize = 128,
       spriteVerticalShift = 10f,
       bodyRadius = 0.3f,
       animationDefinition = Constants.ZombieAnimationDefinition,
@@ -117,7 +117,7 @@ object CreatureFactory {
       texturePaths = Map(
         CreatureAnimationType.Body -> "creature/wyvern/wyvern"
       ),
-      size = 256,
+      textureSize = 256,
       spriteVerticalShift = 10f,
       bodyRadius = 0.8f,
       animationDefinition = Constants.WyvernAnimationDefinition,
@@ -137,7 +137,7 @@ object CreatureFactory {
       damage: Float,
       attackRange: Float,
       texturePaths: Map[CreatureAnimationType, String],
-      size: Int,
+      textureSize: Int,
       spriteVerticalShift: Float,
       bodyRadius: Float,
       animationDefinition: AnimationDefinition,
@@ -153,7 +153,7 @@ object CreatureFactory {
         destination = pos,
         lastPos = pos,
         texturePaths = texturePaths,
-        size = size,
+        textureSize = textureSize,
         spriteVerticalShift = spriteVerticalShift,
         bodyRadius = bodyRadius,
         player = player,
