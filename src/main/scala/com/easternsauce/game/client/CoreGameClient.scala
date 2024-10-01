@@ -60,7 +60,7 @@ case class CoreGameClient() extends CoreGame {
       client.sendTCP(ActionsPerformRequestCommand(broadcastEvents))
     }
 
-    gameplay.applyEventsToGameState(
+    gameplay.gameStateHolder.applyEvents(
       eventQueueContainer.areaEvents(areaId)
     )
 
@@ -69,7 +69,7 @@ case class CoreGameClient() extends CoreGame {
 
   private def processGameStateOverride(): Unit = {
     scheduledOverrideGameState.foreach { gameState =>
-      gameplay.overrideGameState(gameState)
+      gameplay.gameStateHolder.forceOverride(gameState)
       clientCreatureAreaId.foreach(gameplay.physics.correctBodyPositions(_))
       scheduledOverrideGameState = None
     }
@@ -80,7 +80,7 @@ case class CoreGameClient() extends CoreGame {
   }
 
   override protected def handleInputs(): Unit = {
-    if (gameplay.keyHeld(Buttons.LEFT)) {
+    if (gameplay.keyHeldChecker.keyHeld(Buttons.LEFT)) {
       val clientCreature = clientCreatureId
         .filter(gameState.creatures.contains)
         .map(gameState.creatures(_))

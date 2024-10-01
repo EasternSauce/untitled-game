@@ -53,7 +53,7 @@ case class CoreGameServer() extends CoreGame {
   }
 
   private def processEvents(): Unit = {
-    gameplay.applyEventsToGameState(eventQueueContainer.allEvents)
+    gameplay.gameStateHolder.applyEvents(eventQueueContainer.allEvents)
 
     eventQueueContainer.clearEventQueues()
   }
@@ -84,7 +84,7 @@ case class CoreGameServer() extends CoreGame {
   def registerClient(clientId: String, connectionId: Int): Unit = {
     _clientConnectionIds = _clientConnectionIds.updated(clientId, connectionId)
 
-    gameplay.schedulePlayerToCreate(clientId)
+    gameplay.playersToCreateScheduler.schedulePlayerToCreate(clientId)
   }
 
   def unregisterClient(clientId: String, connectionId: Int): Unit = {

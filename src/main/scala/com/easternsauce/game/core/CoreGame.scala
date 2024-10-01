@@ -51,7 +51,7 @@ abstract class CoreGame extends Game {
       .map(_.currentAreaId)
   }
 
-  def gameState: GameState = gameplay.gameState
+  def gameState: GameState = gameplay.gameStateHolder.gameState
 
   def listener: Listener = {
     connectivity.listener
@@ -66,7 +66,7 @@ abstract class CoreGame extends Game {
   }
 
   def applyEventsToGameState(events: List[GameStateEvent]): Unit = {
-    gameplay.applyEventsToGameState(events)
+    gameplay.gameStateHolder.applyEvents(events)
   }
 
   def setClientData(clientId: String, host: String, port: String): Unit = {
@@ -92,11 +92,11 @@ abstract class CoreGame extends Game {
   }
 
   def schedulePlayerToCreate(clientId: String): Unit = {
-    gameplay.schedulePlayerToCreate(clientId)
+    gameplay.playersToCreateScheduler.schedulePlayerToCreate(clientId)
   }
 
-  protected def connectivity: GameConnectivity
   def gameplay: Gameplay
+  protected def connectivity: GameConnectivity
 
   protected def gameplayScreen: GameScreen
   protected def startMenuScreen: GameScreen

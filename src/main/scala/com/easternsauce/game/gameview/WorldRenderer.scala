@@ -43,7 +43,9 @@ case class WorldRenderer() {
       worldCameraPos: Vector2f
   )(implicit game: CoreGame): Unit = {
 
-    game.gameplay.tiledMaps(areaId).render(worldSpriteBatch, worldCameraPos)
+    game.gameplay.tiledMapsManager
+      .tiledMaps(areaId)
+      .render(worldSpriteBatch, worldCameraPos)
 
     renderDynamicElementsForArea(areaId, worldSpriteBatch, worldCameraPos)
   }

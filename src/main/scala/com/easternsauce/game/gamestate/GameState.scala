@@ -62,9 +62,9 @@ case class GameState(
   }
 
   private def handleCreatePlayers()(implicit game: CoreGame): GameState = {
-    val playersToCreate = game.gameplay.playersToCreate
+    val playersToCreate = game.gameplay.playersToCreateScheduler.playersToCreate
 
-    game.gameplay.clearPlayersToCreate()
+    game.gameplay.playersToCreateScheduler.clearPlayersToCreate()
 
     playersToCreate.foldLeft(this) { case (gameState, name) =>
       val creatureId = GameEntityId[Creature](name)
