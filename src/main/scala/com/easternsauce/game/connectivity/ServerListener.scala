@@ -9,9 +9,13 @@ import com.esotericsoftware.kryonet.FrameworkMessage.KeepAlive
 import com.esotericsoftware.kryonet.{Connection, Listener}
 
 case class ServerListener(game: CoreGameServer) extends Listener {
+  implicit val _game: CoreGameServer = game
+
   override def disconnected(connection: Connection): Unit = {
 
-    val reverseMap = for ((k, v) <- game.clientConnectionIds) yield (v, k)
+    val reverseMap =
+      for ((k, v) <- game.clientConnectionManager.clientConnectionIds)
+        yield (v, k)
 
     if (reverseMap.contains(connection.getID)) {
       val disconnectedCreatureId = reverseMap(connection.getID)
@@ -25,7 +29,10 @@ case class ServerListener(game: CoreGameServer) extends Listener {
         ActionsPerformCommand(List(playerDisconnectEvent))
       )
 
-      game.unregisterClient(disconnectedCreatureId, connection.getID)
+      game.clientConnectionManager.unregisterClient(
+        disconnectedCreatureId,
+        connection.getID
+      )
     }
   }
 
@@ -33,7 +40,7 @@ case class ServerListener(game: CoreGameServer) extends Listener {
     obj match {
       case RegisterClientRequestCommand(maybeClientId) =>
         val clientId = maybeClientId.getOrElse(game.generateNewClientId())
-        game.registerClient(clientId, connection.getID)
+        game.clientConnectionManager.registerClient(clientId, connection.getID)
         connection.sendTCP(RegisterClientResponseCommand(clientId))
       case ActionsPerformRequestCommand(events) =>
         game.sendLocalEvents(events)

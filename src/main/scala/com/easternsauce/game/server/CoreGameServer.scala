@@ -15,6 +15,8 @@ import com.esotericsoftware.kryonet.Server
 case class CoreGameServer() extends CoreGame {
   implicit val game: CoreGame = this
 
+  var clientConnectionManager: ClientConnectionManager = _
+
   private val gameStateBroadcaster: GameStateBroadcaster = GameStateBroadcaster(
     this
   )
@@ -23,8 +25,6 @@ case class CoreGameServer() extends CoreGame {
   private var _connectivity: GameServerConnectivity = _
 
   private var clientCounter = 0
-
-  private var _clientConnectionIds: Map[String, Int] = Map()
 
   private var _gameplayScreen: GameScreen = _
   private var _startMenuScreen: GameScreen = _
@@ -39,6 +39,8 @@ case class CoreGameServer() extends CoreGame {
     _gameplay.init()
 
     _connectivity = GameServerConnectivity(this)
+
+    clientConnectionManager = ClientConnectionManager()
   }
 
   override def update(delta: Float): Unit = {
@@ -79,20 +81,6 @@ case class CoreGameServer() extends CoreGame {
     clientCounter = clientCounter + 1
 
     id
-  }
-
-  def registerClient(clientId: String, connectionId: Int): Unit = {
-    _clientConnectionIds = _clientConnectionIds.updated(clientId, connectionId)
-
-    gameplay.playersToCreateScheduler.schedulePlayerToCreate(clientId)
-  }
-
-  def unregisterClient(clientId: String, connectionId: Int): Unit = {
-    _clientConnectionIds = _clientConnectionIds.removed(clientId)
-  }
-
-  def clientConnectionIds: Map[String, Int] = {
-    Map.from(_clientConnectionIds)
   }
 
   def startBroadcaster(): Unit = {

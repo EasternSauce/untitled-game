@@ -11,7 +11,8 @@ import scala.collection.mutable
 import scala.collection.mutable.ListBuffer
 
 case class GamePhysics() {
-  private var _areaWorlds: mutable.Map[AreaId, AreaWorld] = _
+  var areaWorlds: mutable.Map[AreaId, AreaWorld] = _
+
   private var abilityBodyPhysics: AbilityBodyPhysics = _
   private var creatureBodyPhysics: CreatureBodyPhysics = _
   private var staticBodyPhysics: StaticBodyPhysics = _
@@ -21,19 +22,19 @@ case class GamePhysics() {
   def init(
       tiledMaps: mutable.Map[AreaId, GameTiledMap]
   )(implicit game: CoreGame): Unit = {
-    _areaWorlds = mutable.Map() ++ tiledMaps.map { case (areaId: AreaId, _) =>
+    areaWorlds = mutable.Map() ++ tiledMaps.map { case (areaId: AreaId, _) =>
       (areaId, AreaWorld(areaId))
     }
-    _areaWorlds.values.foreach(_.init(PhysicsContactListener(this)))
+    areaWorlds.values.foreach(_.init(PhysicsContactListener(this)))
 
     abilityBodyPhysics = AbilityBodyPhysics()
-    abilityBodyPhysics.init(_areaWorlds)
+    abilityBodyPhysics.init(areaWorlds)
 
     creatureBodyPhysics = CreatureBodyPhysics()
-    creatureBodyPhysics.init(_areaWorlds)
+    creatureBodyPhysics.init(areaWorlds)
 
     staticBodyPhysics = StaticBodyPhysics()
-    staticBodyPhysics.init(tiledMaps, _areaWorlds)
+    staticBodyPhysics.init(tiledMaps, areaWorlds)
 
     eventQueue = ListBuffer()
     collisionQueue = ListBuffer()
@@ -123,8 +124,6 @@ case class GamePhysics() {
   def scheduleCollisions(collisions: List[GameStateEvent]): Unit = {
     collisionQueue.addAll(collisions)
   }
-
-  def areaWorlds: mutable.Map[AreaId, AreaWorld] = _areaWorlds
 
   def creatureBodyPositions: Map[GameEntityId[Creature], Vector2f] =
     creatureBodyPhysics.creatureBodyPositions
