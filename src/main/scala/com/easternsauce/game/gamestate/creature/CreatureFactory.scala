@@ -1,149 +1,16 @@
 package com.easternsauce.game.gamestate.creature
 
-import com.easternsauce.game.Constants
-import com.easternsauce.game.gamestate.creature.CreatureAnimationType.CreatureAnimationType
-import com.easternsauce.game.gamestate.creature.PrimaryWeaponType.PrimaryWeaponType
-import com.easternsauce.game.gamestate.creature.SecondaryWeaponType.SecondaryWeaponType
+import com.easternsauce.game.gamestate.creature.CreatureType.CreatureType
 import com.easternsauce.game.gamestate.id.{AreaId, GameEntityId}
 import com.easternsauce.game.math.Vector2f
 
 object CreatureFactory {
-  def male1(
+  def produce(
       creatureId: GameEntityId[Creature],
       currentAreaId: AreaId,
       pos: Vector2f,
       player: Boolean,
-      baseSpeed: Float
-  ): Creature = {
-    CreatureFactory.produce(
-      creatureId = creatureId,
-      currentAreaId = currentAreaId,
-      pos = pos,
-      player = player,
-      baseSpeed = baseSpeed,
-      maxLife = 100f,
-      damage = 20f,
-      attackRange = 2f,
-      texturePaths = Map(
-        CreatureAnimationType.Body -> "creature/hero/clothes",
-        CreatureAnimationType.Head -> "creature/hero/male_head1",
-        CreatureAnimationType.Weapon -> "creature/hero/shortbow",
-        CreatureAnimationType.Shield -> "creature/hero/shield"
-      ),
-      textureSize = 128,
-      spriteVerticalShift = 10f,
-      bodyRadius = 0.3f,
-      animationDefinition = Constants.HumanAnimationDefinition,
-      primaryWeaponType = PrimaryWeaponType.Bow,
-      secondaryWeaponType = SecondaryWeaponType.None,
-      renderBodyOnly = false
-    )
-  }
-
-  def rat(
-      creatureId: GameEntityId[Creature],
-      currentAreaId: AreaId,
-      pos: Vector2f,
-      player: Boolean,
-      baseSpeed: Float
-  ): Creature = {
-    CreatureFactory.produce(
-      creatureId = creatureId,
-      currentAreaId = currentAreaId,
-      pos = pos,
-      player = player,
-      baseSpeed = baseSpeed,
-      maxLife = 40f,
-      damage = 10f,
-      attackRange = 1.6f,
-      texturePaths = Map(
-        CreatureAnimationType.Body -> "creature/rat/rat"
-      ),
-      textureSize = 192,
-      spriteVerticalShift = 35f,
-      bodyRadius = 0.6f,
-      animationDefinition = Constants.RatAnimationDefinition,
-      primaryWeaponType = PrimaryWeaponType.None,
-      secondaryWeaponType = SecondaryWeaponType.None,
-      renderBodyOnly = true
-    )
-  }
-
-  def zombie( // TODO: add random chances for alternate attack/death animation
-      creatureId: GameEntityId[Creature],
-      currentAreaId: AreaId,
-      pos: Vector2f,
-      player: Boolean,
-      baseSpeed: Float
-  ): Creature = {
-    CreatureFactory.produce(
-      creatureId = creatureId,
-      currentAreaId = currentAreaId,
-      pos = pos,
-      player = player,
-      baseSpeed = baseSpeed,
-      maxLife = 65f,
-      damage = 20f,
-      attackRange = 1.6f,
-      texturePaths = Map(
-        CreatureAnimationType.Body -> "creature/zombie/zombie"
-      ),
-      textureSize = 128,
-      spriteVerticalShift = 10f,
-      bodyRadius = 0.3f,
-      animationDefinition = Constants.ZombieAnimationDefinition,
-      primaryWeaponType = PrimaryWeaponType.None,
-      secondaryWeaponType = SecondaryWeaponType.None,
-      renderBodyOnly = true
-    )
-  }
-
-  def wyvern( // TODO: add random chances for alternate attack/death animation
-      creatureId: GameEntityId[Creature],
-      currentAreaId: AreaId,
-      pos: Vector2f,
-      player: Boolean,
-      baseSpeed: Float
-  ): Creature = {
-    CreatureFactory.produce(
-      creatureId = creatureId,
-      currentAreaId = currentAreaId,
-      pos = pos,
-      player = player,
-      baseSpeed = baseSpeed,
-      maxLife = 200f,
-      damage = 40f,
-      attackRange = 2.2f,
-      texturePaths = Map(
-        CreatureAnimationType.Body -> "creature/wyvern/wyvern"
-      ),
-      textureSize = 256,
-      spriteVerticalShift = 10f,
-      bodyRadius = 0.8f,
-      animationDefinition = Constants.WyvernAnimationDefinition,
-      primaryWeaponType = PrimaryWeaponType.None,
-      secondaryWeaponType = SecondaryWeaponType.None,
-      renderBodyOnly = true
-    )
-  }
-
-  private def produce(
-      creatureId: GameEntityId[Creature],
-      currentAreaId: AreaId,
-      pos: Vector2f,
-      player: Boolean,
-      baseSpeed: Float,
-      maxLife: Float,
-      damage: Float,
-      attackRange: Float,
-      texturePaths: Map[CreatureAnimationType, String],
-      textureSize: Int,
-      spriteVerticalShift: Float,
-      bodyRadius: Float,
-      animationDefinition: AnimationDefinition,
-      primaryWeaponType: PrimaryWeaponType,
-      secondaryWeaponType: SecondaryWeaponType,
-      renderBodyOnly: Boolean
+      creatureType: CreatureType
   ): Creature = {
     Creature(
       CreatureParams(
@@ -152,20 +19,20 @@ object CreatureFactory {
         pos = pos,
         destination = pos,
         lastPos = pos,
-        texturePaths = texturePaths,
-        textureSize = textureSize,
-        spriteVerticalShift = spriteVerticalShift,
-        bodyRadius = bodyRadius,
+        texturePaths = creatureType.texturePaths,
+        textureSize = creatureType.textureSize,
+        spriteVerticalShift = creatureType.spriteVerticalShift,
+        bodyRadius = creatureType.bodyRadius,
         player = player,
-        baseSpeed = baseSpeed,
-        life = maxLife,
-        maxLife = maxLife,
-        damage = damage,
-        animationDefinition = animationDefinition,
-        attackRange = attackRange,
-        primaryWeaponType = primaryWeaponType,
-        secondaryWeaponType = secondaryWeaponType,
-        renderBodyOnly = renderBodyOnly
+        baseSpeed = creatureType.baseSpeed,
+        life = creatureType.maxLife,
+        maxLife = creatureType.maxLife,
+        damage = creatureType.damage,
+        animationDefinition = creatureType.animationDefinition,
+        attackRange = creatureType.attackRange,
+        primaryWeaponType = creatureType.primaryWeaponType,
+        secondaryWeaponType = creatureType.secondaryWeaponType,
+        renderBodyOnly = creatureType.renderBodyOnly
       )
     )
   }

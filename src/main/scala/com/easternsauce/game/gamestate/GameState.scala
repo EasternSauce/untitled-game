@@ -3,7 +3,7 @@ package com.easternsauce.game.gamestate
 import com.easternsauce.game.Constants
 import com.easternsauce.game.core.CoreGame
 import com.easternsauce.game.gamestate.ability.{Ability, AbilityParams, Arrow}
-import com.easternsauce.game.gamestate.creature.{Creature, CreatureFactory}
+import com.easternsauce.game.gamestate.creature.{Creature, CreatureFactory, CreatureType}
 import com.easternsauce.game.gamestate.event.GameStateEvent
 import com.easternsauce.game.gamestate.id.{AreaId, GameEntityId}
 import com.easternsauce.game.math.Vector2f
@@ -82,7 +82,7 @@ case class GameState(
             _.updated(
               creatureId,
               CreatureFactory
-                .male1(
+                .produce(
                   creatureId,
                   Constants.DefaultAreaId,
                   Vector2f(
@@ -90,7 +90,7 @@ case class GameState(
                     415f
                   ),
                   player = true,
-                  8f
+                  creatureType = CreatureType.Human
                 )
             )
           )
