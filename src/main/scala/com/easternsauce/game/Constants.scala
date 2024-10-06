@@ -71,7 +71,7 @@ object Constants {
     deathFrames = FramesDefinition(start = 48, count = 8, frameDuration = 0.1f)
   )
 
-  var PhysicsBodyCorrectionDistance = 0.3f
+  var PhysicsBodyCorrectionDistance = 0.65f
 
   val LargeObjectCollisionCellId = 1
   val WaterGroundCollisionCellId = 2
@@ -93,7 +93,7 @@ object Constants {
 
   val DefaultSkinPath: String = "assets/ui/skin/uiskin.json"
 
-  val TimeBetweenGameStateBroadcasts = 0.3f
+  val TimeBetweenGameStateBroadcasts = 0.5f
 
   val OfflineMode = false
 }
