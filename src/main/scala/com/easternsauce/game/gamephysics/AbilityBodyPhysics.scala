@@ -2,14 +2,15 @@ package com.easternsauce.game.gamephysics
 
 import com.easternsauce.game.Constants
 import com.easternsauce.game.core.CoreGame
-import com.easternsauce.game.gamestate.ability.Ability
+import com.easternsauce.game.gamestate.ability.AbilityComponent
 import com.easternsauce.game.gamestate.id.{AreaId, GameEntityId}
 import com.easternsauce.game.math.Vector2f
 
 import scala.collection.mutable
 
 case class AbilityBodyPhysics() {
-  private var abilityBodies: mutable.Map[GameEntityId[Ability], AbilityBody] = _
+  private var abilityBodies
+      : mutable.Map[GameEntityId[AbilityComponent], AbilityBody] = _
   private var areaWorlds: mutable.Map[AreaId, AreaWorld] = _
   private var abilityBodySynchronizer: AbilityBodySynchronizer = _
 
@@ -45,7 +46,7 @@ case class AbilityBodyPhysics() {
     )
   }
 
-  def abilityBodyPositions: Map[GameEntityId[Ability], Vector2f] = {
+  def abilityBodyPositions: Map[GameEntityId[AbilityComponent], Vector2f] = {
     abilityBodies.values
       .map(abilityBody => {
         val pos = abilityBody.pos
@@ -54,15 +55,18 @@ case class AbilityBodyPhysics() {
       .toMap
   }
 
-  def setBodyPos(abilityId: GameEntityId[Ability], pos: Vector2f): Unit = {
+  def setBodyPos(
+      abilityId: GameEntityId[AbilityComponent],
+      pos: Vector2f
+  ): Unit = {
     abilityBodies(abilityId).setPos(pos)
   }
 
-  def setSensor(abilityId: GameEntityId[Ability]): Unit = {
+  def setSensor(abilityId: GameEntityId[AbilityComponent]): Unit = {
     abilityBodies(abilityId).setSensor()
   }
 
-  def setNonSensor(abilityId: GameEntityId[Ability]): Unit = {
+  def setNonSensor(abilityId: GameEntityId[AbilityComponent]): Unit = {
     abilityBodies(abilityId).setNonSensor()
   }
 }

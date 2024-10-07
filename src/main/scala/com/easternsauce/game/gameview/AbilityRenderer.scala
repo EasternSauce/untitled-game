@@ -1,7 +1,7 @@
 package com.easternsauce.game.gameview
 
 import com.easternsauce.game.core.CoreGame
-import com.easternsauce.game.gamestate.ability.Ability
+import com.easternsauce.game.gamestate.ability.AbilityComponent
 import com.easternsauce.game.gamestate.id.{AreaId, GameEntityId}
 import com.easternsauce.game.math.Vector2f
 
@@ -10,7 +10,7 @@ import scala.collection.mutable
 //noinspection SpellCheckingInspection
 case class AbilityRenderer() {
   private var abilityRenderables
-      : mutable.Map[GameEntityId[Ability], AbilityRenderable] = _
+      : mutable.Map[GameEntityId[AbilityComponent], AbilityRenderable] = _
   private var abilityRenderableSynchronizer: AbilityRenderableSynchronizer =
     _
 

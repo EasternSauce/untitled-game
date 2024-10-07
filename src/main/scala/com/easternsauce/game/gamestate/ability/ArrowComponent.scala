@@ -2,7 +2,8 @@ package com.easternsauce.game.gamestate.ability
 
 import com.easternsauce.game.gamestate.creature.FramesDefinition
 
-case class Arrow(params: AbilityParams) extends Ability {
+case class ArrowComponent(params: AbilityComponentParams)
+    extends AbilityComponent {
   override val textureFileName: String = "arrow"
 
   override val textureSize: Int = 64
@@ -15,8 +16,8 @@ case class Arrow(params: AbilityParams) extends Ability {
 
   override def destroyedOnContact: Boolean = true
 
-  override def copy(params: AbilityParams): Ability = {
-    Arrow(params)
+  override def copy(params: AbilityComponentParams): AbilityComponent = {
+    ArrowComponent(params)
   }
 
 }

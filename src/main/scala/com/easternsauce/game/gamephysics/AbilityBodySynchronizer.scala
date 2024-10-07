@@ -2,17 +2,18 @@ package com.easternsauce.game.gamephysics
 
 import com.easternsauce.game.core.CoreGame
 import com.easternsauce.game.gamestate.GameState
-import com.easternsauce.game.gamestate.ability.Ability
+import com.easternsauce.game.gamestate.ability.AbilityComponent
 import com.easternsauce.game.gamestate.id.{AreaId, GameEntityId}
 
 import scala.collection.mutable
 
 case class AbilityBodySynchronizer() {
-  private var abilityBodies: mutable.Map[GameEntityId[Ability], AbilityBody] = _
+  private var abilityBodies
+      : mutable.Map[GameEntityId[AbilityComponent], AbilityBody] = _
   private var areaWorlds: mutable.Map[AreaId, AreaWorld] = _
 
   def init(
-      abilityBodies: mutable.Map[GameEntityId[Ability], AbilityBody],
+      abilityBodies: mutable.Map[GameEntityId[AbilityComponent], AbilityBody],
       areaWorlds: mutable.Map[AreaId, AreaWorld]
   ): Unit = {
     this.abilityBodies = abilityBodies
@@ -35,7 +36,7 @@ case class AbilityBodySynchronizer() {
   }
 
   private def createAbilityBody(
-      abilityId: GameEntityId[Ability],
+      abilityId: GameEntityId[AbilityComponent],
       gameState: GameState
   )(implicit game: CoreGame): Unit = {
     val ability = gameState.abilities(abilityId)
@@ -50,7 +51,7 @@ case class AbilityBodySynchronizer() {
   }
 
   private def destroyAbilityBody(
-      abilityId: GameEntityId[Ability],
+      abilityId: GameEntityId[AbilityComponent],
       gameState: GameState
   ): Unit = {
     if (abilityBodies.contains(abilityId)) {

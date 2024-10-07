@@ -2,8 +2,8 @@ package com.easternsauce.game.gamestate
 
 import com.easternsauce.game.Constants
 import com.easternsauce.game.core.CoreGame
-import com.easternsauce.game.gamestate.ability.{Ability, AbilityParams, Arrow}
-import com.easternsauce.game.gamestate.creature.{Creature, CreatureFactory, CreatureType}
+import com.easternsauce.game.gamestate.ability.{Ability, AbilityComponent, AbilityParams}
+import com.easternsauce.game.gamestate.creature.{Creature, CreatureType}
 import com.easternsauce.game.gamestate.event.GameStateEvent
 import com.easternsauce.game.gamestate.id.{AreaId, GameEntityId}
 import com.easternsauce.game.math.Vector2f
@@ -69,7 +69,7 @@ case class GameState(
     playersToCreate.foldLeft(this) { case (gameState, name) =>
       val creatureId = GameEntityId[Creature](name)
 
-      val abilityId = GameEntityId[Ability]("meh")
+      val abilityId = GameEntityId[AbilityComponent]("meh")
 
       if (gameState.creatures.contains(creatureId)) {
         gameState
@@ -81,17 +81,16 @@ case class GameState(
           .using(
             _.updated(
               creatureId,
-              CreatureFactory
-                .produce(
-                  creatureId,
-                  Constants.DefaultAreaId,
-                  Vector2f(
-                    5f,
-                    415f
-                  ),
-                  player = true,
-                  creatureType = CreatureType.Human
-                )
+              Creature.produce(
+                creatureId,
+                Constants.DefaultAreaId,
+                Vector2f(
+                  5f,
+                  415f
+                ),
+                player = true,
+                creatureType = CreatureType.Human
+              )
             )
           )
           .modify(_.activeCreatureIds)
@@ -100,7 +99,7 @@ case class GameState(
           .using(
             _.updated(
               abilityId,
-              Arrow(
+              ArrowComponent(
                 AbilityParams(
                   id = abilityId,
                   currentAreaId = Constants.DefaultAreaId,

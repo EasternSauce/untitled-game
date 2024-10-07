@@ -2,11 +2,11 @@ package com.easternsauce.game.gameview
 
 import com.easternsauce.game.core.CoreGame
 import com.easternsauce.game.gamestate.GameState
-import com.easternsauce.game.gamestate.ability.Ability
+import com.easternsauce.game.gamestate.ability.AbilityComponent
 import com.easternsauce.game.gamestate.id.{AreaId, GameEntityId}
 import com.easternsauce.game.math.Vector2f
 
-case class AbilityRenderable(abilityId: GameEntityId[Ability])
+case class AbilityRenderable(abilityId: GameEntityId[AbilityComponent])
     extends Renderable {
   private var animation: AbilityAnimation = _
 

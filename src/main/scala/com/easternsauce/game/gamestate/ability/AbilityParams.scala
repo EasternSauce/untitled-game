@@ -6,7 +6,7 @@ import com.easternsauce.game.gamestate.id.{AreaId, GameEntityId}
 import com.easternsauce.game.math.Vector2f
 
 case class AbilityParams(
-    id: GameEntityId[Ability],
+    id: GameEntityId[AbilityComponent],
     currentAreaId: AreaId,
     creatureId: GameEntityId[Creature],
     pos: Vector2f,

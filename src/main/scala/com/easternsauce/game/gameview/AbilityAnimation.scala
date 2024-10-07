@@ -4,17 +4,17 @@ import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.{Animation, TextureRegion}
 import com.easternsauce.game.Assets
 import com.easternsauce.game.core.CoreGame
-import com.easternsauce.game.gamestate.ability.Ability
+import com.easternsauce.game.gamestate.ability.AbilityComponent
 import com.easternsauce.game.gamestate.creature.FramesDefinition
 import com.easternsauce.game.gamestate.id.GameEntityId
 import com.easternsauce.game.math.{IsometricProjection, Vector2f}
 
-case class AbilityAnimation(abilityId: GameEntityId[Ability]) {
+case class AbilityAnimation(abilityId: GameEntityId[AbilityComponent]) {
   private var animation: Animation[TextureRegion] = _
   private var texture: Texture = _
 
   def init()(implicit game: CoreGame): Unit = {
-    val ability: Ability = game.gameState.abilities(abilityId)
+    val ability: AbilityComponent = game.gameState.abilities(abilityId)
 
     texture = Assets.texture("ability/" + ability.textureFileName)
 

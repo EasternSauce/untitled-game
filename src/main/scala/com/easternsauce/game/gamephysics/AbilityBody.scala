@@ -4,11 +4,12 @@ import com.badlogic.gdx.physics.box2d.Body
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType
 import com.easternsauce.game.core.CoreGame
 import com.easternsauce.game.gamestate.GameState
-import com.easternsauce.game.gamestate.ability.Ability
+import com.easternsauce.game.gamestate.ability.AbilityComponent
 import com.easternsauce.game.gamestate.id.GameEntityId
 import com.easternsauce.game.math.Vector2f
 
-case class AbilityBody(abilityId: GameEntityId[Ability]) extends PhysicsBody {
+case class AbilityBody(abilityId: GameEntityId[AbilityComponent])
+    extends PhysicsBody {
 
   def init(areaWorld: AreaWorld, pos: Vector2f)(implicit
       game: CoreGame
