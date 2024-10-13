@@ -10,7 +10,7 @@ import scala.collection.mutable
 
 case class AbilityBodyPhysics() {
   private var abilityBodies
-      : mutable.Map[GameEntityId[AbilityComponent], AbilityBody] = _
+      : mutable.Map[GameEntityId[AbilityComponent], AbilityComponentBody] = _
   private var areaWorlds: mutable.Map[AreaId, AreaWorld] = _
   private var abilityBodySynchronizer: AbilityBodySynchronizer = _
 
@@ -24,7 +24,10 @@ case class AbilityBodyPhysics() {
   def update(areaId: AreaId)(implicit game: CoreGame): Unit = {
     abilityBodies
       .filter { case (abilityId, _) =>
-        game.gameState.abilities(abilityId).params.currentAreaId == areaId
+        game.gameState
+          .abilityComponents(abilityId)
+          .params
+          .currentAreaId == areaId
       }
       .values
       .foreach(_.update(game.gameState))
@@ -35,7 +38,7 @@ case class AbilityBodyPhysics() {
   }
 
   def correctBodyPositions(areaId: AreaId)(implicit game: CoreGame): Unit = {
-    game.gameState.abilities.values.foreach(creature =>
+    game.gameState.abilityComponents.values.foreach(creature =>
       if (
         creature.params.currentAreaId == areaId &&
         abilityBodies.contains(creature.id) && abilityBodies(creature.id).pos
@@ -50,7 +53,7 @@ case class AbilityBodyPhysics() {
     abilityBodies.values
       .map(abilityBody => {
         val pos = abilityBody.pos
-        (abilityBody.abilityId, pos)
+        (abilityBody.abilityComponentId, pos)
       })
       .toMap
   }

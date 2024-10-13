@@ -10,6 +10,7 @@ case class Gameplay()(implicit game: CoreGame) {
   var view: GameView = _
   var physics: GamePhysics = _
   var playersToCreateScheduler: PlayersToCreateScheduler = _
+  var abilityComponentsToCreateScheduler: AbilityComponentsToCreateScheduler = _
   var keyHeldChecker: KeyHeldChecker = _
   var gameStateHolder: GameStateContainer = _
   var tiledMapsManager: TiledMapsManager = _
@@ -28,6 +29,9 @@ case class Gameplay()(implicit game: CoreGame) {
 
     playersToCreateScheduler = PlayersToCreateScheduler()
     playersToCreateScheduler.init()
+
+    abilityComponentsToCreateScheduler = AbilityComponentsToCreateScheduler()
+    abilityComponentsToCreateScheduler.init()
 
     keyHeldChecker = KeyHeldChecker()
     keyHeldChecker.init()

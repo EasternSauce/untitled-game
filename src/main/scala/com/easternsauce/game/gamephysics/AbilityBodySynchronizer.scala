@@ -9,11 +9,13 @@ import scala.collection.mutable
 
 case class AbilityBodySynchronizer() {
   private var abilityBodies
-      : mutable.Map[GameEntityId[AbilityComponent], AbilityBody] = _
+      : mutable.Map[GameEntityId[AbilityComponent], AbilityComponentBody] = _
   private var areaWorlds: mutable.Map[AreaId, AreaWorld] = _
 
   def init(
-      abilityBodies: mutable.Map[GameEntityId[AbilityComponent], AbilityBody],
+      abilityBodies: mutable.Map[GameEntityId[
+        AbilityComponent
+      ], AbilityComponentBody],
       areaWorlds: mutable.Map[AreaId, AreaWorld]
   ): Unit = {
     this.abilityBodies = abilityBodies
@@ -22,14 +24,14 @@ case class AbilityBodySynchronizer() {
 
   def synchronizeForArea(areaId: AreaId)(implicit game: CoreGame): Unit = {
     val abilityBodiesToCreate =
-      (game.gameState.abilities.keys.toSet -- abilityBodies.keys.toSet)
-        .filter(game.gameState.abilities(_).currentAreaId == areaId)
+      (game.gameState.abilityComponents.keys.toSet -- abilityBodies.keys.toSet)
+        .filter(game.gameState.abilityComponents(_).currentAreaId == areaId)
     val abilityBodiesToDestroy =
-      (abilityBodies.keys.toSet -- game.gameState.abilities.keys.toSet).filter(
-        abilityId =>
-          !game.gameState.abilities.contains(abilityId) ||
-            game.gameState.abilities(abilityId).currentAreaId == areaId
-      )
+      (abilityBodies.keys.toSet -- game.gameState.abilityComponents.keys.toSet)
+        .filter(abilityId =>
+          !game.gameState.abilityComponents.contains(abilityId) ||
+            game.gameState.abilityComponents(abilityId).currentAreaId == areaId
+        )
 
     abilityBodiesToCreate.foreach(createAbilityBody(_, game.gameState))
     abilityBodiesToDestroy.foreach(destroyAbilityBody(_, game.gameState))
@@ -39,9 +41,9 @@ case class AbilityBodySynchronizer() {
       abilityId: GameEntityId[AbilityComponent],
       gameState: GameState
   )(implicit game: CoreGame): Unit = {
-    val ability = gameState.abilities(abilityId)
+    val ability = gameState.abilityComponents(abilityId)
 
-    val abilityBody = AbilityBody(abilityId)
+    val abilityBody = AbilityComponentBody(abilityId)
 
     val areaWorld = areaWorlds(ability.params.currentAreaId)
 

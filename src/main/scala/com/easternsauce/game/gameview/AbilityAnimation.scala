@@ -14,7 +14,7 @@ case class AbilityAnimation(abilityId: GameEntityId[AbilityComponent]) {
   private var texture: Texture = _
 
   def init()(implicit game: CoreGame): Unit = {
-    val ability: AbilityComponent = game.gameState.abilities(abilityId)
+    val ability: AbilityComponent = game.gameState.abilityComponents(abilityId)
 
     texture = Assets.texture("ability/" + ability.textureFileName)
 
@@ -51,7 +51,7 @@ case class AbilityAnimation(abilityId: GameEntityId[AbilityComponent]) {
   }
 
   def render(batch: GameSpriteBatch)(implicit game: CoreGame): Unit = {
-    val ability = game.gameState.abilities(abilityId)
+    val ability = game.gameState.abilityComponents(abilityId)
 
     val frame = animation.getKeyFrame(ability.params.animationTimer.time, false)
 

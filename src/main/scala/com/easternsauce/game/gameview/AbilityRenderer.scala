@@ -33,7 +33,7 @@ case class AbilityRenderer() {
   private def abilityRenderablesInArea(areaId: AreaId)(implicit
       game: CoreGame
   ): List[AbilityRenderable] = {
-    game.gameState.abilities
+    game.gameState.abilityComponents
       .filter { case (_, ability) =>
         ability.currentAreaId == areaId && abilityRenderables
           .contains(ability.id)

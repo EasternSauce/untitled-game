@@ -17,13 +17,13 @@ case class AbilityRenderable(abilityId: GameEntityId[AbilityComponent])
   }
 
   override def pos()(implicit game: CoreGame): Vector2f = {
-    val ability = game.gameState.abilities(abilityId)
+    val ability = game.gameState.abilityComponents(abilityId)
 
     ability.pos
   }
 
   override def areaId(gameState: GameState): AreaId = {
-    val ability = gameState.abilities(abilityId)
+    val ability = gameState.abilityComponents(abilityId)
 
     ability.params.currentAreaId
   }

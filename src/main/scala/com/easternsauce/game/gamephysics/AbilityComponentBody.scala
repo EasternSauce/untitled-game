@@ -8,8 +8,9 @@ import com.easternsauce.game.gamestate.ability.AbilityComponent
 import com.easternsauce.game.gamestate.id.GameEntityId
 import com.easternsauce.game.math.Vector2f
 
-case class AbilityBody(abilityId: GameEntityId[AbilityComponent])
-    extends PhysicsBody {
+case class AbilityComponentBody(
+    abilityComponentId: GameEntityId[AbilityComponent]
+) extends PhysicsBody {
 
   def init(areaWorld: AreaWorld, pos: Vector2f)(implicit
       game: CoreGame
@@ -24,7 +25,7 @@ case class AbilityBody(abilityId: GameEntityId[AbilityComponent])
       pos: Vector2f,
       game: CoreGame
   ): Body = {
-    val ability = game.gameState.abilities(abilityId)
+    val ability = game.gameState.abilityComponents(abilityComponentId)
 
     import com.badlogic.gdx.physics.box2d._
 
@@ -49,8 +50,8 @@ case class AbilityBody(abilityId: GameEntityId[AbilityComponent])
   }
 
   override def update(gameState: GameState): Unit = {
-    if (gameState.abilities.contains(abilityId)) {
-      val creature = gameState.abilities(abilityId)
+    if (gameState.abilityComponents.contains(abilityComponentId)) {
+      val creature = gameState.abilityComponents(abilityComponentId)
 
       b2Body.setLinearVelocity(
         creature.params.velocity.x,

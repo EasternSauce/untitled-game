@@ -2,7 +2,7 @@ package com.easternsauce.game.gamestate
 
 import com.easternsauce.game.Constants
 import com.easternsauce.game.core.CoreGame
-import com.easternsauce.game.gamestate.ability.{Ability, AbilityComponent, AbilityParams}
+import com.easternsauce.game.gamestate.ability.{Ability, AbilityComponent, AbilityParams, Arrow}
 import com.easternsauce.game.gamestate.creature.{Creature, CreatureType}
 import com.easternsauce.game.gamestate.event.GameStateEvent
 import com.easternsauce.game.gamestate.id.{AreaId, GameEntityId}
@@ -12,6 +12,8 @@ import com.softwaremill.quicklens.{ModifyPimp, QuicklensMapAt}
 case class GameState(
     creatures: Map[GameEntityId[Creature], Creature] = Map(),
     abilities: Map[GameEntityId[Ability], Ability] = Map(),
+    abilityComponents: Map[GameEntityId[AbilityComponent], AbilityComponent] =
+      Map(),
     activeCreatureIds: Set[GameEntityId[Creature]] = Set()
 ) {
   def updateForArea(areaId: AreaId, delta: Float)(implicit
@@ -20,6 +22,7 @@ case class GameState(
     this
       .updateCreaturesForArea(areaId, delta)
       .handleCreatePlayers() // TODO: server only?
+      .handleCreateAbilityComponents()
 
   }
 
@@ -48,7 +51,7 @@ case class GameState(
           creature
         }
       )
-      .modify(_.abilities.each)
+      .modify(_.abilityComponents.each)
       .using(ability =>
         if (ability.currentAreaId == areaId) {
           ability.update(
@@ -69,7 +72,7 @@ case class GameState(
     playersToCreate.foldLeft(this) { case (gameState, name) =>
       val creatureId = GameEntityId[Creature](name)
 
-      val abilityId = GameEntityId[AbilityComponent]("meh")
+      val abilityId = GameEntityId[Ability]("meh1")
 
       if (gameState.creatures.contains(creatureId)) {
         gameState
@@ -99,7 +102,7 @@ case class GameState(
           .using(
             _.updated(
               abilityId,
-              ArrowComponent(
+              Arrow(
                 AbilityParams(
                   id = abilityId,
                   currentAreaId = Constants.DefaultAreaId,
@@ -114,6 +117,22 @@ case class GameState(
             )
           )
       }
+    }
+  }
+
+  private def handleCreateAbilityComponents()(implicit
+      game: CoreGame
+  ): GameState = {
+    val abilityComponentsToCreate =
+      game.gameplay.abilityComponentsToCreateScheduler.playersToCreate
+
+    game.gameplay.abilityComponentsToCreateScheduler
+      .clearAbilityComponentsToCreate()
+
+    abilityComponentsToCreate.foldLeft(this) {
+      case (gameState, abilityComponent) =>
+        ???
+        gameState
     }
   }
 }

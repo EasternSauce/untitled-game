@@ -64,6 +64,6 @@ trait AbilityComponent extends GameEntity {
 
   def destroyedOnContact: Boolean
 
-  def copy(params: AbilityParams): AbilityComponent
+  def copy(params: AbilityComponentParams): AbilityComponent
 
 }

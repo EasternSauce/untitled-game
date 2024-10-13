@@ -21,13 +21,13 @@ case class AbilityRenderableSynchronizer() {
 
   def synchronizeForArea(areaId: AreaId)(implicit game: CoreGame): Unit = {
     val abilityRenderablesToCreate =
-      (game.gameState.abilities.keys.toSet -- abilityRenderables.keys.toSet)
-        .filter(game.gameState.abilities(_).currentAreaId == areaId)
+      (game.gameState.abilityComponents.keys.toSet -- abilityRenderables.keys.toSet)
+        .filter(game.gameState.abilityComponents(_).currentAreaId == areaId)
     val abilityRendererablesToDestroy =
-      (abilityRenderables.keys.toSet -- game.gameState.abilities.keys.toSet)
+      (abilityRenderables.keys.toSet -- game.gameState.abilityComponents.keys.toSet)
         .filter(abilityId =>
-          !game.gameState.abilities.contains(abilityId) ||
-            game.gameState.abilities(abilityId).currentAreaId == areaId
+          !game.gameState.abilityComponents.contains(abilityId) ||
+            game.gameState.abilityComponents(abilityId).currentAreaId == areaId
         )
 
     abilityRenderablesToCreate.foreach(createAbilityRenderable(_))
