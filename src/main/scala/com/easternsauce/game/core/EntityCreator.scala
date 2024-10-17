@@ -2,7 +2,8 @@ package com.easternsauce.game.core
 
 import com.easternsauce.game.Constants
 import com.easternsauce.game.gamestate.GameState
-import com.easternsauce.game.gamestate.ability.{Ability, AbilityComponent, AbilityParams, Arrow}
+import com.easternsauce.game.gamestate.ability.AbilityComponentType.AbilityComponentType
+import com.easternsauce.game.gamestate.ability._
 import com.easternsauce.game.gamestate.creature.{Creature, CreatureType}
 import com.easternsauce.game.gamestate.id.GameEntityId
 import com.easternsauce.game.math.Vector2f
@@ -12,8 +13,8 @@ import scala.collection.mutable
 import scala.collection.mutable.ListBuffer
 
 case class EntityCreator() {
-  private var abilityComponentsToCreate: mutable.ListBuffer[AbilityComponent] =
-    _
+  private var abilityComponentsToCreate
+      : mutable.ListBuffer[AbilityComponentToCreate] = _
   private var playersToCreate: mutable.ListBuffer[String] = _
 
   def init(): Unit = {
@@ -22,9 +23,15 @@ case class EntityCreator() {
   }
 
   def scheduleAbilityComponentToCreate(
-      abilityComponent: AbilityComponent
+      abilityId: GameEntityId[Ability],
+      componentType: AbilityComponentType,
+      pos: Vector2f
   ): Unit = {
-    abilityComponentsToCreate += abilityComponent
+    abilityComponentsToCreate += AbilityComponentToCreate(
+      abilityId,
+      componentType,
+      pos
+    )
   }
 
   def schedulePlayerToCreate(clientId: String): Unit = {
@@ -99,9 +106,37 @@ case class EntityCreator() {
     abilityComponentsToCreate.clear()
 
     abilityComponentsToCreate.foldLeft(gameState) {
-      case (gameState, abilityComponent) =>
-        ???
+      case (gameState, abilityComponentToCreate) =>
+        val abilityComponentId =
+          GameEntityId[AbilityComponent](
+            "component" + (Math.random() * 1000000).toInt
+          )
+
+        val params = AbilityComponentParams(
+          id = abilityComponentId,
+          abilityId = abilityComponentToCreate.abilityId,
+          currentAreaId = ???,
+          creatureId = ???,
+          pos = abilityComponentToCreate.pos,
+          facingVector = ???,
+          damage = ???
+        )
+        val abilityComponent =
+          if (
+            abilityComponentToCreate.componentType == AbilityComponentType.ArrowComponent
+          ) { ArrowComponent(params) }
+          else {
+            throw new RuntimeException("incorrect ability component type")
+          }
+
         gameState
+          .modify(_.abilityComponents)
+          .using(_.updated(abilityComponentId, abilityComponent))
     }
   }
+  private case class AbilityComponentToCreate(
+      abilityId: GameEntityId[Ability],
+      componentType: AbilityComponentType,
+      pos: Vector2f
+  )
 }
