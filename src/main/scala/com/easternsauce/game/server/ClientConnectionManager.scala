@@ -10,7 +10,7 @@ case class ClientConnectionManager() {
   ): Unit = {
     _clientConnectionIds = _clientConnectionIds.updated(clientId, connectionId)
 
-    game.gameplay.playersToCreateScheduler.schedulePlayerToCreate(clientId)
+    game.gameplay.entityCreator.schedulePlayerToCreate(clientId)
   }
 
   def unregisterClient(clientId: String, connectionId: Int): Unit = {

@@ -9,8 +9,7 @@ case class Gameplay()(implicit game: CoreGame) {
 
   var view: GameView = _
   var physics: GamePhysics = _
-  var playersToCreateScheduler: PlayersToCreateScheduler = _
-  var abilityComponentsToCreateScheduler: AbilityComponentsToCreateScheduler = _
+  var entityCreator: EntityCreator = _
   var keyHeldChecker: KeyHeldChecker = _
   var gameStateHolder: GameStateContainer = _
   var tiledMapsManager: TiledMapsManager = _
@@ -27,11 +26,7 @@ case class Gameplay()(implicit game: CoreGame) {
     physics = GamePhysics()
     physics.init(tiledMapsManager.tiledMaps)
 
-    playersToCreateScheduler = PlayersToCreateScheduler()
-    playersToCreateScheduler.init()
-
-    abilityComponentsToCreateScheduler = AbilityComponentsToCreateScheduler()
-    abilityComponentsToCreateScheduler.init()
+    entityCreator.init()
 
     keyHeldChecker = KeyHeldChecker()
     keyHeldChecker.init()

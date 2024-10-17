@@ -80,7 +80,9 @@ abstract class CoreGame extends Game {
       clientData.port = Some(port)
     }
 
-    clientData.clientId.foreach(schedulePlayerToCreate)
+    clientData.clientId.foreach(clientId =>
+      gameplay.entityCreator.schedulePlayerToCreate(clientId)
+    )
   }
 
   def setPauseScreen(): Unit = {
@@ -89,10 +91,6 @@ abstract class CoreGame extends Game {
 
   def setGameplayScreen(): Unit = {
     setScreen(gameplayScreen)
-  }
-
-  def schedulePlayerToCreate(clientId: String): Unit = {
-    gameplay.playersToCreateScheduler.schedulePlayerToCreate(clientId)
   }
 
   def gameplay: Gameplay
