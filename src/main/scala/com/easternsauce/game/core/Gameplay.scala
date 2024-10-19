@@ -1,5 +1,6 @@
 package com.easternsauce.game.core
 
+import com.easternsauce.game.entitycreator.GameEntityCreators
 import com.easternsauce.game.gamephysics.GamePhysics
 import com.easternsauce.game.gamestate.GameState
 import com.easternsauce.game.gamestate.id.AreaId
@@ -9,7 +10,7 @@ case class Gameplay()(implicit game: CoreGame) {
 
   var view: GameView = _
   var physics: GamePhysics = _
-  var entityCreator: EntityCreator = _
+  var entityCreators: GameEntityCreators = _
   var keyHeldChecker: KeyHeldChecker = _
   var gameStateHolder: GameStateContainer = _
   var tiledMapsManager: TiledMapsManager = _
@@ -26,7 +27,8 @@ case class Gameplay()(implicit game: CoreGame) {
     physics = GamePhysics()
     physics.init(tiledMapsManager.tiledMaps)
 
-    entityCreator.init()
+    entityCreators = GameEntityCreators()
+    entityCreators.init()
 
     keyHeldChecker = KeyHeldChecker()
     keyHeldChecker.init()

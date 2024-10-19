@@ -81,7 +81,7 @@ abstract class CoreGame extends Game {
     }
 
     clientData.clientId.foreach(clientId =>
-      gameplay.entityCreator.schedulePlayerToCreate(clientId)
+      gameplay.entityCreators.schedulePlayerToCreate(clientId)
     )
   }
 

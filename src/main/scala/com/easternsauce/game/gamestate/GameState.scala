@@ -21,7 +21,7 @@ case class GameState(
   ): GameState = {
     this
       .updateCreaturesForArea(areaId, delta)
-      .pipe(game.gameplay.entityCreator.createScheduledEntities)
+      .pipe(game.gameplay.entityCreators.createScheduledEntities)
 
   }
 
