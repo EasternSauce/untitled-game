@@ -1,5 +1,6 @@
 package com.easternsauce.game.gamestate.event
 
+import com.easternsauce.game.core.CoreGame
 import com.easternsauce.game.gamestate.GameState
 import com.easternsauce.game.gamestate.creature.Creature
 import com.easternsauce.game.gamestate.id.{AreaId, GameEntityId}
@@ -12,7 +13,9 @@ case class CreatureGoToEvent(
     destination: Vector2f
 ) extends AreaGameStateEvent {
 
-  override def applyToGameState(gameState: GameState): GameState = {
+  override def applyToGameState(
+      gameState: GameState
+  )(implicit game: CoreGame): GameState = {
     if (
       gameState.creatures
         .contains(creatureId) && gameState.creatures(creatureId).alive

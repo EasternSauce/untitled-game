@@ -11,7 +11,7 @@ case class AbilityParams(
     creatureId: GameEntityId[Creature],
     pos: Vector2f,
     facingVector: Vector2f = Vector2f(0, 1),
-    damage: Float,
+    damage: Float = 10f,
     animationTimer: SimpleTimer = SimpleTimer(running = true),
     velocity: Vector2f = Vector2f(0, 1)
 ) {}

@@ -27,6 +27,8 @@ trait AbilityComponent extends GameEntity {
     WorldDirection.fromVector(params.facingVector)
   }
 
+  def init(): AbilityComponent
+
   def update(
       delta: Float,
       newPos: Option[Vector2f]

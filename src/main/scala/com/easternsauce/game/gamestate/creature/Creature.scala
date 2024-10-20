@@ -6,7 +6,7 @@ import com.easternsauce.game.gamestate.creature.CreatureType.CreatureType
 import com.easternsauce.game.gamestate.id.{AreaId, GameEntityId}
 import com.easternsauce.game.gamestate.{GameEntity, WorldDirection}
 import com.easternsauce.game.math.Vector2f
-import com.softwaremill.quicklens.ModifyPimp
+import com.softwaremill.quicklens.{ModifyPimp, QuicklensMapAt}
 
 case class Creature(params: CreatureParams) extends GameEntity {
 
@@ -40,6 +40,8 @@ case class Creature(params: CreatureParams) extends GameEntity {
       .modify(_.params.attackAnimationTimer)
       .using(_.update(delta))
       .modify(_.params.deathAnimationTimer)
+      .using(_.update(delta))
+      .modify(_.params.abilityCooldownTimers.each)
       .using(_.update(delta))
   }
 

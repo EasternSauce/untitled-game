@@ -1,6 +1,8 @@
 package com.easternsauce.game.gamestate.creature
 
 import com.easternsauce.game.gamestate.SimpleTimer
+import com.easternsauce.game.gamestate.ability.AbilityType
+import com.easternsauce.game.gamestate.ability.AbilityType.AbilityType
 import com.easternsauce.game.gamestate.creature.CreatureAnimationType.CreatureAnimationType
 import com.easternsauce.game.gamestate.creature.PrimaryWeaponType.PrimaryWeaponType
 import com.easternsauce.game.gamestate.creature.SecondaryWeaponType.SecondaryWeaponType
@@ -33,5 +35,9 @@ case class CreatureParams(
     attackAnimationTimer: SimpleTimer = SimpleTimer(running = false),
     deathAnimationTimer: SimpleTimer = SimpleTimer(running = false),
     respawnDelayInProgress: Boolean = false,
-    destinationReached: Boolean = true
+    destinationReached: Boolean = true,
+    abilityCooldownTimers: Map[AbilityType, SimpleTimer] =
+      AbilityType.values.toList
+        .map(abilityType => abilityType -> SimpleTimer(running = false))
+        .toMap
 ) {}

@@ -1,13 +1,14 @@
 package com.easternsauce.game.client
 
 import com.badlogic.gdx.Gdx
-import com.badlogic.gdx.Input.Buttons
+import com.badlogic.gdx.Input.{Buttons, Keys}
 import com.easternsauce.game.Constants
 import com.easternsauce.game.command.ActionsPerformRequestCommand
 import com.easternsauce.game.connectivity.GameClientConnectivity
 import com.easternsauce.game.core.{CoreGame, Gameplay}
 import com.easternsauce.game.gamestate.GameState
-import com.easternsauce.game.gamestate.event.{CreatureGoToEvent, GameStateEvent}
+import com.easternsauce.game.gamestate.ability.AbilityType
+import com.easternsauce.game.gamestate.event.{CreatureGoToEvent, CreaturePerformAbilityEvent, GameStateEvent}
 import com.easternsauce.game.gamestate.id.AreaId
 import com.easternsauce.game.gameview.GameScreen
 import com.easternsauce.game.math.MousePosTransformations
@@ -44,6 +45,7 @@ case class CoreGameClient() extends CoreGame {
 
     handleInputs()
 
+    gameplay.updateTimers(delta)
     gameplay.updateForArea(areaId, delta)
     gameplay.renderForArea(areaId, delta)
 
@@ -101,6 +103,33 @@ case class CoreGameClient() extends CoreGame {
             )
           )
         )
+      }
+    }
+    if (gameplay.keyHeldChecker.keyHeld(Keys.SPACE)) {
+      val clientCreature = clientCreatureId
+        .filter(gameState.creatures.contains)
+        .map(gameState.creatures(_))
+
+      clientCreature.foreach { creature =>
+        if (
+          !creature.params
+            .abilityCooldownTimers(AbilityType.Arrow)
+            .running || creature.params
+            .abilityCooldownTimers(AbilityType.Arrow)
+            .time > 1f
+        ) {
+          sendBroadcastEvents(
+            List(
+              CreaturePerformAbilityEvent(
+                creature.id,
+                creature.currentAreaId,
+                AbilityType.Arrow,
+                creature.pos,
+                creature.params.facingVector
+              )
+            )
+          )
+        }
       }
     }
   }

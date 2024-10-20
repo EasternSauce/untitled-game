@@ -34,6 +34,10 @@ case class Gameplay()(implicit game: CoreGame) {
     keyHeldChecker.init()
   }
 
+  def updateTimers(delta: Float): Unit = {
+    gameStateHolder.updateTimers(delta)
+  }
+
   def updateForArea(areaId: AreaId, delta: Float): Unit = {
     gameStateHolder.updateForArea(areaId, delta)
     physics.updateForArea(areaId)

@@ -65,10 +65,6 @@ abstract class CoreGame extends Game {
     eventQueueContainer.sendLocalEvents(events)
   }
 
-  def applyEventsToGameState(events: List[GameStateEvent]): Unit = {
-    gameplay.gameStateHolder.applyEvents(events)
-  }
-
   def setClientData(clientId: String, host: String, port: String): Unit = {
     if (clientId.nonEmpty) {
       clientData.clientId = Some(clientId)

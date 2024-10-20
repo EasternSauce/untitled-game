@@ -49,7 +49,7 @@ case class AbilityComponentCreator() extends EntityCreator {
 
         gameState
           .modify(_.abilityComponents)
-          .using(_.updated(abilityComponentId, abilityComponent))
+          .using(_.updated(abilityComponentId, abilityComponent.init()))
     }
 
     abilityComponentsToCreate.clear()

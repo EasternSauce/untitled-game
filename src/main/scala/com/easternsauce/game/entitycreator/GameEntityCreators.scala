@@ -35,21 +35,17 @@ case class GameEntityCreators() {
     playerCreator.schedulePlayerToCreate(clientId)
 
   def scheduleAbilityToCreate(
-      abilityId: GameEntityId[Ability],
       abilityType: AbilityType,
       currentAreaId: AreaId,
       creatureId: GameEntityId[Creature],
       pos: Vector2f,
-      facingVector: Vector2f,
-      damage: Float
+      facingVector: Vector2f
   ): Unit = abilityCreator.scheduleAbilityToCreate(
-    abilityId,
     abilityType,
     currentAreaId,
     creatureId,
     pos,
-    facingVector,
-    damage
+    facingVector
   )
 
   def scheduleAbilityComponentToCreate(

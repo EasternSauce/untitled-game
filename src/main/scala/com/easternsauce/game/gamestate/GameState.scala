@@ -14,8 +14,14 @@ case class GameState(
     abilities: Map[GameEntityId[Ability], Ability] = Map(),
     abilityComponents: Map[GameEntityId[AbilityComponent], AbilityComponent] =
       Map(),
-    activeCreatureIds: Set[GameEntityId[Creature]] = Set()
+    activeCreatureIds: Set[GameEntityId[Creature]] = Set(),
+    mainTimer: SimpleTimer = SimpleTimer(running = true)
 ) {
+
+  def updateTimers(delta: Float): GameState = {
+    this.modify(_.mainTimer).using(_.update(delta))
+  }
+
   def updateForArea(areaId: AreaId, delta: Float)(implicit
       game: CoreGame
   ): GameState = {
@@ -25,7 +31,9 @@ case class GameState(
 
   }
 
-  def applyEvents(events: List[GameStateEvent]): GameState = {
+  def applyEvents(
+      events: List[GameStateEvent]
+  )(implicit game: CoreGame): GameState = {
     events.foldLeft(this) { case (gameState, event) =>
       event.applyToGameState(gameState)
     }
@@ -50,16 +58,25 @@ case class GameState(
           creature
         }
       )
-      .modify(_.abilityComponents.each)
+      .modify(_.abilities.each)
       .using(ability =>
         if (ability.currentAreaId == areaId) {
-          ability.update(
-            delta,
-            game.gameplay.physics.abilityBodyPositions.get(ability.id)
-          )
+          ability.update()
         } else {
           ability
         }
       )
+      .modify(_.abilityComponents.each)
+      .using(abilityComponent =>
+        if (abilityComponent.currentAreaId == areaId) {
+          abilityComponent.update(
+            delta,
+            game.gameplay.physics.abilityBodyPositions.get(abilityComponent.id)
+          )
+        } else {
+          abilityComponent
+        }
+      )
   }
+
 }

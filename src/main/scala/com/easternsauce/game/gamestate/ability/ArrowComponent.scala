@@ -14,6 +14,10 @@ case class ArrowComponent(params: AbilityComponentParams)
 
   override val speed: Float = 12f
 
+  override def init(): ArrowComponent = {
+    this
+  }
+
   override def destroyedOnContact: Boolean = true
 
   override def copy(params: AbilityComponentParams): AbilityComponent = {

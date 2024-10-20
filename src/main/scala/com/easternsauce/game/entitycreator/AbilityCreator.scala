@@ -35,8 +35,7 @@ case class AbilityCreator() extends EntityCreator {
           currentAreaId = abilityToCreate.currentAreaId,
           creatureId = abilityToCreate.creatureId,
           pos = abilityToCreate.pos,
-          facingVector = abilityToCreate.facingVector,
-          damage = abilityToCreate.damage
+          facingVector = abilityToCreate.facingVector
         )
         val ability =
           if (abilityToCreate.abilityType == AbilityType.Arrow) {
@@ -47,7 +46,7 @@ case class AbilityCreator() extends EntityCreator {
 
         gameState
           .modify(_.abilities)
-          .using(_.updated(abilityId, ability))
+          .using(_.updated(abilityId, ability.init()))
     }
 
     abilitiesToCreate.clear()
@@ -56,33 +55,27 @@ case class AbilityCreator() extends EntityCreator {
   }
 
   def scheduleAbilityToCreate(
-      abilityId: GameEntityId[Ability],
       abilityType: AbilityType,
       currentAreaId: AreaId,
       creatureId: GameEntityId[Creature],
       pos: Vector2f,
-      facingVector: Vector2f,
-      damage: Float
+      facingVector: Vector2f
   ): Unit = {
     abilitiesToCreate += AbilityToCreate(
-      abilityId,
       abilityType,
       currentAreaId,
       creatureId,
       pos,
-      facingVector,
-      damage
+      facingVector
     )
   }
 
   private case class AbilityToCreate(
-      abilityId: GameEntityId[Ability],
       abilityType: AbilityType,
       currentAreaId: AreaId,
       creatureId: GameEntityId[Creature],
       pos: Vector2f,
-      facingVector: Vector2f,
-      damage: Float
+      facingVector: Vector2f
   )
 
 }

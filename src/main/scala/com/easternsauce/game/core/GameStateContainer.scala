@@ -11,7 +11,14 @@ case class GameStateContainer(private var _gameState: GameState) {
     _gameState = _gameState.updateForArea(areaId, delta)
   }
 
-  def applyEvents(events: List[GameStateEvent]): Unit = {
+  def updateTimers(delta: Float): Unit = {
+    _gameState = _gameState.updateTimers(delta)
+
+  }
+
+  def applyEvents(
+      events: List[GameStateEvent]
+  )(implicit game: CoreGame): Unit = {
     _gameState = _gameState.applyEvents(events)
   }
 
@@ -20,4 +27,5 @@ case class GameStateContainer(private var _gameState: GameState) {
   }
 
   def gameState: GameState = _gameState
+
 }
