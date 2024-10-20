@@ -30,6 +30,8 @@ case class AbilityComponentCreator() extends EntityCreator {
             "component" + (Math.random() * 1000000).toInt
           )
 
+        val ability = gameState.abilities(abilityComponentToCreate.abilityId)
+
         val params = AbilityComponentParams(
           id = abilityComponentId,
           abilityId = abilityComponentToCreate.abilityId,
@@ -37,7 +39,8 @@ case class AbilityComponentCreator() extends EntityCreator {
           creatureId = abilityComponentToCreate.creatureId,
           pos = abilityComponentToCreate.pos,
           facingVector = abilityComponentToCreate.facingVector,
-          damage = abilityComponentToCreate.damage
+          damage = abilityComponentToCreate.damage,
+          velocity = abilityComponentToCreate.facingVector.normalized.multiply(ability.params.speed)
         )
         val abilityComponent =
           if (
