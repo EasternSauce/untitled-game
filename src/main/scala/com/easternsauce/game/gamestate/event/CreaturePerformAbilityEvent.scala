@@ -21,13 +21,13 @@ case class CreaturePerformAbilityEvent(
   )(implicit game: CoreGame): GameState = {
     val creature = game.gameState.creatures(creatureId)
 
-    if (          !creature.params
-      .abilityCooldownTimers(AbilityType.Arrow)
-      .running || creature.params
-      .abilityCooldownTimers(AbilityType.Arrow)
-      .time > 1f) {
-
-    }
+    if (
+      !creature.params
+        .abilityCooldownTimers(AbilityType.Arrow)
+        .running || creature.params
+        .abilityCooldownTimers(AbilityType.Arrow)
+        .time > 1f
+    ) {}
     game.gameplay.entityCreators.scheduleAbilityToCreate(
       abilityType,
       areaId,
@@ -35,6 +35,10 @@ case class CreaturePerformAbilityEvent(
       pos,
       facingVector
     )
-    gameState.modify(_.creatures.at(creatureId).params.abilityCooldownTimers.at(abilityType)).using(_.restart())
+    gameState
+      .modify(
+        _.creatures.at(creatureId).params.abilityCooldownTimers.at(abilityType)
+      )
+      .using(_.restart())
   }
 }

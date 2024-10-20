@@ -40,7 +40,9 @@ case class AbilityComponentCreator() extends EntityCreator {
           pos = abilityComponentToCreate.pos,
           facingVector = abilityComponentToCreate.facingVector,
           damage = abilityComponentToCreate.damage,
-          velocity = abilityComponentToCreate.facingVector.normalized.multiply(ability.params.speed)
+          velocity = abilityComponentToCreate.facingVector.normalized.multiply(
+            ability.params.speed
+          )
         )
         val abilityComponent =
           if (
