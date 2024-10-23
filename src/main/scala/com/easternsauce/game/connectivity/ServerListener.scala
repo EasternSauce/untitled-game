@@ -9,7 +9,7 @@ import com.esotericsoftware.kryonet.FrameworkMessage.KeepAlive
 import com.esotericsoftware.kryonet.{Connection, Listener}
 
 case class ServerListener(game: CoreGameServer) extends Listener {
-  implicit val _game: CoreGameServer = game
+  private implicit val _game: CoreGameServer = game
 
   override def disconnected(connection: Connection): Unit = {
 

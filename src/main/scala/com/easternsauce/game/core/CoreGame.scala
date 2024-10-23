@@ -2,20 +2,22 @@ package com.easternsauce.game.core
 
 import com.badlogic.gdx.{Game, Gdx}
 import com.easternsauce.game.connectivity.GameConnectivity
+import com.easternsauce.game.entitycreator.PlayerToCreate
 import com.easternsauce.game.gamestate.GameState
 import com.easternsauce.game.gamestate.creature.Creature
 import com.easternsauce.game.gamestate.event.GameStateEvent
 import com.easternsauce.game.gamestate.id.{AreaId, GameEntityId}
 import com.easternsauce.game.gameview.GameScreen
+import com.easternsauce.game.queues.GameQueues
 import com.esotericsoftware.kryonet.Listener
 
 abstract class CoreGame extends Game {
 
-  protected var eventQueueContainer: EventQueueContainer = _
-
   protected var scheduledOverrideGameState: Option[GameState] = _
 
   var clientData: ClientData = _
+
+  var queues: GameQueues = _
 
   protected def init(): Unit
 
@@ -28,8 +30,7 @@ abstract class CoreGame extends Game {
 
     clientData = ClientData()
 
-    eventQueueContainer = EventQueueContainer()
-    eventQueueContainer.init()
+    queues = GameQueues()
 
     scheduledOverrideGameState = None
 
@@ -61,8 +62,10 @@ abstract class CoreGame extends Game {
       events: List[GameStateEvent]
   ): Unit // TODO: does it duplicate applyEvent?
 
-  def sendLocalEvents(events: List[GameStateEvent]): Unit = {
-    eventQueueContainer.sendLocalEvents(events)
+  def sendLocalEvents(
+      events: List[GameStateEvent]
+  )(implicit game: CoreGame): Unit = {
+    game.queues.localEvents ++= events
   }
 
   def setClientData(clientId: String, host: String, port: String): Unit = {
@@ -77,7 +80,7 @@ abstract class CoreGame extends Game {
     }
 
     clientData.clientId.foreach(clientId =>
-      gameplay.entityCreators.schedulePlayerToCreate(clientId)
+      queues.playersToCreate += PlayerToCreate(clientId)
     )
   }
 

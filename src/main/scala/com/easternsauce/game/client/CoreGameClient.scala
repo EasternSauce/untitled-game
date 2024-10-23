@@ -8,7 +8,7 @@ import com.easternsauce.game.connectivity.GameClientConnectivity
 import com.easternsauce.game.core.{CoreGame, Gameplay}
 import com.easternsauce.game.gamestate.GameState
 import com.easternsauce.game.gamestate.ability.AbilityType
-import com.easternsauce.game.gamestate.event.{CreatureGoToEvent, CreaturePerformAbilityEvent, GameStateEvent}
+import com.easternsauce.game.gamestate.event._
 import com.easternsauce.game.gamestate.id.AreaId
 import com.easternsauce.game.gameview.GameScreen
 import com.easternsauce.game.math.MousePosTransformations
@@ -56,17 +56,25 @@ case class CoreGameClient() extends CoreGame {
 
   private def processEvents(areaId: AreaId): Unit = {
     val broadcastEvents =
-      eventQueueContainer.broadcastEventsForArea(areaId)
+      game.queues.broadcastEvents.toList.filter {
+        case event: AreaGameStateEvent => event.areaId == areaId
+        case _                         => false
+      }
 
     if (broadcastEvents.nonEmpty) {
       client.sendTCP(ActionsPerformRequestCommand(broadcastEvents))
     }
 
     gameplay.gameStateHolder.applyEvents(
-      eventQueueContainer.areaEvents(areaId)
+      game.queues.localEvents.toList.filter {
+        case event: AreaGameStateEvent    => event.areaId == areaId
+        case _: OperationalGameStateEvent => true
+        case _                            => false
+      }
     )
 
-    eventQueueContainer.clearEventQueues()
+    game.queues.broadcastEvents.clear()
+    game.queues.localEvents.clear()
   }
 
   private def processGameStateOverride(): Unit = {
@@ -135,7 +143,7 @@ case class CoreGameClient() extends CoreGame {
   }
 
   override def sendBroadcastEvents(events: List[GameStateEvent]): Unit = {
-    eventQueueContainer.sendBroadcastEvents(events)
+    game.queues.broadcastEvents ++= events
   }
 
   def registerClient(clientId: String): Unit = {

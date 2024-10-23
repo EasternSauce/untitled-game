@@ -1,5 +1,6 @@
 package com.easternsauce.game.gamestate.event
 import com.easternsauce.game.core.CoreGame
+import com.easternsauce.game.entitycreator.AbilityToCreate
 import com.easternsauce.game.gamestate.GameState
 import com.easternsauce.game.gamestate.ability.AbilityType
 import com.easternsauce.game.gamestate.ability.AbilityType.AbilityType
@@ -27,14 +28,16 @@ case class CreaturePerformAbilityEvent(
         .running || creature.params
         .abilityCooldownTimers(AbilityType.Arrow)
         .time > 1f
-    ) {}
-    game.gameplay.entityCreators.scheduleAbilityToCreate(
-      abilityType,
-      areaId,
-      creatureId,
-      pos,
-      facingVector
-    )
+    ) {
+      game.queues.abilitiesToCreate += AbilityToCreate(
+        abilityType,
+        areaId,
+        creatureId,
+        pos,
+        facingVector
+      )
+    }
+
     gameState
       .modify(
         _.creatures.at(creatureId).params.abilityCooldownTimers.at(abilityType)

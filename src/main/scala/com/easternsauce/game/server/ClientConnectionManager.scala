@@ -1,6 +1,7 @@
 package com.easternsauce.game.server
 
 import com.easternsauce.game.core.CoreGame
+import com.easternsauce.game.entitycreator.PlayerToCreate
 
 case class ClientConnectionManager() {
   private var _clientConnectionIds: Map[String, Int] = Map()
@@ -10,7 +11,7 @@ case class ClientConnectionManager() {
   ): Unit = {
     _clientConnectionIds = _clientConnectionIds.updated(clientId, connectionId)
 
-    game.gameplay.entityCreators.schedulePlayerToCreate(clientId)
+    game.queues.playersToCreate += PlayerToCreate(clientId)
   }
 
   def unregisterClient(clientId: String, connectionId: Int): Unit = {

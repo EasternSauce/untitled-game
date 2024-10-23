@@ -7,7 +7,7 @@ import com.easternsauce.game.gameview.GameScreen
 import com.easternsauce.game.server.CoreGameServer
 
 case class ServerStartMenuScreen(game: CoreGameServer) extends GameScreen {
-  implicit val _game: CoreGameServer = game
+  private implicit val _game: CoreGameServer = game
 
   private var stage: Stage = _
 
