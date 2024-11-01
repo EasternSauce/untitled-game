@@ -36,12 +36,18 @@ case class CreaturePerformAbilityEvent(
         pos,
         facingVector
       )
+      gameState
+        .modify(
+          _.creatures
+            .at(creatureId)
+            .params
+            .abilityCooldownTimers
+            .at(abilityType)
+        )
+        .using(_.restart())
+    } else {
+      gameState
     }
 
-    gameState
-      .modify(
-        _.creatures.at(creatureId).params.abilityCooldownTimers.at(abilityType)
-      )
-      .using(_.restart())
   }
 }
