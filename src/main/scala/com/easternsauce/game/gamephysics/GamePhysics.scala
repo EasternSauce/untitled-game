@@ -25,7 +25,7 @@ case class GamePhysics() {
     areaWorlds = mutable.Map() ++ tiledMaps.map { case (areaId: AreaId, _) =>
       (areaId, AreaWorld(areaId))
     }
-    areaWorlds.values.foreach(_.init(PhysicsContactListener(this)))
+    areaWorlds.values.foreach(_.init(PhysicsContactListener()))
 
     abilityBodyPhysics = AbilityBodyPhysics()
     abilityBodyPhysics.init(areaWorlds)

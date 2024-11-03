@@ -25,6 +25,10 @@ case class GameState(
   def updateForArea(areaId: AreaId, delta: Float)(implicit
       game: CoreGame
   ): GameState = {
+    println("\n\n\n\n\n\n\n\n\n\number of creatures = " + creatures.size)
+    println("number of abilities = " + abilities.size)
+    println("number of components = " + abilityComponents.size)
+
     this
       .updateCreaturesForArea(areaId, delta)
       .pipe(game.gameplay.entityCreators.createScheduledEntities)
@@ -77,6 +81,19 @@ case class GameState(
           abilityComponent
         }
       )
+  }
+
+  def removeAbilityIfCompleted(abilityId: GameEntityId[Ability]): GameState = {
+    if (
+      !abilityComponents.values
+        .exists(_.params.abilityId == abilityId)
+    ) {
+      this
+        .modify(_.abilities)
+        .using(_.removed(abilityId))
+    } else {
+      this
+    }
   }
 
 }

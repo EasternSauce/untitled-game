@@ -6,13 +6,13 @@ case class Arrow(params: AbilityParams) extends Ability {
 
   override def init()(implicit game: CoreGame): Ability = {
     game.queues.abilityComponentsToCreate += AbilityComponentToCreate(
-      params.id,
-      AbilityComponentType.ArrowComponent,
-      currentAreaId,
-      params.creatureId,
-      params.pos,
-      params.facingVector,
-      params.damage
+      abilityId = params.id,
+      componentType = AbilityComponentType.ArrowComponent,
+      currentAreaId = currentAreaId,
+      creatureId = params.creatureId,
+      pos = params.pos,
+      facingVector = params.facingVector,
+      damage = params.damage
     )
 
     this

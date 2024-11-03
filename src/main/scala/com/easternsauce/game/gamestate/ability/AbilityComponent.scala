@@ -62,6 +62,7 @@ trait AbilityComponent extends GameEntity {
     this.params.facingVector.normalized.multiply(this.speed)
   }
 
+  def abilityId: GameEntityId[Ability] = params.abilityId
   def currentAreaId: AreaId = params.currentAreaId
 
   def destroyedOnContact: Boolean
