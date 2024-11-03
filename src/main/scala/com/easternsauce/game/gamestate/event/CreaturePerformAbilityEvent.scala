@@ -45,6 +45,12 @@ case class CreaturePerformAbilityEvent(
             .at(abilityType)
         )
         .using(_.restart())
+        .modify(_.creatures.at(creatureId).params.attackAnimationTimer)
+        .using(_.restart())
+        .modify(_.creatures.at(creatureId).params.destination)
+        .setTo(creature.pos)
+        .modify(_.creatures.at(creatureId).params.facingVector)
+        .setTo(creature.pos.vectorTowards(destination))
     } else {
       gameState
     }
