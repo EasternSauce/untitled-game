@@ -25,10 +25,6 @@ case class GameState(
   def updateForArea(areaId: AreaId, delta: Float)(implicit
       game: CoreGame
   ): GameState = {
-    println("\n\n\n\n\n\n\n\n\n\number of creatures = " + creatures.size)
-    println("number of abilities = " + abilities.size)
-    println("number of components = " + abilityComponents.size)
-
     this
       .updateCreaturesForArea(areaId, delta)
       .pipe(game.gameplay.entityCreators.createScheduledEntities)

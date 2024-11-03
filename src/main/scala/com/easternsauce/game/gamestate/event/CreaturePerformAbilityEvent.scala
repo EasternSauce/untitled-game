@@ -14,7 +14,7 @@ case class CreaturePerformAbilityEvent(
     areaId: AreaId,
     abilityType: AbilityType,
     pos: Vector2f,
-    facingVector: Vector2f
+    destination: Vector2f
 ) extends AreaGameStateEvent {
 
   override def applyToGameState(
@@ -34,7 +34,7 @@ case class CreaturePerformAbilityEvent(
         areaId,
         creatureId,
         pos,
-        facingVector
+        creature.pos.vectorTowards(destination)
       )
       gameState
         .modify(

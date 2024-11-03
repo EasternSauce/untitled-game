@@ -1,7 +1,7 @@
 package com.easternsauce.game.client
 
 import com.badlogic.gdx.Gdx
-import com.badlogic.gdx.Input.{Buttons, Keys}
+import com.badlogic.gdx.Input.Buttons
 import com.easternsauce.game.Constants
 import com.easternsauce.game.command.ActionsPerformRequestCommand
 import com.easternsauce.game.connectivity.GameClientConnectivity
@@ -91,11 +91,26 @@ case class CoreGameClient() extends CoreGame {
 
   override protected def handleInputs(): Unit = {
     if (gameplay.keyHeldChecker.keyHeld(Buttons.LEFT)) {
-      val clientCreature = clientCreatureId
-        .filter(gameState.creatures.contains)
-        .map(gameState.creatures(_))
+      handleMoveInput()
+    }
+    if (gameplay.keyHeldChecker.keyHeld(Buttons.RIGHT)) {
+      handleAttackInput()
+    }
+  }
 
-      clientCreature.foreach { creature =>
+  private def handleAttackInput(): Unit = {
+    val clientCreature = clientCreatureId
+      .filter(gameState.creatures.contains)
+      .map(gameState.creatures(_))
+
+    clientCreature.foreach { creature =>
+      if (
+        !creature.params
+          .abilityCooldownTimers(AbilityType.Arrow)
+          .running || creature.params
+          .abilityCooldownTimers(AbilityType.Arrow)
+          .time > 1f
+      ) {
         val destination = MousePosTransformations.mouseWorldPos(
           Gdx.input.getX.toFloat,
           Gdx.input.getY.toFloat,
@@ -104,41 +119,40 @@ case class CoreGameClient() extends CoreGame {
 
         sendBroadcastEvents(
           List(
-            CreatureGoToEvent(
+            CreaturePerformAbilityEvent(
               creature.id,
               creature.currentAreaId,
+              AbilityType.Arrow,
+              creature.pos,
               destination
             )
           )
         )
       }
     }
-    if (gameplay.keyHeldChecker.keyHeld(Keys.SPACE)) {
-      val clientCreature = clientCreatureId
-        .filter(gameState.creatures.contains)
-        .map(gameState.creatures(_))
+  }
 
-      clientCreature.foreach { creature =>
-        if (
-          !creature.params
-            .abilityCooldownTimers(AbilityType.Arrow)
-            .running || creature.params
-            .abilityCooldownTimers(AbilityType.Arrow)
-            .time > 1f
-        ) {
-          sendBroadcastEvents(
-            List(
-              CreaturePerformAbilityEvent(
-                creature.id,
-                creature.currentAreaId,
-                AbilityType.Arrow,
-                creature.pos,
-                creature.params.facingVector
-              )
-            )
+  private def handleMoveInput(): Unit = {
+    val clientCreature = clientCreatureId
+      .filter(gameState.creatures.contains)
+      .map(gameState.creatures(_))
+
+    clientCreature.foreach { creature =>
+      val destination = MousePosTransformations.mouseWorldPos(
+        Gdx.input.getX.toFloat,
+        Gdx.input.getY.toFloat,
+        creature.pos
+      )
+
+      sendBroadcastEvents(
+        List(
+          CreatureGoToEvent(
+            creature.id,
+            creature.currentAreaId,
+            destination
           )
-        }
-      }
+        )
+      )
     }
   }
 
