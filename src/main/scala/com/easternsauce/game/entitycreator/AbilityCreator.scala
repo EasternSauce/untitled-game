@@ -2,7 +2,7 @@ package com.easternsauce.game.entitycreator
 
 import com.easternsauce.game.core.CoreGame
 import com.easternsauce.game.gamestate.GameState
-import com.easternsauce.game.gamestate.ability.{Ability, AbilityParams, AbilityType, Arrow}
+import com.easternsauce.game.gamestate.ability._
 import com.easternsauce.game.gamestate.id.GameEntityId
 import com.softwaremill.quicklens.ModifyPimp
 
@@ -22,6 +22,8 @@ case class AbilityCreator() extends EntityCreator {
           id = abilityId,
           currentAreaId = abilityToCreate.currentAreaId,
           creatureId = abilityToCreate.creatureId,
+          abilityType = abilityToCreate.abilityType,
+          abilityState = AbilityState.Channel,
           pos = abilityToCreate.pos,
           facingVector = abilityToCreate.facingVector
         )
