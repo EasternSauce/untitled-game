@@ -80,7 +80,7 @@ abstract class CoreGame extends Game {
     }
 
     clientData.clientId.foreach(clientId =>
-      queues.playersToCreate += PlayerToCreate(clientId)
+      queues.creaturesToCreate += PlayerToCreate(clientId)
     )
   }
 

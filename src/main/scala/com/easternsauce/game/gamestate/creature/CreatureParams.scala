@@ -4,6 +4,7 @@ import com.easternsauce.game.gamestate.SimpleTimer
 import com.easternsauce.game.gamestate.ability.AbilityType
 import com.easternsauce.game.gamestate.ability.AbilityType.AbilityType
 import com.easternsauce.game.gamestate.creature.CreatureAnimationType.CreatureAnimationType
+import com.easternsauce.game.gamestate.creature.CreatureType.CreatureType
 import com.easternsauce.game.gamestate.creature.PrimaryWeaponType.PrimaryWeaponType
 import com.easternsauce.game.gamestate.creature.SecondaryWeaponType.SecondaryWeaponType
 import com.easternsauce.game.gamestate.id.{AreaId, GameEntityId}
@@ -39,5 +40,7 @@ case class CreatureParams(
     abilityCooldownTimers: Map[AbilityType, SimpleTimer] =
       AbilityType.values.toList
         .map(abilityType => abilityType -> SimpleTimer(running = false))
-        .toMap
+        .toMap,
+    spawnPointId: Option[String],
+    creatureType: CreatureType
 ) {}

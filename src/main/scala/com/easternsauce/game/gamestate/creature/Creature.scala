@@ -77,7 +77,8 @@ object Creature {
       currentAreaId: AreaId,
       pos: Vector2f,
       player: Boolean,
-      creatureType: CreatureType
+      creatureType: CreatureType,
+      spawnPointId: Option[String]
   ): Creature = {
     Creature(
       CreatureParams(
@@ -99,7 +100,9 @@ object Creature {
         attackRange = creatureType.attackRange,
         primaryWeaponType = creatureType.primaryWeaponType,
         secondaryWeaponType = creatureType.secondaryWeaponType,
-        renderBodyOnly = creatureType.renderBodyOnly
+        renderBodyOnly = creatureType.renderBodyOnly,
+        spawnPointId = spawnPointId,
+        creatureType = creatureType
       )
     )
   }

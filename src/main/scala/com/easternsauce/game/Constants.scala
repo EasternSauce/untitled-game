@@ -1,7 +1,9 @@
 package com.easternsauce.game
 
-import com.easternsauce.game.gamestate.creature.{AnimationDefinition, FramesDefinition}
+import com.easternsauce.game.gamestate.creature.{AnimationDefinition, CreatureType, FramesDefinition}
 import com.easternsauce.game.gamestate.id.AreaId
+import com.easternsauce.game.math.Vector2f
+import com.easternsauce.game.spawnpoint.{CreaturesToSpawn, SpawnPointData}
 
 object Constants {
   val WindowWidth = 1360
@@ -85,6 +87,18 @@ object Constants {
   val MapFilesLocation: String = "assets/maps"
 
   val MapAreaNames: List[String] = List("area1")
+
+  val MapAreaSpawnPoints: List[SpawnPointData] = List(
+    SpawnPointData(
+      spawnPointId = "area1-spawnpoint1",
+      spawnPointAreaId = AreaId("area1"),
+      spawnPointPos = Vector2f(5, 415),
+      creaturesToSpawn = List(
+        CreaturesToSpawn(CreatureType.Rat, 1),
+        CreaturesToSpawn(CreatureType.Zombie, 1)
+      )
+    )
+  )
 
   val RenderDistance: Float = 1000f
 
