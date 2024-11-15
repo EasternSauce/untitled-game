@@ -3,22 +3,21 @@ package com.easternsauce.game.spawnpoint
 import com.easternsauce.game.core.CoreGame
 import com.easternsauce.game.entitycreator.EnemyToCreate
 import com.easternsauce.game.gamestate.id.AreaId
-import com.easternsauce.game.math.Vector2f
 
-case class CreatureSpawnPoint(
-spawnPointData: SpawnPointData
+case class SpawnPoint(
+    spawnPointData: SpawnPointData
 ) {
-  def update()(implicit game: CoreGame): Unit = {
+  def update()(implicit game: CoreGame): SpawnPoint = {
     spawnPointData.creaturesToSpawn.foreach(creaturesToSpawn => {
       val creaturesAlreadySpawnedCount = game.gameState.creatures.values
+        .filter(_.params.spawnPointId.contains(spawnPointData.spawnPointId))
         .filter(_.params.creatureType == creaturesToSpawn.creatureType)
-        .filter(_.alive)
-        .count(_.params.spawnPointId.contains(spawnPointData.spawnPointId))
+        .count(_.alive)
 
-      println("num: " + creaturesToSpawn.numOfCreatures)
-      println("stuff: " + creaturesAlreadySpawnedCount)
-
-      for (_ <- 0 until creaturesToSpawn.numOfCreatures - creaturesAlreadySpawnedCount) {
+      for (
+        _ <-
+          0 until creaturesToSpawn.numOfCreatures - creaturesAlreadySpawnedCount
+      ) {
         game.queues.creaturesToCreate += EnemyToCreate(
           spawnPointId = spawnPointData.spawnPointId,
           creatureType = creaturesToSpawn.creatureType,
@@ -28,5 +27,8 @@ spawnPointData: SpawnPointData
       }
     })
 
+    this
   }
+
+  def areaId: AreaId = spawnPointData.spawnPointAreaId
 }

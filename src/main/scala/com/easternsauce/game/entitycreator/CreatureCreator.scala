@@ -24,7 +24,10 @@ case class CreatureCreator() extends EntityCreator {
     result
   }
 
-  private def createPlayer(gameState: GameState, playerToCreate: PlayerToCreate): GameState = {
+  private def createPlayer(
+      gameState: GameState,
+      playerToCreate: PlayerToCreate
+  ): GameState = {
     val creatureId = GameEntityId[Creature](playerToCreate.clientId)
 
     if (gameState.creatures.contains(creatureId)) {
@@ -55,27 +58,30 @@ case class CreatureCreator() extends EntityCreator {
     }
   }
 
-  private def createEnemy(gameState: GameState, enemyToCreate: EnemyToCreate): GameState = {
+  private def createEnemy(
+      gameState: GameState,
+      enemyToCreate: EnemyToCreate
+  ): GameState = {
     val enemyId =
       GameEntityId[Creature](
         "enemy" + (Math.random() * 1000000).toInt
       )
 
-      gameState
-        .modify(_.creatures)
-        .using(
-          _.updated(
+    gameState
+      .modify(_.creatures)
+      .using(
+        _.updated(
+          enemyId,
+          Creature.produce(
             enemyId,
-            Creature.produce(
-              enemyId,
-              enemyToCreate.areaId,
-              enemyToCreate.pos,
-              player = true,
-              creatureType = enemyToCreate.creatureType,
-              spawnPointId = Some(enemyToCreate.spawnPointId)
-            )
+            enemyToCreate.areaId,
+            enemyToCreate.pos,
+            player = true,
+            creatureType = enemyToCreate.creatureType,
+            spawnPointId = Some(enemyToCreate.spawnPointId)
           )
         )
-    }
+      )
+  }
 
 }

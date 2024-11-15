@@ -65,7 +65,7 @@ case class CoreGameClient() extends CoreGame {
       client.sendTCP(ActionsPerformRequestCommand(broadcastEvents))
     }
 
-    gameplay.gameStateHolder.applyEvents(
+    gameplay.gameStateHolder.applyGameStateEvents(
       game.queues.localEvents.toList.filter {
         case event: AreaGameStateEvent    => event.areaId == areaId
         case _: OperationalGameStateEvent => true
@@ -79,7 +79,7 @@ case class CoreGameClient() extends CoreGame {
 
   private def processGameStateOverride(): Unit = {
     scheduledOverrideGameState.foreach { gameState =>
-      gameplay.gameStateHolder.forceOverride(gameState)
+      gameplay.gameStateHolder.forceGameStateOverride(gameState)
       clientCreatureAreaId.foreach(gameplay.physics.correctBodyPositions(_))
       scheduledOverrideGameState = None
     }

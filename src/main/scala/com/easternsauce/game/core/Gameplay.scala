@@ -14,16 +14,13 @@ case class Gameplay()(implicit game: CoreGame) {
   var keyHeldChecker: KeyHeldChecker = _
   var gameStateHolder: GameStateContainer = _
   var tiledMapsManager: TiledMapsManager = _
-  var spawnPointsManager: SpawnPointsManager = _
 
   def init(): Unit = {
     tiledMapsManager = TiledMapsManager()
     tiledMapsManager.init()
 
-    spawnPointsManager = SpawnPointsManager()
-    spawnPointsManager.init()
-
     gameStateHolder = GameStateContainer(GameState())
+    gameStateHolder.initGameState()
 
     view = GameView()
     view.init()
@@ -39,12 +36,11 @@ case class Gameplay()(implicit game: CoreGame) {
   }
 
   def updateTimers(delta: Float): Unit = {
-    gameStateHolder.updateTimers(delta)
+    gameStateHolder.updateGameStateTimers(delta)
   }
 
   def updateForArea(areaId: AreaId, delta: Float): Unit = {
-    spawnPointsManager.updateForArea(areaId)
-    gameStateHolder.updateForArea(areaId, delta)
+    gameStateHolder.updateGameStateForArea(areaId, delta)
     physics.updateForArea(areaId)
     view.updateForArea(areaId, delta)
   }

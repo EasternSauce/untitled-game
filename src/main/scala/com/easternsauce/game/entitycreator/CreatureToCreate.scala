@@ -6,6 +6,11 @@ import com.easternsauce.game.math.Vector2f
 
 sealed trait CreatureToCreate
 
-case class EnemyToCreate(spawnPointId: String, creatureType: CreatureType, areaId: AreaId, pos: Vector2f) extends CreatureToCreate
+case class EnemyToCreate(
+    spawnPointId: String,
+    creatureType: CreatureType,
+    areaId: AreaId,
+    pos: Vector2f
+) extends CreatureToCreate
 
 case class PlayerToCreate(clientId: String) extends CreatureToCreate

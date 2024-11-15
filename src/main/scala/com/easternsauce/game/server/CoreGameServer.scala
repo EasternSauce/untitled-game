@@ -56,7 +56,7 @@ case class CoreGameServer() extends CoreGame {
   }
 
   private def processEvents(): Unit = {
-    gameplay.gameStateHolder.applyEvents(
+    gameplay.gameStateHolder.applyGameStateEvents(
       game.queues.broadcastEvents.toList ++ game.queues.localEvents.toList
     )
 
