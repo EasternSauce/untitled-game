@@ -4,12 +4,14 @@ import com.easternsauce.game.core.CoreGame
 import com.easternsauce.game.gamestate.GameState
 
 case class GameEntityCreators() {
-  private var playerCreator: CreatureCreator = _
+  private var playerCreator: PlayerCreator = _
+  private var enemyCreator: EnemyCreator = _
   private var abilityCreator: AbilityCreator = _
   private var abilityComponentCreator: AbilityComponentCreator = _
 
   def init(): Unit = {
-    playerCreator = CreatureCreator()
+    playerCreator = PlayerCreator()
+    enemyCreator = EnemyCreator()
     abilityCreator = AbilityCreator()
     abilityComponentCreator = AbilityComponentCreator()
   }
@@ -18,6 +20,7 @@ case class GameEntityCreators() {
       game: CoreGame
   ): GameState => GameState = {
     playerCreator.createEntities
+      .andThen(enemyCreator.createEntities)
       .andThen(abilityCreator.createEntities)
       .andThen(abilityComponentCreator.createEntities)
   }

@@ -48,15 +48,13 @@ case class GameState(
   private def updateSpawnPointsForArea(areaId: AreaId)(implicit
       game: CoreGame
   ): GameState = {
-    this
-      .modify(_.spawnPoints.each)
-      .using(spawnPoint =>
-        if (spawnPoint.areaId == areaId) {
-          spawnPoint.update()
-        } else {
-          spawnPoint
-        }
-      )
+    spawnPoints.values.foldLeft(this) { case (gameState, spawnPoint) =>
+      if (spawnPoint.areaId == areaId) {
+        gameState.pipe(spawnPoint.update())
+      } else {
+        gameState
+      }
+    }
   }
 
   def applyEvents(

@@ -21,14 +21,18 @@ case class CreatureBodySynchronizer() {
   }
 
   def synchronizeForArea(areaId: AreaId)(implicit game: CoreGame): Unit = {
+    val existingCreatures =
+      game.gameState.activeCreatureIds ++ game.gameState.creatures.values
+        .filterNot(_.params.player)
+        .map(_.id)
+
     val creatureBodiesToCreate =
-      (game.gameState.activeCreatureIds -- creatureBodies.keys.toSet)
+      (existingCreatures -- creatureBodies.keys.toSet)
         .filter(game.gameState.creatures(_).currentAreaId == areaId)
     val creatureBodiesToDestroy =
-      (creatureBodies.keys.toSet -- game.gameState.activeCreatureIds).filter(
-        creatureId =>
-          !game.gameState.creatures.contains(creatureId) ||
-            game.gameState.creatures(creatureId).currentAreaId == areaId
+      (creatureBodies.keys.toSet -- existingCreatures).filter(creatureId =>
+        !game.gameState.creatures.contains(creatureId) ||
+          game.gameState.creatures(creatureId).currentAreaId == areaId
       )
 
     creatureBodiesToCreate.foreach(createCreatureBody(_, game.gameState))

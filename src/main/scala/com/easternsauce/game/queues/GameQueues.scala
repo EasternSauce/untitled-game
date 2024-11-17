@@ -1,10 +1,12 @@
 package com.easternsauce.game.queues
 
-import com.easternsauce.game.entitycreator.{AbilityComponentToCreate, AbilityToCreate, CreatureToCreate}
+import com.easternsauce.game.entitycreator.{AbilityComponentToCreate, AbilityToCreate, EnemyToCreate, PlayerToCreate}
 import com.easternsauce.game.gamestate.event.GameStateEvent
 
 case class GameQueues(
-    creaturesToCreate: ConcurrentListBuffer[CreatureToCreate] =
+    playersToCreate: ConcurrentListBuffer[PlayerToCreate] =
+      ConcurrentListBuffer(),
+    enemiesToCreate: ConcurrentListBuffer[EnemyToCreate] =
       ConcurrentListBuffer(),
     abilitiesToCreate: ConcurrentListBuffer[AbilityToCreate] =
       ConcurrentListBuffer(),

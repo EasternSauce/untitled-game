@@ -20,11 +20,17 @@ case class CreatureRenderableSynchronizer() {
   }
 
   def synchronizeForArea(areaId: AreaId)(implicit game: CoreGame): Unit = {
+    val existingCreatures =
+      game.gameState.activeCreatureIds ++ game.gameState.creatures.values
+        .filterNot(_.params.player)
+        .map(_.id)
+
     val creatureRenderablesToCreate =
-      (game.gameState.activeCreatureIds -- creatureRenderables.keys.toSet)
+      (existingCreatures -- creatureRenderables.keys.toSet)
         .filter(game.gameState.creatures(_).currentAreaId == areaId)
+
     val creatureRendererablesToDestroy =
-      (creatureRenderables.keys.toSet -- game.gameState.activeCreatureIds)
+      (creatureRenderables.keys.toSet -- existingCreatures)
         .filter(creatureId =>
           !game.gameState.creatures.contains(creatureId) ||
             game.gameState.creatures(creatureId).currentAreaId == areaId

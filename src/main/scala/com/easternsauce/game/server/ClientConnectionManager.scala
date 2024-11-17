@@ -11,7 +11,7 @@ case class ClientConnectionManager() {
   ): Unit = {
     _clientConnectionIds = _clientConnectionIds.updated(clientId, connectionId)
 
-    game.queues.creaturesToCreate += PlayerToCreate(clientId)
+    game.queues.playersToCreate += PlayerToCreate(clientId)
   }
 
   def unregisterClient(clientId: String, connectionId: Int): Unit = {
