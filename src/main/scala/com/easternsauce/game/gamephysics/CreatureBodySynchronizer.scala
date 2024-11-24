@@ -22,7 +22,7 @@ case class CreatureBodySynchronizer() {
 
   def synchronizeForArea(areaId: AreaId)(implicit game: CoreGame): Unit = {
     val existingCreatures =
-      game.gameState.activeCreatureIds ++ game.gameState.creatures.values
+      game.gameState.activePlayerIds ++ game.gameState.creatures.values
         .filterNot(_.params.player)
         .map(_.id)
 
@@ -45,7 +45,7 @@ case class CreatureBodySynchronizer() {
       areaId: AreaId,
       game: CoreGame
   ): Unit = {
-    game.gameState.activeCreatureIds
+    game.gameState.activePlayerIds
       .filter(creatureId =>
         game.gameState.creatures(creatureId).params.currentAreaId == areaId
       )

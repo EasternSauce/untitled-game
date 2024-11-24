@@ -12,6 +12,7 @@ case class Gameplay()(implicit game: CoreGame) {
   var physics: GamePhysics = _
   var entityCreators: GameEntityCreators = _
   var keyHeldChecker: KeyHeldChecker = _
+  var buttonHeldChecker: ButtonHeldChecker = _
   var gameStateHolder: GameStateContainer = _
   var tiledMapsManager: TiledMapsManager = _
 
@@ -33,6 +34,9 @@ case class Gameplay()(implicit game: CoreGame) {
 
     keyHeldChecker = KeyHeldChecker()
     keyHeldChecker.init()
+
+    buttonHeldChecker = ButtonHeldChecker()
+    buttonHeldChecker.init()
   }
 
   def updateTimers(delta: Float): Unit = {

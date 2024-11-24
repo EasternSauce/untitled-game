@@ -9,7 +9,7 @@ import scala.collection.mutable
 case class TiledMapsManager() {
   var tiledMaps: mutable.Map[AreaId, GameTiledMap] = _
 
-  def init() = {
+  def init(): Unit = {
     tiledMaps = mutable.Map() ++ Constants.MapAreaNames
       .map(name => (AreaId(name), GameTiledMap(AreaId(name))))
       .toMap

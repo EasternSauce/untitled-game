@@ -16,7 +16,7 @@ case class GameState(
     abilities: Map[GameEntityId[Ability], Ability] = Map(),
     abilityComponents: Map[GameEntityId[AbilityComponent], AbilityComponent] =
       Map(),
-    activeCreatureIds: Set[GameEntityId[Creature]] = Set(),
+    activePlayerIds: Set[GameEntityId[Creature]] = Set(),
     spawnPoints: Map[String, SpawnPoint] = Map(),
     mainTimer: SimpleTimer = SimpleTimer(running = true)
 ) {
@@ -73,8 +73,8 @@ case class GameState(
       .modify(_.creatures.each)
       .using(creature =>
         if (
-          activeCreatureIds
-            .contains(creature.id) && creature.currentAreaId == areaId
+          creature.currentAreaId == areaId && activePlayerIds
+            .contains(creature.id) || !creature.params.player
         ) {
           creature.update(
             delta,

@@ -90,10 +90,10 @@ case class CoreGameClient() extends CoreGame {
   }
 
   override protected def handleInputs(): Unit = {
-    if (gameplay.keyHeldChecker.keyHeld(Buttons.LEFT)) {
+    if (gameplay.buttonHeldChecker.buttonHeld(Buttons.LEFT)) {
       handleMoveInput()
     }
-    if (gameplay.keyHeldChecker.keyHeld(Buttons.RIGHT)) {
+    if (gameplay.buttonHeldChecker.buttonHeld(Buttons.RIGHT)) {
       handleAttackInput()
     }
   }

@@ -30,7 +30,7 @@ case class PlayerCreator() extends EntityCreator {
 
     if (gameState.creatures.contains(creatureId)) {
       gameState
-        .modify(_.activeCreatureIds)
+        .modify(_.activePlayerIds)
         .using(_ + creatureId)
     } else {
       gameState
@@ -51,7 +51,7 @@ case class PlayerCreator() extends EntityCreator {
             )
           )
         )
-        .modify(_.activeCreatureIds)
+        .modify(_.activePlayerIds)
         .using(_ + creatureId)
     }
   }

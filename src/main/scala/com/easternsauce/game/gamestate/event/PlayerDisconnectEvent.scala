@@ -11,7 +11,7 @@ case class PlayerDisconnectEvent(creatureId: GameEntityId[Creature])
   override def applyToGameState(
       gameState: GameState
   )(implicit game: CoreGame): GameState = {
-    gameState.modify(_.activeCreatureIds).using(_ - creatureId)
+    gameState.modify(_.activePlayerIds).using(_ - creatureId)
   }
 
 }

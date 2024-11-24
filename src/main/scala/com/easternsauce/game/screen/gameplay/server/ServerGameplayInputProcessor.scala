@@ -37,7 +37,7 @@ case class ServerGameplayInputProcessor()(implicit game: CoreGame)
   ): Boolean = {
     button match {
       case button =>
-        game.gameplay.keyHeldChecker.setKeyHeld(button, value = true)
+        game.gameplay.buttonHeldChecker.setButtonHeld(button, value = true)
     }
     true
   }
@@ -50,7 +50,7 @@ case class ServerGameplayInputProcessor()(implicit game: CoreGame)
   ): Boolean = {
     button match {
       case button =>
-        game.gameplay.keyHeldChecker.setKeyHeld(button, value = false)
+        game.gameplay.buttonHeldChecker.setButtonHeld(button, value = false)
     }
     true
   }
