@@ -50,7 +50,7 @@ object CreatureType extends Enumeration {
   )
 
   val Rat: Value = CreatureTypeDetails(
-    baseSpeed = 8f,
+    baseSpeed = 5f,
     maxLife = 40f,
     damage = 10f,
     attackRange = 1.6f,
@@ -67,7 +67,7 @@ object CreatureType extends Enumeration {
   )
 
   val Zombie: Value = CreatureTypeDetails(
-    baseSpeed = 8f,
+    baseSpeed = 5f,
     maxLife = 65f,
     damage = 20f,
     attackRange = 1.6f,
@@ -84,7 +84,7 @@ object CreatureType extends Enumeration {
   )
 
   val Wyvern: Value = CreatureTypeDetails(
-    baseSpeed = 8f,
+    baseSpeed = 5f,
     maxLife = 200f,
     damage = 40f,
     attackRange = 2.2f,

@@ -30,6 +30,7 @@ case class Creature(params: CreatureParams) extends GameEntity {
   )(implicit game: CoreGame): Creature = {
     this
       .updateTimers(delta)
+      .updateBehavior()
       .updateMovement(newPos)
   }
 
@@ -43,6 +44,28 @@ case class Creature(params: CreatureParams) extends GameEntity {
       .using(_.update(delta))
       .modify(_.params.abilityCooldownTimers.each)
       .using(_.update(delta))
+  }
+
+  private def updateBehavior()(implicit game: CoreGame): Creature = {
+    if (!params.player) {
+      val closestPlayer = game.gameState.creatures.values
+        .filter(creature =>
+          creature.params.player && pos.distance(creature.pos) < 7f
+        )
+        .minByOption(creature => pos.distance(creature.pos))
+
+      if (closestPlayer.nonEmpty) {
+        this
+          .modify(_.params.destination)
+          .setTo(closestPlayer.get.pos)
+          .modify(_.params.destinationReached)
+          .setTo(false)
+      } else {
+        this
+      }
+    } else {
+      this
+    }
   }
 
   private def updateMovement(
