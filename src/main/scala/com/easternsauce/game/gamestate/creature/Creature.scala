@@ -55,11 +55,21 @@ case class Creature(params: CreatureParams) extends GameEntity {
         .minByOption(creature => pos.distance(creature.pos))
 
       if (closestPlayer.nonEmpty) {
+        val vectorTowardsTarget = pos.vectorTowards(closestPlayer.get.pos)
+
+        val distanceToTarget = vectorTowardsTarget.length
+
+        val posInFrontOfTarget = pos.add(
+          vectorTowardsTarget.normalized.multiply(distanceToTarget - 2f)
+        )
+
         this
           .modify(_.params.destination)
-          .setTo(closestPlayer.get.pos)
+          .setTo(posInFrontOfTarget)
           .modify(_.params.destinationReached)
           .setTo(false)
+          .modify(_.params.facingVector)
+          .setTo(vectorTowardsTarget)
       } else {
         this
       }
