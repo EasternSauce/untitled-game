@@ -1,12 +1,12 @@
 package com.easternsauce.game.screen.gameplay.client
 
 import com.badlogic.gdx.Gdx
-import com.easternsauce.game.client.CoreGameClient
+import com.easternsauce.game.client.CoreGameClientBase
 import com.easternsauce.game.command.RegisterClientRequestCommand
 import com.easternsauce.game.gameview.GameScreen
 
-case class ClientGameplayScreen(game: CoreGameClient) extends GameScreen {
-  implicit private val _game: CoreGameClient = game
+case class ClientGameplayScreen(game: CoreGameClientBase) extends GameScreen {
+  implicit private val _game: CoreGameClientBase = game
 
   private var clientConnected = false
 
@@ -19,7 +19,7 @@ case class ClientGameplayScreen(game: CoreGameClient) extends GameScreen {
   override def show(): Unit = {
     Gdx.input.setInputProcessor(inputProcessor)
 
-    if (!clientConnected) {
+    if (!game.isOffline && !clientConnected) {
       game.client.start()
       game.client.connect(
         50000,

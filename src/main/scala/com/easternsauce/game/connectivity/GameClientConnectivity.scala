@@ -1,14 +1,13 @@
 package com.easternsauce.game.connectivity
-import com.easternsauce.game.Constants
-import com.easternsauce.game.client.CoreGameClient
+import com.easternsauce.game.client.CoreGameClientBase
 import com.esotericsoftware.kryonet.{Client, KryoSerialization, Listener}
 import com.twitter.chill.{Kryo, ScalaKryoInstantiator}
 
-case class GameClientConnectivity(game: CoreGameClient)
+case class GameClientConnectivity(game: CoreGameClientBase)
     extends GameConnectivity {
 
   override val endPoint: Client = {
-    if (!Constants.OfflineMode) {
+    if (!game.isOffline) {
       val kryo: Kryo = {
         val instantiator = new ScalaKryoInstantiator
         instantiator.setRegistrationRequired(false)

@@ -3,11 +3,11 @@ package com.easternsauce.game.screen.pausemenu.client
 import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.utils.ScreenUtils
 import com.badlogic.gdx.{Gdx, InputMultiplexer, InputProcessor}
-import com.easternsauce.game.client.CoreGameClient
+import com.easternsauce.game.client.CoreGameClientBase
 import com.easternsauce.game.gameview.GameScreen
 
-case class ClientPauseMenuScreen(game: CoreGameClient) extends GameScreen {
-  implicit private val _game: CoreGameClient = game
+case class ClientPauseMenuScreen(game: CoreGameClientBase) extends GameScreen {
+  implicit private val _game: CoreGameClientBase = game
 
   private var stage: Stage = _
   private var inputProcessor: InputProcessor = _
