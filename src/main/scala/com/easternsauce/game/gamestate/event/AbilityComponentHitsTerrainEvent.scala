@@ -1,11 +1,9 @@
 package com.easternsauce.game.gamestate.event
 import com.easternsauce.game.core.CoreGame
 import com.easternsauce.game.gamestate.GameState
-import com.easternsauce.game.gamestate.ability.AbilityComponent
+import com.easternsauce.game.gamestate.ability.{AbilityComponent, AbilityState}
 import com.easternsauce.game.gamestate.id.{AreaId, GameEntityId}
 import com.softwaremill.quicklens.ModifyPimp
-
-import scala.util.chaining.scalaUtilChainingOps
 
 case class AbilityComponentHitsTerrainEvent(
     abilityComponentId: GameEntityId[AbilityComponent],
@@ -15,20 +13,34 @@ case class AbilityComponentHitsTerrainEvent(
   override def applyToGameState(
       gameState: GameState
   )(implicit game: CoreGame): GameState = {
+
     if (
       gameState.abilityComponents
         .contains(abilityComponentId)
     ) {
       val abilityComponent = gameState.abilityComponents(abilityComponentId)
 
-      gameState
-        .modify(_.abilityComponents)
-        .usingIf(abilityComponent.destroyedOnContact)(
-          _.removed(abilityComponentId)
-        )
-        .pipe(_.removeAbilityIfCompleted(abilityComponent.abilityId))
+      if (gameState.abilities.contains(abilityComponent.abilityId)) {
+        val ability = game.gameState.abilities(abilityComponent.abilityId)
+
+        if (ability.currentState == AbilityState.Active) {
+          gameState
+            .modify(_.abilityComponents)
+            .usingIf(abilityComponent.destroyedOnContact)(
+              _.removed(abilityComponentId)
+            )
+            .markAbilityAsFinishedIfNoComponentsExist(
+              abilityComponent.abilityId
+            )
+        } else {
+          gameState
+        }
+      } else {
+        gameState
+      }
     } else {
       gameState
     }
+
   }
 }

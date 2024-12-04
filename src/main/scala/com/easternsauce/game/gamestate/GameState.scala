@@ -2,7 +2,7 @@ package com.easternsauce.game.gamestate
 
 import com.easternsauce.game.Constants
 import com.easternsauce.game.core.CoreGame
-import com.easternsauce.game.gamestate.ability.{Ability, AbilityComponent}
+import com.easternsauce.game.gamestate.ability.{Ability, AbilityComponent, AbilityState}
 import com.easternsauce.game.gamestate.creature.Creature
 import com.easternsauce.game.gamestate.event.GameStateEvent
 import com.easternsauce.game.gamestate.id.{AreaId, GameEntityId}
@@ -69,6 +69,45 @@ case class GameState(
       areaId: AreaId,
       delta: Float
   )(implicit game: CoreGame): GameState = {
+    val abilitiesToRemove = abilities.values
+      .filter(ability =>
+        ability.currentState == AbilityState.Cancelled || ability.currentState == AbilityState.Finished
+      )
+      .map(_.id)
+      .toList
+
+    val abilityComponentsToRemove = abilityComponents.values
+      .filter(component => abilitiesToRemove.contains(component.abilityId))
+      .map(_.id)
+
+    this
+      .updateCreatures(delta, areaId)
+      .updateAbilities(delta, areaId)
+      .updateAbilityComponents(delta, areaId)
+      .modify(_.abilities)
+      .using(_.removedAll(abilitiesToRemove))
+      .modify(_.abilityComponents)
+      .using(_.removedAll(abilityComponentsToRemove))
+  }
+
+  def markAbilityAsFinishedIfNoComponentsExist(
+      abilityId: GameEntityId[Ability]
+  ): GameState = {
+    if (
+      !abilityComponents.values
+        .exists(_.params.abilityId == abilityId)
+    ) {
+      this
+        .modify(_.abilities.at(abilityId))
+        .using(_.modify(_.params.state).setTo(AbilityState.Finished))
+    } else {
+      this
+    }
+  }
+
+  private def updateCreatures(delta: Float, areaId: AreaId)(implicit
+      game: CoreGame
+  ): GameState = {
     this
       .modify(_.creatures.each)
       .using(creature =>
@@ -84,14 +123,25 @@ case class GameState(
           creature
         }
       )
+  }
+  private def updateAbilities(delta: Float, areaId: AreaId)(implicit
+      game: CoreGame
+  ): GameState = {
+    this
       .modify(_.abilities.each)
       .using(ability =>
         if (ability.currentAreaId == areaId) {
-          ability.update()
+          ability.update(delta)
         } else {
           ability
         }
       )
+  }
+
+  private def updateAbilityComponents(delta: Float, areaId: AreaId)(implicit
+      game: CoreGame
+  ): GameState = {
+    this
       .modify(_.abilityComponents.each)
       .using(abilityComponent =>
         if (abilityComponent.currentAreaId == areaId) {
@@ -104,18 +154,4 @@ case class GameState(
         }
       )
   }
-
-  def removeAbilityIfCompleted(abilityId: GameEntityId[Ability]): GameState = {
-    if (
-      !abilityComponents.values
-        .exists(_.params.abilityId == abilityId)
-    ) {
-      this
-        .modify(_.abilities)
-        .using(_.removed(abilityId))
-    } else {
-      this
-    }
-  }
-
 }

@@ -1,5 +1,6 @@
 package com.easternsauce.game.gameview
 
+import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.easternsauce.game.core.CoreGame
 import com.easternsauce.game.gamestate.creature.Creature
 import com.easternsauce.game.gamestate.id.{AreaId, GameEntityId}
@@ -21,28 +22,24 @@ case class CreatureRenderer() {
     creatureRenderableSynchronizer.init(creatureRenderables)
   }
 
-//  def renderLifeBars(
-//                      spriteBatches: SpriteBatches,
-//                      gameState: GameState
-//                    ): Unit = {
-//    creatureRenderables.values.foreach(
-//      _.renderLifeBar(spriteBatches.worldSpriteBatch, gameState)
-//    )
-//  }
-//
-//  def renderPlayerNames(
-//                         spriteBatches: SpriteBatches,
-//                         skin: Skin,
-//                         gameState: GameState
-//                       ): Unit = {
-//    creatureRenderables.values.foreach(
-//      _.renderPlayerName(
-//        spriteBatches.worldTextSpriteBatch,
-//        skin.getFont("default-font"),
-//        gameState
-//      )
-//    )
-//  }
+  def renderLifeBarsForArea(
+      areaId: AreaId,
+      worldSpriteBatch: GameSpriteBatch
+  )(implicit game: CoreGame): Unit = {
+    creatureRenderables.values.foreach(
+      _.renderLifeBar(worldSpriteBatch)
+    )
+  }
+
+  def renderPlayerNamesForArea(
+      areaId: AreaId,
+      worldTextSpriteBatch: GameSpriteBatch,
+      skin: Skin
+  )(implicit game: CoreGame): Unit = {
+    creatureRenderables.values.foreach(
+      _.renderPlayerName(worldTextSpriteBatch, skin.getFont("default-font"))
+    )
+  }
 
   def renderAliveCreaturesForArea(
       areaId: AreaId,
@@ -50,7 +47,7 @@ case class CreatureRenderer() {
       worldCameraPos: Vector2f
   )(implicit game: CoreGame): Unit = {
     renderablesForAliveCreaturesInArea(areaId)
-      .foreach(_.render(worldSpriteBatch, worldCameraPos))
+      .foreach(_.renderCreature(worldSpriteBatch, worldCameraPos))
   }
 
   def renderDeadCreatures(
@@ -59,7 +56,7 @@ case class CreatureRenderer() {
       worldCameraPos: Vector2f
   )(implicit game: CoreGame): Unit = {
     renderablesForDeadCreaturesInArea(areaId)
-      .foreach(_.render(worldSpriteBatch, worldCameraPos))
+      .foreach(_.renderCreature(worldSpriteBatch, worldCameraPos))
   }
 
   private def renderablesForAliveCreaturesInArea(areaId: AreaId)(implicit

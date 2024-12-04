@@ -5,8 +5,8 @@ case class AnimationDefinition(
     frameHeight: Int,
     stanceFrames: FramesDefinition,
     walkFrames: FramesDefinition,
-    attackFrames: FramesDefinition,
+    meleeAttackFrames: FramesDefinition,
     deathFrames: FramesDefinition,
     spellcastFrames: Option[FramesDefinition] = None,
-    bowFrames: Option[FramesDefinition] = None
+    bowShotFrames: Option[FramesDefinition] = None
 ) {}

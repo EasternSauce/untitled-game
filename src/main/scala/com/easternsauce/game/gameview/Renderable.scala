@@ -12,7 +12,7 @@ trait Renderable {
 
   def renderPriority(gameState: GameState): Boolean
 
-  def render(batch: GameSpriteBatch, worldCameraPos: Vector2f)(implicit
+  def renderCreature(batch: GameSpriteBatch, worldCameraPos: Vector2f)(implicit
       game: CoreGame
   ): Unit
 }

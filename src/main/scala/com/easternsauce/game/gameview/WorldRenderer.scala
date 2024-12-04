@@ -66,6 +66,21 @@ case class WorldRenderer() {
       worldSpriteBatch,
       worldCameraPos
     )
+//
+//    creatureRenderer.renderPlayerNamesForArea(
+//      areaId,
+//      worldTextSpriteBatch,
+//      skin,
+//      worldCameraPos
+//    )
+//
+//    creatureRenderer.renderLifeBarsForArea(
+//      areaId,
+//      worldSpriteBatch,
+//      worldTextSpriteBatch,
+//      font,
+//      worldCameraPos
+//    )
   }
 
   def update(areaId: AreaId)(implicit game: CoreGame): Unit = {

@@ -57,7 +57,7 @@ case class GameTiledMap(areaId: AreaId) {
       layer <- Constants.LayersByRenderingOrder.flatMap(layers.get(_))
       cell <- layer.cells
     } yield {
-      cell.render(batch, worldCameraPos)
+      cell.renderCreature(batch, worldCameraPos)
     }
   }
 

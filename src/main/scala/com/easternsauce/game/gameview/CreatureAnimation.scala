@@ -42,7 +42,7 @@ case class CreatureAnimation(
     attackAnimations = loadAnimations(
       frameWidth,
       frameHeight,
-      creature.params.animationDefinition.attackFrames
+      creature.params.animationDefinition.meleeAttackFrames
     )
     walkAnimations = loadAnimations(
       frameWidth,
@@ -61,11 +61,11 @@ case class CreatureAnimation(
         creature.params.animationDefinition.spellcastFrames.get
       )
     }
-    if (creature.params.animationDefinition.bowFrames.nonEmpty) {
+    if (creature.params.animationDefinition.bowShotFrames.nonEmpty) {
       bowAnimations = loadAnimations(
         frameWidth,
         frameHeight,
-        creature.params.animationDefinition.bowFrames.get
+        creature.params.animationDefinition.bowShotFrames.get
       )
     }
 
@@ -107,7 +107,7 @@ case class CreatureAnimation(
 
     val frame =
       if (
-        creature.params.attackAnimationTimer.running && creature.params.attackAnimationTimer.time < creature.params.animationDefinition.attackFrames.totalDuration
+        creature.params.attackAnimationTimer.running && creature.params.attackAnimationTimer.time < creature.params.animationDefinition.meleeAttackFrames.totalDuration
       ) {
         if (creature.params.primaryWeaponType == PrimaryWeaponType.Bow) {
           bowAnimations(creature.facingDirection.id)

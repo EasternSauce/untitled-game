@@ -12,11 +12,11 @@ case class AbilityParams(
     currentAreaId: AreaId,
     creatureId: GameEntityId[Creature],
     abilityType: AbilityType,
-    abilityState: AbilityState,
+    state: AbilityState,
     pos: Vector2f,
     facingVector: Vector2f = Vector2f(0, 1),
     damage: Float = 10f,
-    animationTimer: SimpleTimer = SimpleTimer(running = true),
+    stateTimer: SimpleTimer = SimpleTimer(running = true),
     velocity: Vector2f = Vector2f(0, 1),
     speed: Float = 10f
 ) {}

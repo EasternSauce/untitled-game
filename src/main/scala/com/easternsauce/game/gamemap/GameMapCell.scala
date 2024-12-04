@@ -16,8 +16,8 @@ case class GameMapCell(tiledCell: Cell, areaId: AreaId, pos: Vector2f)
 
   override def renderPriority(gameState: GameState): Boolean = false
 
-  override def render(batch: GameSpriteBatch, worldCameraPos: Vector2f)(implicit
-      game: CoreGame
+  override def renderCreature(batch: GameSpriteBatch, worldCameraPos: Vector2f)(
+      implicit game: CoreGame
   ): Unit = {
     val textureRegion = tiledCell.getTile.getTextureRegion
     val textureWidth = textureRegion.getRegionWidth

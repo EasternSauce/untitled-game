@@ -44,7 +44,11 @@ case class AbilityComponentHitsCreatureEvent(
           .usingIf(creature.alive && abilityComponent.destroyedOnContact)(
             _.removed(abilityComponentId)
           )
-          .pipe(_.removeAbilityIfCompleted(abilityComponent.abilityId))
+          .pipe(
+            _.markAbilityAsFinishedIfNoComponentsExist(
+              abilityComponent.abilityId
+            )
+          )
       } else {
         gameState
       }

@@ -4,7 +4,7 @@ import com.easternsauce.game.entitycreator.AbilityComponentToCreate
 
 case class Arrow(params: AbilityParams) extends Ability {
 
-  override def init()(implicit game: CoreGame): Ability = {
+  override def onActiveStart()(implicit game: CoreGame): Ability = {
     game.queues.abilityComponentsToCreate += AbilityComponentToCreate(
       abilityId = params.id,
       componentType = AbilityComponentType.ArrowComponent,
@@ -18,9 +18,7 @@ case class Arrow(params: AbilityParams) extends Ability {
     this
   }
 
-  override def update()(implicit game: CoreGame): Ability = {
-    this
-  }
+  override def channelTime: Float = 0.5f
 
   override def copy(params: AbilityParams): Ability = Arrow(params)
 

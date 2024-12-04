@@ -23,7 +23,7 @@ case class AbilityCreator() extends EntityCreator {
           currentAreaId = abilityToCreate.currentAreaId,
           creatureId = abilityToCreate.creatureId,
           abilityType = abilityToCreate.abilityType,
-          abilityState = AbilityState.Channel,
+          state = AbilityState.Channelling,
           pos = abilityToCreate.pos,
           facingVector = abilityToCreate.facingVector
         )
@@ -36,7 +36,7 @@ case class AbilityCreator() extends EntityCreator {
 
         gameState
           .modify(_.abilities)
-          .using(_.updated(abilityId, ability.init()))
+          .using(_.updated(abilityId, ability))
     }
 
     game.queues.abilitiesToCreate.clear()

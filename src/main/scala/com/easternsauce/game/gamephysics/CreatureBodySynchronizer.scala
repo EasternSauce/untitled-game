@@ -29,6 +29,7 @@ case class CreatureBodySynchronizer() {
     val creatureBodiesToCreate =
       (existingCreatures -- creatureBodies.keys.toSet)
         .filter(game.gameState.creatures(_).currentAreaId == areaId)
+
     val creatureBodiesToDestroy =
       (creatureBodies.keys.toSet -- existingCreatures).filter(creatureId =>
         !game.gameState.creatures.contains(creatureId) ||

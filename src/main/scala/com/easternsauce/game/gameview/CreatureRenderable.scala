@@ -1,11 +1,13 @@
 package com.easternsauce.game.gameview
 
+import com.badlogic.gdx.graphics.Color
+import com.badlogic.gdx.graphics.g2d.BitmapFont
 import com.easternsauce.game.core.CoreGame
 import com.easternsauce.game.gamestate.GameState
 import com.easternsauce.game.gamestate.creature.CreatureAnimationType.CreatureAnimationType
 import com.easternsauce.game.gamestate.creature.{Creature, CreatureAnimationType, PrimaryWeaponType, SecondaryWeaponType}
 import com.easternsauce.game.gamestate.id.{AreaId, GameEntityId}
-import com.easternsauce.game.math.Vector2f
+import com.easternsauce.game.math.{GameRectangle, IsometricProjection, Vector2f}
 
 case class CreatureRenderable(creatureId: GameEntityId[Creature])
     extends Renderable {
@@ -44,8 +46,8 @@ case class CreatureRenderable(creatureId: GameEntityId[Creature])
     creature.params.currentAreaId
   }
 
-  override def render(batch: GameSpriteBatch, worldCameraPos: Vector2f)(implicit
-      game: CoreGame
+  override def renderCreature(batch: GameSpriteBatch, worldCameraPos: Vector2f)(
+      implicit game: CoreGame
   ): Unit = {
     val creature = game.gameState.creatures(creatureId)
 
@@ -63,66 +65,69 @@ case class CreatureRenderable(creatureId: GameEntityId[Creature])
     }
   }
 
-//  def renderLifeBar(spriteBatch: GameSpriteBatch, gameState: GameState): Unit = {
-//    if (gameState.creatures.contains(creatureId)) {
-//      val creature = gameState.creatures(creatureId)
-//
-//      if (!creature.params.deathAcknowledged) {
-//        val lifeBarWidth = 32f
-//        val currentLifeBarWidth =
-//          lifeBarWidth * creature.params.life / creature.params.maxLife
-//
-//        val creatureScreenPos =
-//          IsometricProjection.translatePosIsoToScreen(creature.pos)
-//
-//        val barPos = Vector2(
-//          creatureScreenPos.x - lifeBarWidth / 2f,
-//          creatureScreenPos.y + 48f
-//        )
-//
-//        renderBar(spriteBatch, barPos, lifeBarWidth, Color.ORANGE)
-//        renderBar(spriteBatch, barPos, currentLifeBarWidth, Color.RED)
-//      }
-//    }
-//  }
-//
-//  def renderPlayerName(
-//      spriteBatch: SpriteBatch,
-//      font: BitmapFont,
-//      gameState: GameState
-//  ): Unit = {
-//    if (
-//      gameState.creatures
-//        .contains(creatureId) && gameState.creatures(creatureId).params.player
-//    ) {
-//      val creature = gameState.creatures(creatureId)
-//
-//      if (!creature.params.deathAcknowledged) {
-//        val creatureScreenPos =
-//          IsometricProjection.translatePosIsoToScreen(creature.pos)
-//
-//        val namePos = Vector2(
-//          creatureScreenPos.x - 25f,
-//          creatureScreenPos.y + 70
-//        )
-//
-//        spriteBatch.drawFont(font, creature.id.value, namePos)
-//      }
-//    }
-//  }
-//
-//  private def renderBar(
-//      spriteBatch: SpriteBatch,
-//      barPos: Vector2,
-//      lifeBarWidth: Float,
-//      color: Color
-//  ): Unit = {
-//    val lifeBarHeight = 3f
-//    spriteBatch.filledRectangle(
-//      Rectangle(barPos.x, barPos.y, lifeBarWidth, lifeBarHeight),
-//      color
-//    )
-//  }
+  def renderLifeBar(
+      spriteBatch: GameSpriteBatch
+  )(implicit game: CoreGame): Unit = {
+    if (game.gameState.creatures.contains(creatureId)) {
+      val creature = game.gameState.creatures(creatureId)
+
+      if (creature.alive) {
+        val lifeBarWidth = 32f
+        val currentLifeBarWidth =
+          lifeBarWidth * creature.params.life / creature.params.maxLife
+
+        val creatureScreenPos =
+          IsometricProjection.translatePosIsoToScreen(creature.pos)
+
+        val barPos = Vector2f(
+          creatureScreenPos.x - lifeBarWidth / 2f,
+          creatureScreenPos.y + 48f
+        )
+
+        renderBar(spriteBatch, barPos, lifeBarWidth, Color.ORANGE)
+        renderBar(spriteBatch, barPos, currentLifeBarWidth, Color.RED)
+      }
+    }
+  }
+
+  def renderPlayerName(spriteBatch: GameSpriteBatch, font: BitmapFont)(implicit
+      game: CoreGame
+  ): Unit = {
+    if (
+      game.gameState.creatures
+        .contains(creatureId) && game.gameState
+        .creatures(creatureId)
+        .params
+        .player
+    ) {
+      val creature = game.gameState.creatures(creatureId)
+
+      if (creature.alive) {
+        val creatureScreenPos =
+          IsometricProjection.translatePosIsoToScreen(creature.pos)
+
+        val namePos = Vector2f(
+          creatureScreenPos.x - 25f,
+          creatureScreenPos.y + 70
+        )
+
+        spriteBatch.drawFont(font, creature.id.value, namePos)
+      }
+    }
+  }
+
+  private def renderBar(
+      spriteBatch: GameSpriteBatch,
+      barPos: Vector2f,
+      lifeBarWidth: Float,
+      color: Color
+  ): Unit = {
+    val lifeBarHeight = 3f
+    spriteBatch.filledRectangle(
+      GameRectangle(barPos.x, barPos.y, lifeBarWidth, lifeBarHeight),
+      color
+    )
+  }
 
   override def renderPriority(gameState: GameState): Boolean = {
     val creature = gameState.creatures(creatureId)
