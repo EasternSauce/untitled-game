@@ -3,13 +3,16 @@ package com.easternsauce.game.gamestate.creature
 import com.easternsauce.game.core.CoreGame
 import com.easternsauce.game.gamestate.WorldDirection.WorldDirection
 import com.easternsauce.game.gamestate.creature.CreatureType.CreatureType
+import com.easternsauce.game.gamestate.creature.behavior.CreatureBehavior
 import com.easternsauce.game.gamestate.id.{AreaId, GameEntityId}
 import com.easternsauce.game.gamestate.{GameEntity, WorldDirection}
 import com.easternsauce.game.math.Vector2f
+import com.easternsauce.game.util.TransformIf
 import com.softwaremill.quicklens.{ModifyPimp, QuicklensMapAt}
 
-case class Creature(params: CreatureParams) extends GameEntity {
-
+case class Creature(params: CreatureParams, behavior: CreatureBehavior)
+    extends GameEntity
+    with TransformIf {
   def id: GameEntityId[Creature] = params.id
 
   def pos: Vector2f = params.pos
@@ -18,11 +21,11 @@ case class Creature(params: CreatureParams) extends GameEntity {
     WorldDirection.fromVector(params.facingVector)
   }
 
-  def moving: Boolean = params.velocity.length > 0
+  def isMoving: Boolean = params.velocity.length > 0
 
-  def alive: Boolean = params.life > 0
+  def isAlive: Boolean = params.life > 0
 
-  def invisible: Boolean = !params.respawnDelayInProgress
+  def isInvisible: Boolean = !params.isRespawnDelayInProgress
 
   def update(
       delta: Float,
@@ -30,7 +33,7 @@ case class Creature(params: CreatureParams) extends GameEntity {
   )(implicit game: CoreGame): Creature = {
     this
       .updateTimers(delta)
-      .updateBehavior()
+      .updateAutonomousBehavior()
       .updateMovement(newPos)
   }
 
@@ -44,38 +47,14 @@ case class Creature(params: CreatureParams) extends GameEntity {
       .using(_.update(delta))
       .modify(_.params.abilityCooldownTimers.each)
       .using(_.update(delta))
+      .modify(_.params.recentlyHitTimer)
+      .using(_.update(delta))
   }
 
-  private def updateBehavior()(implicit game: CoreGame): Creature = {
-    if (!params.player) {
-      val closestPlayer = game.gameState.creatures.values
-        .filter(creature =>
-          creature.params.player && pos.distance(creature.pos) < 7f
-        )
-        .minByOption(creature => pos.distance(creature.pos))
-
-      if (closestPlayer.nonEmpty) {
-        val vectorTowardsTarget = pos.vectorTowards(closestPlayer.get.pos)
-
-        val distanceToTarget = vectorTowardsTarget.length
-
-        val posInFrontOfTarget = pos.add(
-          vectorTowardsTarget.normalized.multiply(distanceToTarget - 2f)
-        )
-
-        this
-          .modify(_.params.destination)
-          .setTo(posInFrontOfTarget)
-          .modify(_.params.destinationReached)
-          .setTo(false)
-          .modify(_.params.facingVector)
-          .setTo(vectorTowardsTarget)
-      } else {
-        this
-      }
-    } else {
-      this
-    }
+  protected def updateAutonomousBehavior()(implicit
+      game: CoreGame
+  ): Creature = {
+    behavior.run().apply(this)
   }
 
   private def updateMovement(
@@ -86,7 +65,7 @@ case class Creature(params: CreatureParams) extends GameEntity {
     val movementStopCondition = vectorTowardsDest.length <= 0.4f
 
     val velocity =
-      if (alive && !params.destinationReached && !movementStopCondition) {
+      if (isAlive && !params.isDestinationReached && !movementStopCondition) {
         vectorTowardsDest.withLength(params.baseSpeed)
       } else {
         Vector2f(0f, 0f)
@@ -97,7 +76,7 @@ case class Creature(params: CreatureParams) extends GameEntity {
       .setToIf(newPos.nonEmpty)(newPos.get)
       .modify(_.params.velocity)
       .setTo(velocity)
-      .modify(_.params.destinationReached)
+      .modify(_.params.isDestinationReached)
       .setToIf(movementStopCondition)(true)
   }
 
@@ -105,11 +84,10 @@ case class Creature(params: CreatureParams) extends GameEntity {
 }
 
 object Creature {
-  def produce(
+  def producePlayer(
       creatureId: GameEntityId[Creature],
       currentAreaId: AreaId,
       pos: Vector2f,
-      player: Boolean,
       creatureType: CreatureType,
       spawnPointId: Option[String]
   ): Creature = {
@@ -124,7 +102,7 @@ object Creature {
         textureSize = creatureType.textureSize,
         spriteVerticalShift = creatureType.spriteVerticalShift,
         bodyRadius = creatureType.bodyRadius,
-        player = player,
+        isPlayer = true,
         baseSpeed = creatureType.baseSpeed,
         life = creatureType.maxLife,
         maxLife = creatureType.maxLife,
@@ -133,10 +111,46 @@ object Creature {
         attackRange = creatureType.attackRange,
         primaryWeaponType = creatureType.primaryWeaponType,
         secondaryWeaponType = creatureType.secondaryWeaponType,
-        renderBodyOnly = creatureType.renderBodyOnly,
+        isRenderBodyOnly = creatureType.isRenderBodyOnly,
         spawnPointId = spawnPointId,
         creatureType = creatureType
-      )
+      ),
+      behavior = NeutralBehavior()
+    )
+  }
+
+  def produceEnemy(
+      creatureId: GameEntityId[Creature],
+      currentAreaId: AreaId,
+      pos: Vector2f,
+      creatureType: CreatureType,
+      spawnPointId: Option[String]
+  ): Creature = {
+    new Creature(
+      CreatureParams(
+        id = creatureId,
+        currentAreaId = currentAreaId,
+        pos = pos,
+        destination = pos,
+        lastPos = pos,
+        texturePaths = creatureType.texturePaths,
+        textureSize = creatureType.textureSize,
+        spriteVerticalShift = creatureType.spriteVerticalShift,
+        bodyRadius = creatureType.bodyRadius,
+        isPlayer = false,
+        baseSpeed = creatureType.baseSpeed,
+        life = creatureType.maxLife,
+        maxLife = creatureType.maxLife,
+        damage = creatureType.damage,
+        animationDefinition = creatureType.animationDefinition,
+        attackRange = creatureType.attackRange,
+        primaryWeaponType = creatureType.primaryWeaponType,
+        secondaryWeaponType = creatureType.secondaryWeaponType,
+        isRenderBodyOnly = creatureType.isRenderBodyOnly,
+        spawnPointId = spawnPointId,
+        creatureType = creatureType
+      ),
+      behavior = EnemyBehavior()
     )
   }
 }

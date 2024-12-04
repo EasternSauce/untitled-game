@@ -34,7 +34,7 @@ case class AbilityBodyPhysics() {
   }
 
   def synchronize(areaId: AreaId)(implicit game: CoreGame): Unit = {
-    abilityBodySynchronizer.synchronizeForArea(areaId)
+    abilityBodySynchronizer.synchronize(areaId)
   }
 
   def correctBodyPositions(areaId: AreaId)(implicit game: CoreGame): Unit = {

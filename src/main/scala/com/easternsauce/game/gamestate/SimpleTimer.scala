@@ -2,16 +2,16 @@ package com.easternsauce.game.gamestate
 
 import com.softwaremill.quicklens.ModifyPimp
 
-case class SimpleTimer private (time: Float = 0f, running: Boolean) {
-  def start(): SimpleTimer = this.modify(_.running).setTo(true)
+case class SimpleTimer private (time: Float = 0f, isRunning: Boolean) {
+  def start(): SimpleTimer = this.modify(_.isRunning).setTo(true)
 
   def stop(): SimpleTimer =
-    this.modify(_.time).setTo(0f).modify(_.running).setTo(false)
+    this.modify(_.time).setTo(0f).modify(_.isRunning).setTo(false)
 
   def restart(): SimpleTimer =
-    this.modify(_.time).setTo(0f).modify(_.running).setTo(true)
+    this.modify(_.time).setTo(0f).modify(_.isRunning).setTo(true)
 
   def update(delta: Float): SimpleTimer =
-    this.modify(_.time).usingIf(running)(_ + delta)
+    this.modify(_.time).usingIf(isRunning)(_ + delta)
 
 }

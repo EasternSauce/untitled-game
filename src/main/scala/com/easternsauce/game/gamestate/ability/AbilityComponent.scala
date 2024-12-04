@@ -65,7 +65,7 @@ trait AbilityComponent extends GameEntity {
   def abilityId: GameEntityId[Ability] = params.abilityId
   def currentAreaId: AreaId = params.currentAreaId
 
-  def destroyedOnContact: Boolean
+  def isDestroyedOnContact: Boolean
 
   def copy(params: AbilityComponentParams): AbilityComponent
 

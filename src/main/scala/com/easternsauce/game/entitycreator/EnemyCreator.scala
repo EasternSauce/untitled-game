@@ -6,11 +6,12 @@ import com.easternsauce.game.gamestate.creature.Creature
 import com.easternsauce.game.gamestate.id.GameEntityId
 import com.softwaremill.quicklens.ModifyPimp
 
-case class EnemyCreator() extends EntityCreator {
-  override def createEntities(implicit
+trait EnemyCreator {
+  this: GameState =>
+  private[entitycreator] def createEnemies(implicit
       game: CoreGame
-  ): GameState => GameState = { gameState =>
-    val result = game.queues.enemiesToCreate.foldLeft(gameState) {
+  ): GameState = {
+    val result = game.queues.enemiesToCreate.foldLeft(this) {
       case (gameState, enemyToCreate: EnemyToCreate) =>
         createEnemy(gameState, enemyToCreate)
     }
@@ -34,11 +35,10 @@ case class EnemyCreator() extends EntityCreator {
       .using(
         _.updated(
           enemyId,
-          Creature.produce(
+          Creature.produceEnemy(
             enemyId,
             enemyToCreate.areaId,
             enemyToCreate.pos,
-            player = false,
             creatureType = enemyToCreate.creatureType,
             spawnPointId = Some(enemyToCreate.spawnPointId)
           )

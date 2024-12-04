@@ -1,12 +1,11 @@
 package com.easternsauce.game.gamestate.event
+import com.easternsauce.game.Constants
 import com.easternsauce.game.core.CoreGame
 import com.easternsauce.game.gamestate.GameState
 import com.easternsauce.game.gamestate.ability.AbilityComponent
 import com.easternsauce.game.gamestate.creature.Creature
 import com.easternsauce.game.gamestate.id.{AreaId, GameEntityId}
 import com.softwaremill.quicklens.{ModifyPimp, QuicklensMapAt}
-
-import scala.util.chaining.scalaUtilChainingOps
 
 case class AbilityComponentHitsCreatureEvent(
     creatureId: GameEntityId[Creature],
@@ -17,7 +16,7 @@ case class AbilityComponentHitsCreatureEvent(
   override def applyToGameState(
       gameState: GameState
   )(implicit game: CoreGame): GameState = {
-    if (
+    gameState.transformIf(
       gameState.abilityComponents
         .contains(abilityComponentId) && gameState.creatures.contains(
         creatureId
@@ -27,33 +26,35 @@ case class AbilityComponentHitsCreatureEvent(
       val ability = gameState.abilities(abilityComponent.params.abilityId)
       val creature = gameState.creatures(creatureId)
 
-      if (ability.params.creatureId != creatureId) {
+      val isHitAllowed = ability.params.creatureId != creatureId &&
+        (!creature.params.recentlyHitTimer.isRunning ||
+          creature.params.recentlyHitTimer.time > Constants.InvulnerabilityFramesTime)
+
+      gameState.transformIf(isHitAllowed) {
         gameState
           .modify(_.creatures.at(creatureId))
-          .using(creature => creature
-//              .pipe(
-//                DamageDealingUtils.registerLastAttackedByCreature(
-//                  ability.params.creatureId
-//                )
-//              )
-//              .pipe(
-//                DamageDealingUtils.dealDamageToCreature(ability.params.damage)
-//              )
+          .using(creature =>
+            creature
+              .modify(_.params.life)
+              .using(life => {
+                val lifeAfter = life - abilityComponent.params.damage
+                if (lifeAfter <= 0) {
+                  0
+                } else {
+                  lifeAfter
+                }
+              })
+              .modify(_.params.deathAnimationTimer)
+              .using(_.restart())
+              .modify(_.params.recentlyHitTimer)
+              .using(_.restart())
           )
           .modify(_.abilityComponents)
-          .usingIf(creature.alive && abilityComponent.destroyedOnContact)(
+          .usingIf(creature.isAlive && abilityComponent.isDestroyedOnContact)(
             _.removed(abilityComponentId)
           )
-          .pipe(
-            _.markAbilityAsFinishedIfNoComponentsExist(
-              abilityComponent.abilityId
-            )
-          )
-      } else {
-        gameState
+          .markAbilityAsFinishedIfNoComponentsExist(abilityComponent.abilityId)
       }
-    } else {
-      gameState
     }
   }
 }

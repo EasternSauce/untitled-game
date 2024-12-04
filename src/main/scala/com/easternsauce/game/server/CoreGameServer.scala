@@ -49,8 +49,8 @@ case class CoreGameServer() extends CoreGame {
     handleInputs()
 
     gameplay.updateTimers(delta)
-    areaIds.foreach(gameplay.updateForArea(_, delta))
-    gameplay.renderForArea(Constants.DefaultAreaId, delta)
+    areaIds.foreach(gameplay.update(_, delta))
+    gameplay.render(Constants.DefaultAreaId, delta)
 
     processEvents()
   }

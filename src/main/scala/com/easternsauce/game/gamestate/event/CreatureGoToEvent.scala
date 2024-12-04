@@ -19,7 +19,7 @@ case class CreatureGoToEvent(
   )(implicit game: CoreGame): GameState = {
     if (
       gameState.creatures
-        .contains(creatureId) && gameState.creatures(creatureId).alive
+        .contains(creatureId) && gameState.creatures(creatureId).isAlive
     ) {
       val creature = gameState.creatures(creatureId)
 
@@ -44,7 +44,7 @@ case class CreatureGoToEvent(
               .setToIf(vectorTowardsDestination.length > 0)(
                 vectorTowardsDestination
               )
-              .modify(_.params.destinationReached)
+              .modify(_.params.isDestinationReached)
               .setTo(false)
           )
           .modify(_.abilities.each)

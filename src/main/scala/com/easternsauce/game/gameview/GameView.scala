@@ -28,7 +28,7 @@ case class GameView() {
     worldRenderer.init()
   }
 
-  def updateForArea(areaId: AreaId, delta: Float)(implicit
+  def update(areaId: AreaId, delta: Float)(implicit
       game: CoreGame
   ): Unit = {
     worldRenderer.update(areaId)
@@ -38,16 +38,17 @@ case class GameView() {
     viewportManager.updateCameras(creatureId)
   }
 
-  def renderForArea(areaId: AreaId, delta: Float)(implicit
+  def render(areaId: AreaId, delta: Float)(implicit
       game: CoreGame
   ): Unit = {
     ScreenUtils.clear(0, 0, 0, 1)
 
     viewportManager.setProjectionMatrices(spriteBatchHolder)
 
-    worldRenderer.renderForArea(
+    worldRenderer.render(
       areaId,
       spriteBatchHolder,
+      skin,
       viewportManager.getWorldCameraPos
     )
 

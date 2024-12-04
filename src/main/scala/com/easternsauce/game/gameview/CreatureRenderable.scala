@@ -9,6 +9,7 @@ import com.easternsauce.game.gamestate.creature.{Creature, CreatureAnimationType
 import com.easternsauce.game.gamestate.id.{AreaId, GameEntityId}
 import com.easternsauce.game.math.{GameRectangle, IsometricProjection, Vector2f}
 
+//noinspection SpellCheckingInspection
 case class CreatureRenderable(creatureId: GameEntityId[Creature])
     extends Renderable {
 
@@ -51,9 +52,9 @@ case class CreatureRenderable(creatureId: GameEntityId[Creature])
   ): Unit = {
     val creature = game.gameState.creatures(creatureId)
 
-    if (creature.invisible) {
+    if (creature.isInvisible) {
       animations(CreatureAnimationType.Body).render(batch)
-      if (!creature.params.renderBodyOnly) {
+      if (!creature.params.isRenderBodyOnly) {
         animations(CreatureAnimationType.Head).render(batch)
       }
       if (creature.params.primaryWeaponType != PrimaryWeaponType.None) {
@@ -71,7 +72,7 @@ case class CreatureRenderable(creatureId: GameEntityId[Creature])
     if (game.gameState.creatures.contains(creatureId)) {
       val creature = game.gameState.creatures(creatureId)
 
-      if (creature.alive) {
+      if (creature.isAlive) {
         val lifeBarWidth = 32f
         val currentLifeBarWidth =
           lifeBarWidth * creature.params.life / creature.params.maxLife
@@ -98,11 +99,11 @@ case class CreatureRenderable(creatureId: GameEntityId[Creature])
         .contains(creatureId) && game.gameState
         .creatures(creatureId)
         .params
-        .player
+        .isPlayer
     ) {
       val creature = game.gameState.creatures(creatureId)
 
-      if (creature.alive) {
+      if (creature.isAlive) {
         val creatureScreenPos =
           IsometricProjection.translatePosIsoToScreen(creature.pos)
 
@@ -129,9 +130,9 @@ case class CreatureRenderable(creatureId: GameEntityId[Creature])
     )
   }
 
-  override def renderPriority(gameState: GameState): Boolean = {
+  override def hasRenderPriority(gameState: GameState): Boolean = {
     val creature = gameState.creatures(creatureId)
 
-    creature.alive
+    creature.isAlive
   }
 }

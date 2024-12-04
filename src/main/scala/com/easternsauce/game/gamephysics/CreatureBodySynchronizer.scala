@@ -23,7 +23,7 @@ case class CreatureBodySynchronizer() {
   def synchronizeForArea(areaId: AreaId)(implicit game: CoreGame): Unit = {
     val existingCreatures =
       game.gameState.activePlayerIds ++ game.gameState.creatures.values
-        .filterNot(_.params.player)
+        .filterNot(_.params.isPlayer)
         .map(_.id)
 
     val creatureBodiesToCreate =
@@ -53,7 +53,7 @@ case class CreatureBodySynchronizer() {
       .foreach(creatureId => {
         val creature = game.gameState.creatures(creatureId)
 
-        if (creature.alive) {
+        if (creature.isAlive) {
           if (creatureBodies(creature.id).isSensor) {
             creatureBodies(creature.id).setNonSensor()
           }

@@ -106,8 +106,11 @@ case class CreatureAnimation(
     val creature = game.gameState.creatures(creatureId)
 
     val frame =
-      if (
-        creature.params.attackAnimationTimer.running && creature.params.attackAnimationTimer.time < creature.params.animationDefinition.meleeAttackFrames.totalDuration
+      if (!creature.isAlive) {
+        deathAnimations(creature.facingDirection.id)
+          .getKeyFrame(creature.params.deathAnimationTimer.time, false)
+      } else if (
+        creature.params.attackAnimationTimer.isRunning && creature.params.attackAnimationTimer.time < creature.params.animationDefinition.meleeAttackFrames.totalDuration
       ) {
         if (creature.params.primaryWeaponType == PrimaryWeaponType.Bow) {
           bowAnimations(creature.facingDirection.id)
@@ -116,15 +119,12 @@ case class CreatureAnimation(
           attackAnimations(creature.facingDirection.id)
             .getKeyFrame(creature.params.attackAnimationTimer.time, false)
         }
-      } else if (creature.moving) {
+      } else if (creature.isMoving) {
         walkAnimations(creature.facingDirection.id)
           .getKeyFrame(creature.params.animationTimer.time, true)
-      } else if (creature.alive) {
+      } else {
         standstillAnimations(creature.facingDirection.id)
           .getKeyFrame(creature.params.animationTimer.time, true)
-      } else {
-        deathAnimations(creature.facingDirection.id)
-          .getKeyFrame(creature.params.deathAnimationTimer.time, false)
       }
 
     val pos = IsometricProjection.translatePosIsoToScreen(

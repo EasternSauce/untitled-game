@@ -8,11 +8,12 @@ import com.easternsauce.game.gamestate.id.GameEntityId
 import com.easternsauce.game.math.Vector2f
 import com.softwaremill.quicklens.ModifyPimp
 
-case class PlayerCreator() extends EntityCreator {
-  override def createEntities(implicit
+trait PlayerCreator {
+  this: GameState =>
+  private[entitycreator] def createPlayers(implicit
       game: CoreGame
-  ): GameState => GameState = { gameState =>
-    val result = game.queues.playersToCreate.foldLeft(gameState) {
+  ): GameState = {
+    val result = game.queues.playersToCreate.foldLeft(this) {
       case (gameState, playerToCreate: PlayerToCreate) =>
         createPlayer(gameState, playerToCreate)
     }
@@ -38,14 +39,13 @@ case class PlayerCreator() extends EntityCreator {
         .using(
           _.updated(
             creatureId,
-            Creature.produce(
+            Creature.producePlayer(
               creatureId,
               Constants.DefaultAreaId,
               Vector2f(
                 5f,
                 415f
               ),
-              player = true,
               creatureType = CreatureType.Human,
               spawnPointId = None
             )

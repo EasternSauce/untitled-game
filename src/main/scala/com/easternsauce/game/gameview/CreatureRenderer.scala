@@ -22,31 +22,31 @@ case class CreatureRenderer() {
     creatureRenderableSynchronizer.init(creatureRenderables)
   }
 
-  def renderLifeBarsForArea(
+  def renderLifeBars(
       areaId: AreaId,
       worldSpriteBatch: GameSpriteBatch
   )(implicit game: CoreGame): Unit = {
-    creatureRenderables.values.foreach(
+    aliveCreatureRenderables(areaId).foreach(
       _.renderLifeBar(worldSpriteBatch)
     )
   }
 
-  def renderPlayerNamesForArea(
+  def renderPlayerNames(
       areaId: AreaId,
       worldTextSpriteBatch: GameSpriteBatch,
       skin: Skin
   )(implicit game: CoreGame): Unit = {
-    creatureRenderables.values.foreach(
+    aliveCreatureRenderables(areaId).foreach(
       _.renderPlayerName(worldTextSpriteBatch, skin.getFont("default-font"))
     )
   }
 
-  def renderAliveCreaturesForArea(
+  def renderAliveCreatures(
       areaId: AreaId,
       worldSpriteBatch: GameSpriteBatch,
       worldCameraPos: Vector2f
   )(implicit game: CoreGame): Unit = {
-    renderablesForAliveCreaturesInArea(areaId)
+    aliveCreatureRenderables(areaId)
       .foreach(_.renderCreature(worldSpriteBatch, worldCameraPos))
   }
 
@@ -55,16 +55,16 @@ case class CreatureRenderer() {
       worldSpriteBatch: GameSpriteBatch,
       worldCameraPos: Vector2f
   )(implicit game: CoreGame): Unit = {
-    renderablesForDeadCreaturesInArea(areaId)
+    deadCreatureRenderables(areaId)
       .foreach(_.renderCreature(worldSpriteBatch, worldCameraPos))
   }
 
-  private def renderablesForAliveCreaturesInArea(areaId: AreaId)(implicit
+  private def aliveCreatureRenderables(areaId: AreaId)(implicit
       game: CoreGame
   ): List[CreatureRenderable] = {
     game.gameState.creatures
       .filter { case (_, creature) =>
-        creature.alive && creature.currentAreaId == areaId && creatureRenderables
+        creature.isAlive && creature.currentAreaId == areaId && creatureRenderables
           .contains(creature.id)
       }
       .keys
@@ -72,12 +72,12 @@ case class CreatureRenderer() {
       .map(creatureId => creatureRenderables(creatureId))
   }
 
-  private def renderablesForDeadCreaturesInArea(areaId: AreaId)(implicit
+  private def deadCreatureRenderables(areaId: AreaId)(implicit
       game: CoreGame
   ): List[CreatureRenderable] = {
     game.gameState.creatures
       .filter { case (_, creature) =>
-        !creature.alive && creature.currentAreaId == areaId && creatureRenderables
+        !creature.isAlive && creature.currentAreaId == areaId && creatureRenderables
           .contains(creature.id)
       }
       .keys
@@ -86,7 +86,7 @@ case class CreatureRenderer() {
   }
 
   def synchronizeRenderables(areaId: AreaId)(implicit game: CoreGame): Unit = {
-    creatureRenderableSynchronizer.synchronizeForArea(areaId)
+    creatureRenderableSynchronizer.synchronize(areaId)
   }
 
 }

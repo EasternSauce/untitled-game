@@ -21,7 +21,7 @@ case class AbilityRenderer() {
     abilityRenderableSynchronizer.init(abilityRenderables)
   }
 
-  def renderAbilitiesForArea(
+  def renderAbilities(
       areaId: AreaId,
       worldSpriteBatch: GameSpriteBatch,
       worldCameraPos: Vector2f

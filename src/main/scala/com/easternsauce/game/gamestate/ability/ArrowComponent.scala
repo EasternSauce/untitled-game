@@ -18,7 +18,7 @@ case class ArrowComponent(params: AbilityComponentParams)
     this
   }
 
-  override def destroyedOnContact: Boolean = true
+  override def isDestroyedOnContact: Boolean = true
 
   override def copy(params: AbilityComponentParams): AbilityComponent = {
     ArrowComponent(params)

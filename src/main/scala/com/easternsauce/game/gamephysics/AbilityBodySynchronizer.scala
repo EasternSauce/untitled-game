@@ -22,7 +22,7 @@ case class AbilityBodySynchronizer() {
     this.areaWorlds = areaWorlds
   }
 
-  def synchronizeForArea(areaId: AreaId)(implicit game: CoreGame): Unit = {
+  def synchronize(areaId: AreaId)(implicit game: CoreGame): Unit = {
     val abilityBodiesToCreate =
       (game.gameState.abilityComponents.keys.toSet -- abilityBodies.keys.toSet)
         .filter(game.gameState.abilityComponents(_).currentAreaId == areaId)

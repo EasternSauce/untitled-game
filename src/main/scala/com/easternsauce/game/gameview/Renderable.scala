@@ -10,7 +10,7 @@ trait Renderable {
 
   def areaId(gameState: GameState): AreaId
 
-  def renderPriority(gameState: GameState): Boolean
+  def hasRenderPriority(gameState: GameState): Boolean
 
   def renderCreature(batch: GameSpriteBatch, worldCameraPos: Vector2f)(implicit
       game: CoreGame

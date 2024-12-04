@@ -20,7 +20,7 @@ case class CreatureParams(
     textureSize: Int,
     spriteVerticalShift: Float,
     bodyRadius: Float,
-    player: Boolean,
+    isPlayer: Boolean,
     baseSpeed: Float,
     life: Float,
     maxLife: Float,
@@ -31,16 +31,17 @@ case class CreatureParams(
     attackRange: Float,
     primaryWeaponType: PrimaryWeaponType,
     secondaryWeaponType: SecondaryWeaponType,
-    renderBodyOnly: Boolean,
-    animationTimer: SimpleTimer = SimpleTimer(running = true),
-    attackAnimationTimer: SimpleTimer = SimpleTimer(running = false),
-    deathAnimationTimer: SimpleTimer = SimpleTimer(running = false),
-    respawnDelayInProgress: Boolean = false,
-    destinationReached: Boolean = true,
+    isRenderBodyOnly: Boolean,
+    animationTimer: SimpleTimer = SimpleTimer(isRunning = true),
+    attackAnimationTimer: SimpleTimer = SimpleTimer(isRunning = false),
+    deathAnimationTimer: SimpleTimer = SimpleTimer(isRunning = false),
+    isRespawnDelayInProgress: Boolean = false,
+    isDestinationReached: Boolean = true,
     abilityCooldownTimers: Map[AbilityType, SimpleTimer] =
       AbilityType.values.toList
-        .map(abilityType => abilityType -> SimpleTimer(running = false))
+        .map(abilityType => abilityType -> SimpleTimer(isRunning = false))
         .toMap,
     spawnPointId: Option[String],
-    creatureType: CreatureType
+    creatureType: CreatureType,
+    recentlyHitTimer: SimpleTimer = SimpleTimer(isRunning = false)
 ) {}

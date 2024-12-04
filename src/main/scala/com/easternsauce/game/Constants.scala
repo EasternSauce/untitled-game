@@ -3,7 +3,7 @@ package com.easternsauce.game
 import com.easternsauce.game.gamestate.creature.{AnimationDefinition, CreatureType, FramesDefinition}
 import com.easternsauce.game.gamestate.id.AreaId
 import com.easternsauce.game.math.Vector2f
-import com.easternsauce.game.spawnpoint.{CreaturesToSpawn, SpawnPointData}
+import com.easternsauce.game.spawnpoint.{CreaturesToSpawn, SpawnPoint}
 
 object Constants {
   val WindowWidth = 1360
@@ -88,11 +88,11 @@ object Constants {
 
   val MapAreaNames: List[String] = List("area1")
 
-  val MapAreaSpawnPoints: List[SpawnPointData] = List(
-    SpawnPointData(
-      spawnPointId = "area1-spawnpoint1",
-      spawnPointAreaId = AreaId("area1"),
-      spawnPointPos = Vector2f(5, 415),
+  val MapAreaSpawnPoints: List[SpawnPoint] = List(
+    SpawnPoint(
+      id = "area1-spawnpoint1",
+      areaId = AreaId("area1"),
+      pos = Vector2f(5, 415),
       creaturesToSpawn = List(
         CreaturesToSpawn(CreatureType.Rat, 1),
         CreaturesToSpawn(CreatureType.Zombie, 1)
@@ -109,5 +109,8 @@ object Constants {
 
   val TimeBetweenGameStateBroadcasts = 0.5f
 
-  val OfflineMode = false
+  val InvulnerabilityFramesTime = 0.5f
+
+  val AggroDistance = 7f
+  val WalkUpDistance = 2f
 }

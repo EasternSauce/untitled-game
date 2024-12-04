@@ -25,7 +25,7 @@ case class CreaturePerformAbilityEvent(
     if (
       !creature.params
         .abilityCooldownTimers(AbilityType.Arrow)
-        .running || creature.params
+        .isRunning || creature.params
         .abilityCooldownTimers(AbilityType.Arrow)
         .time > 1f
     ) {

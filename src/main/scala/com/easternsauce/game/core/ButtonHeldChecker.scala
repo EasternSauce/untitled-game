@@ -9,7 +9,7 @@ case class ButtonHeldChecker() {
     buttonsHeld = mutable.Map()
   }
 
-  def buttonHeld(key: Int): Boolean = buttonsHeld.getOrElse(key, false)
+  def isButtonHeld(key: Int): Boolean = buttonsHeld.getOrElse(key, false)
 
   def setButtonHeld(key: Int, value: Boolean): Unit =
     buttonsHeld.update(key, value)

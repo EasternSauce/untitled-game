@@ -40,7 +40,7 @@ case class GamePhysics() {
     collisionQueue = ListBuffer()
   }
 
-  def updateForArea(areaId: AreaId)(implicit game: CoreGame): Unit = {
+  def update(areaId: AreaId)(implicit game: CoreGame): Unit = {
     areaWorlds(areaId).update()
 
     handleEvents(eventQueue.toList, areaId)

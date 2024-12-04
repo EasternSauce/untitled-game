@@ -26,7 +26,7 @@ case class AbilityComponentHitsTerrainEvent(
         if (ability.currentState == AbilityState.Active) {
           gameState
             .modify(_.abilityComponents)
-            .usingIf(abilityComponent.destroyedOnContact)(
+            .usingIf(abilityComponent.isDestroyedOnContact)(
               _.removed(abilityComponentId)
             )
             .markAbilityAsFinishedIfNoComponentsExist(

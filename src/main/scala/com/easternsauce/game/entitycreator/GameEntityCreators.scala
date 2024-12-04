@@ -3,26 +3,15 @@ package com.easternsauce.game.entitycreator
 import com.easternsauce.game.core.CoreGame
 import com.easternsauce.game.gamestate.GameState
 
-case class GameEntityCreators() {
-  private var playerCreator: PlayerCreator = _
-  private var enemyCreator: EnemyCreator = _
-  private var abilityCreator: AbilityCreator = _
-  private var abilityComponentCreator: AbilityComponentCreator = _
-
-  def init(): Unit = {
-    playerCreator = PlayerCreator()
-    enemyCreator = EnemyCreator()
-    abilityCreator = AbilityCreator()
-    abilityComponentCreator = AbilityComponentCreator()
-  }
-
-  def createScheduledEntities()(implicit
+trait GameEntityCreators
+    extends PlayerCreator
+    with EnemyCreator
+    with AbilityCreator
+    with AbilityComponentCreator {
+  this: GameState =>
+  def createEntities()(implicit
       game: CoreGame
-  ): GameState => GameState = {
-    playerCreator.createEntities
-      .andThen(enemyCreator.createEntities)
-      .andThen(abilityCreator.createEntities)
-      .andThen(abilityComponentCreator.createEntities)
+  ): GameState = {
+    createPlayers.createEnemies.createAbilities.createAbilityComponents
   }
-
 }

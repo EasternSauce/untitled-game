@@ -19,7 +19,7 @@ object CreatureType extends Enumeration {
       animationDefinition: AnimationDefinition,
       primaryWeaponType: PrimaryWeaponType,
       secondaryWeaponType: SecondaryWeaponType,
-      renderBodyOnly: Boolean
+      isRenderBodyOnly: Boolean
   ) extends super.Val
 
   import scala.language.implicitConversions
@@ -46,7 +46,7 @@ object CreatureType extends Enumeration {
     animationDefinition = Constants.HumanAnimationDefinition,
     primaryWeaponType = PrimaryWeaponType.Bow,
     secondaryWeaponType = SecondaryWeaponType.None,
-    renderBodyOnly = false
+    isRenderBodyOnly = false
   )
 
   val Rat: Value = CreatureTypeDetails(
@@ -63,7 +63,7 @@ object CreatureType extends Enumeration {
     animationDefinition = Constants.RatAnimationDefinition,
     primaryWeaponType = PrimaryWeaponType.None,
     secondaryWeaponType = SecondaryWeaponType.None,
-    renderBodyOnly = true
+    isRenderBodyOnly = true
   )
 
   val Zombie: Value = CreatureTypeDetails(
@@ -80,7 +80,7 @@ object CreatureType extends Enumeration {
     animationDefinition = Constants.ZombieAnimationDefinition,
     primaryWeaponType = PrimaryWeaponType.None,
     secondaryWeaponType = SecondaryWeaponType.None,
-    renderBodyOnly = true
+    isRenderBodyOnly = true
   )
 
   val Wyvern: Value = CreatureTypeDetails(
@@ -97,7 +97,7 @@ object CreatureType extends Enumeration {
     animationDefinition = Constants.WyvernAnimationDefinition,
     primaryWeaponType = PrimaryWeaponType.None,
     secondaryWeaponType = SecondaryWeaponType.None,
-    renderBodyOnly = true
+    isRenderBodyOnly = true
   )
 
 }

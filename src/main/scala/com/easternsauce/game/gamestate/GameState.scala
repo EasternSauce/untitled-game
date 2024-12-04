@@ -2,14 +2,14 @@ package com.easternsauce.game.gamestate
 
 import com.easternsauce.game.Constants
 import com.easternsauce.game.core.CoreGame
+import com.easternsauce.game.entitycreator.GameEntityCreators
 import com.easternsauce.game.gamestate.ability.{Ability, AbilityComponent, AbilityState}
 import com.easternsauce.game.gamestate.creature.Creature
 import com.easternsauce.game.gamestate.event.GameStateEvent
 import com.easternsauce.game.gamestate.id.{AreaId, GameEntityId}
-import com.easternsauce.game.spawnpoint.SpawnPoint
+import com.easternsauce.game.spawnpoint.{SpawnPoint, SpawnPointUpdater}
+import com.easternsauce.game.util.TransformIf
 import com.softwaremill.quicklens.{ModifyPimp, QuicklensMapAt}
-
-import scala.util.chaining.scalaUtilChainingOps
 
 case class GameState(
     creatures: Map[GameEntityId[Creature], Creature] = Map(),
@@ -18,16 +18,17 @@ case class GameState(
       Map(),
     activePlayerIds: Set[GameEntityId[Creature]] = Set(),
     spawnPoints: Map[String, SpawnPoint] = Map(),
-    mainTimer: SimpleTimer = SimpleTimer(running = true)
-) {
-
+    mainTimer: SimpleTimer = SimpleTimer(isRunning = true)
+) extends TransformIf
+    with GameEntityCreators
+    with SpawnPointUpdater {
   def init(): GameState = {
-    val spawnPoints = Constants.MapAreaSpawnPoints.map(SpawnPoint)
+    val spawnPoints = Constants.MapAreaSpawnPoints
 
     spawnPoints.foldLeft(this)((gameState, spawnPoint) =>
       gameState
         .modify(_.spawnPoints)
-        .using(_.updated(spawnPoint.spawnPointData.spawnPointId, spawnPoint))
+        .using(_.updated(spawnPoint.id, spawnPoint))
     )
   }
 
@@ -35,26 +36,13 @@ case class GameState(
     this.modify(_.mainTimer).using(_.update(delta))
   }
 
-  def updateForArea(areaId: AreaId, delta: Float)(implicit
+  def update(areaId: AreaId, delta: Float)(implicit
       game: CoreGame
   ): GameState = {
     this
       .updateCreaturesForArea(areaId, delta)
-      .pipe(game.gameplay.entityCreators.createScheduledEntities)
-      .updateSpawnPointsForArea(areaId)
-
-  }
-
-  private def updateSpawnPointsForArea(areaId: AreaId)(implicit
-      game: CoreGame
-  ): GameState = {
-    spawnPoints.values.foldLeft(this) { case (gameState, spawnPoint) =>
-      if (spawnPoint.areaId == areaId) {
-        gameState.pipe(spawnPoint.update())
-      } else {
-        gameState
-      }
-    }
+      .createEntities
+      .updateSpawnPoints(areaId)
   }
 
   def applyEvents(
@@ -113,7 +101,7 @@ case class GameState(
       .using(creature =>
         if (
           creature.currentAreaId == areaId && activePlayerIds
-            .contains(creature.id) || !creature.params.player
+            .contains(creature.id) || !creature.params.isPlayer
         ) {
           creature.update(
             delta,

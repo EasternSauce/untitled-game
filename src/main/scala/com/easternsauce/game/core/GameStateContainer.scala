@@ -10,10 +10,10 @@ case class GameStateContainer(private var _gameState: GameState) {
     _gameState = _gameState.init()
   }
 
-  def updateGameStateForArea(areaId: AreaId, delta: Float)(implicit
+  def updateGameState(areaId: AreaId, delta: Float)(implicit
       game: CoreGame
   ): Unit = {
-    _gameState = _gameState.updateForArea(areaId, delta)
+    _gameState = _gameState.update(areaId, delta)
   }
 
   def updateGameStateTimers(delta: Float): Unit = {

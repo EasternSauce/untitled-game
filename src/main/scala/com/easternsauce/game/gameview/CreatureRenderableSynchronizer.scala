@@ -19,10 +19,10 @@ case class CreatureRenderableSynchronizer() {
     this.creatureRenderables = creatureRenderables
   }
 
-  def synchronizeForArea(areaId: AreaId)(implicit game: CoreGame): Unit = {
+  def synchronize(areaId: AreaId)(implicit game: CoreGame): Unit = {
     val existingCreatures =
       game.gameState.activePlayerIds ++ game.gameState.creatures.values
-        .filterNot(_.params.player)
+        .filterNot(_.params.isPlayer)
         .map(_.id)
 
     val creatureRenderablesToCreate =

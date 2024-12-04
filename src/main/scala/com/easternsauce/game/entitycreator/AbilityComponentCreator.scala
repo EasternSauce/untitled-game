@@ -6,12 +6,13 @@ import com.easternsauce.game.gamestate.ability._
 import com.easternsauce.game.gamestate.id.GameEntityId
 import com.softwaremill.quicklens.ModifyPimp
 
-case class AbilityComponentCreator() extends EntityCreator {
+trait AbilityComponentCreator {
+  this: GameState =>
 
-  override def createEntities(implicit
+  private[entitycreator] def createAbilityComponents(implicit
       game: CoreGame
-  ): GameState => GameState = { gameState =>
-    val result = game.queues.abilityComponentsToCreate.foldLeft(gameState) {
+  ): GameState = {
+    val result = game.queues.abilityComponentsToCreate.foldLeft(this) {
       case (gameState, abilityComponentToCreate) =>
         val abilityComponentId =
           GameEntityId[AbilityComponent](

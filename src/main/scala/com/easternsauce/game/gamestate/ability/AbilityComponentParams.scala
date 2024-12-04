@@ -13,6 +13,6 @@ case class AbilityComponentParams(
     pos: Vector2f,
     facingVector: Vector2f = Vector2f(0, 1),
     damage: Float,
-    animationTimer: SimpleTimer = SimpleTimer(running = true),
+    animationTimer: SimpleTimer = SimpleTimer(isRunning = true),
     velocity: Vector2f = Vector2f(0, 1)
 ) {}

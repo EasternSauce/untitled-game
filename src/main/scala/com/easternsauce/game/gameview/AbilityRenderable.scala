@@ -34,7 +34,7 @@ case class AbilityRenderable(abilityId: GameEntityId[AbilityComponent])
     animation.render(batch)
   }
 
-  override def renderPriority(gameState: GameState): Boolean = {
+  override def hasRenderPriority(gameState: GameState): Boolean = {
     true
   }
 }

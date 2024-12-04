@@ -45,8 +45,8 @@ abstract class CoreGameClientBase extends CoreGame {
     handleInputs()
 
     gameplay.updateTimers(delta)
-    gameplay.updateForArea(areaId, delta)
-    gameplay.renderForArea(areaId, delta)
+    gameplay.update(areaId, delta)
+    gameplay.render(areaId, delta)
 
     processEvents(areaId)
 
@@ -68,10 +68,10 @@ abstract class CoreGameClientBase extends CoreGame {
   }
 
   override protected def handleInputs(): Unit = {
-    if (gameplay.buttonHeldChecker.buttonHeld(Buttons.LEFT)) {
+    if (gameplay.buttonHeldChecker.isButtonHeld(Buttons.LEFT)) {
       handleMoveInput()
     }
-    if (gameplay.buttonHeldChecker.buttonHeld(Buttons.RIGHT)) {
+    if (gameplay.buttonHeldChecker.isButtonHeld(Buttons.RIGHT)) {
       handleAttackInput()
     }
   }
@@ -85,7 +85,7 @@ abstract class CoreGameClientBase extends CoreGame {
       if (
         !creature.params
           .abilityCooldownTimers(AbilityType.Arrow)
-          .running || creature.params
+          .isRunning || creature.params
           .abilityCooldownTimers(AbilityType.Arrow)
           .time > 1f
       ) {
