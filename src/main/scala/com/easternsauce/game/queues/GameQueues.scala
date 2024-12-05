@@ -1,11 +1,6 @@
 package com.easternsauce.game.queues
 
-import com.easternsauce.game.entitycreator.{
-  AbilityComponentToCreate,
-  AbilityToCreate,
-  EnemyToCreate,
-  PlayerToCreate
-}
+import com.easternsauce.game.entitycreator.{AbilityComponentToCreate, AbilityToCreate, EnemyToCreate, PlayerToCreate}
 import com.easternsauce.game.gamephysics.PhysicsEvent
 import com.easternsauce.game.gamestate.event.GameStateEvent
 

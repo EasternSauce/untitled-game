@@ -1,10 +1,6 @@
 package com.easternsauce.game
 
-import com.easternsauce.game.gamestate.creature.{
-  AnimationDefinition,
-  CreatureType,
-  FramesDefinition
-}
+import com.easternsauce.game.gamestate.creature.{AnimationDefinition, CreatureType, FramesDefinition}
 import com.easternsauce.game.gamestate.id.AreaId
 import com.easternsauce.game.math.Vector2f
 import com.easternsauce.game.spawnpoint.{CreaturesToSpawn, SpawnPoint}

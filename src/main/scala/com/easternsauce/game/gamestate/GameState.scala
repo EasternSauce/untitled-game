@@ -3,11 +3,7 @@ package com.easternsauce.game.gamestate
 import com.easternsauce.game.Constants
 import com.easternsauce.game.core.CoreGame
 import com.easternsauce.game.entitycreator.GameEntityCreators
-import com.easternsauce.game.gamestate.ability.{
-  Ability,
-  AbilityComponent,
-  AbilityState
-}
+import com.easternsauce.game.gamestate.ability.{Ability, AbilityComponent, AbilityState}
 import com.easternsauce.game.gamestate.creature.Creature
 import com.easternsauce.game.gamestate.event.GameStateEvent
 import com.easternsauce.game.gamestate.id.{AreaId, GameEntityId}

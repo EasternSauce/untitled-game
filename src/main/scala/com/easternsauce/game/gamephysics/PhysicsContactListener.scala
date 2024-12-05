@@ -1,16 +1,8 @@
 package com.easternsauce.game.gamephysics
 
-import com.badlogic.gdx.physics.box2d.{
-  Contact,
-  ContactImpulse,
-  ContactListener,
-  Manifold
-}
+import com.badlogic.gdx.physics.box2d.{Contact, ContactImpulse, ContactListener, Manifold}
 import com.easternsauce.game.core.CoreGame
-import com.easternsauce.game.gamestate.event.{
-  AbilityComponentHitsCreatureEvent,
-  AbilityComponentHitsTerrainEvent
-}
+import com.easternsauce.game.gamestate.event.{AbilityComponentHitsCreatureEvent, AbilityComponentHitsTerrainEvent}
 
 case class PhysicsContactListener()(implicit game: CoreGame)
     extends ContactListener {

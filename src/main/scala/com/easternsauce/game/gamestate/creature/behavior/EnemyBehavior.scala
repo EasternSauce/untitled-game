@@ -1,8 +1,8 @@
-package com.easternsauce.game.gamestate.creature
+package com.easternsauce.game.gamestate.creature.behavior
 
 import com.easternsauce.game.Constants
 import com.easternsauce.game.core.CoreGame
-import com.easternsauce.game.gamestate.creature.behavior.CreatureBehavior
+import com.easternsauce.game.gamestate.creature.Creature
 import com.softwaremill.quicklens.ModifyPimp
 
 case class EnemyBehavior() extends CreatureBehavior {
