@@ -1,6 +1,10 @@
 package com.easternsauce.game
 
-import com.easternsauce.game.gamestate.creature.{AnimationDefinition, CreatureType, FramesDefinition}
+import com.easternsauce.game.gamestate.creature.{
+  AnimationDefinition,
+  CreatureType,
+  FramesDefinition
+}
 import com.easternsauce.game.gamestate.id.AreaId
 import com.easternsauce.game.math.Vector2f
 import com.easternsauce.game.spawnpoint.{CreaturesToSpawn, SpawnPoint}
@@ -18,14 +22,6 @@ object Constants {
 
   val TileCenterX = 0
   val TileCenterY = 0
-
-  val LayersByRenderingOrder: List[String] = List(
-    "fill",
-    "background",
-    "object",
-    "manual_object_bottom",
-    "manual_object_top"
-  )
 
   val HumanAnimationDefinition: AnimationDefinition = AnimationDefinition(
     frameWidth = 128,
@@ -113,4 +109,10 @@ object Constants {
 
   val AggroDistance = 7f
   val WalkUpDistance = 2f
+
+  val BottomLayers: List[String] =
+    List("fill", "background", "manual_object_bottom")
+  val DynamicLayers: List[String] = List("object")
+  val TopLayers: List[String] = List("manual_object_top")
+
 }

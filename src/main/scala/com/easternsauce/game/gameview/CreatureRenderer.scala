@@ -41,13 +41,10 @@ case class CreatureRenderer() {
     )
   }
 
-  def renderAliveCreatures(
-      areaId: AreaId,
-      worldSpriteBatch: GameSpriteBatch,
-      worldCameraPos: Vector2f
-  )(implicit game: CoreGame): Unit = {
+  def getAliveCreatureRenderables(
+      areaId: AreaId
+  )(implicit game: CoreGame): List[CreatureRenderable] = {
     aliveCreatureRenderables(areaId)
-      .foreach(_.renderCreature(worldSpriteBatch, worldCameraPos))
   }
 
   def renderDeadCreatures(
@@ -56,7 +53,7 @@ case class CreatureRenderer() {
       worldCameraPos: Vector2f
   )(implicit game: CoreGame): Unit = {
     deadCreatureRenderables(areaId)
-      .foreach(_.renderCreature(worldSpriteBatch, worldCameraPos))
+      .foreach(_.render(worldSpriteBatch, worldCameraPos))
   }
 
   private def aliveCreatureRenderables(areaId: AreaId)(implicit

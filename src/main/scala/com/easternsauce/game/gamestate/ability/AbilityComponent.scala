@@ -5,9 +5,10 @@ import com.easternsauce.game.gamestate.creature.FramesDefinition
 import com.easternsauce.game.gamestate.id.{AreaId, GameEntityId}
 import com.easternsauce.game.gamestate.{GameEntity, WorldDirection}
 import com.easternsauce.game.math.Vector2f
+import com.easternsauce.game.util.TransformIf
 import com.softwaremill.quicklens.ModifyPimp
 
-trait AbilityComponent extends GameEntity {
+trait AbilityComponent extends GameEntity with TransformIf {
   val params: AbilityComponentParams
 
   val textureFileName: String
@@ -39,11 +40,11 @@ trait AbilityComponent extends GameEntity {
   }
 
   private def updateMovement(newPos: Option[Vector2f]): AbilityComponent = {
-    if (newPos.nonEmpty) {
+    this.transformIf(newPos.nonEmpty) {
       this
         .modify(_.params.pos)
         .setTo(newPos.get)
-    } else { this }
+    }
   }
 
   private def updateTimers(delta: Float): AbilityComponent = {

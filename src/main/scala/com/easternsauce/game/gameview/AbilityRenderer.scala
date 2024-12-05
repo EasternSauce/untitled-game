@@ -27,7 +27,7 @@ case class AbilityRenderer() {
       worldCameraPos: Vector2f
   )(implicit game: CoreGame): Unit = {
     abilityRenderablesInArea(areaId)
-      .foreach(_.renderCreature(worldSpriteBatch, worldCameraPos))
+      .foreach(_.render(worldSpriteBatch, worldCameraPos))
   }
 
   private def abilityRenderablesInArea(areaId: AreaId)(implicit

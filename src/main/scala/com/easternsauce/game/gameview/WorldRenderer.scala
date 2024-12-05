@@ -5,6 +5,7 @@ import com.easternsauce.game.core.CoreGame
 import com.easternsauce.game.gamestate.id.AreaId
 import com.easternsauce.game.math.Vector2f
 
+//noinspection SpellCheckingInspection
 case class WorldRenderer() {
   private var creatureRenderer: CreatureRenderer = _
   private var abilityRenderer: AbilityRenderer = _
@@ -46,7 +47,7 @@ case class WorldRenderer() {
 
     game.gameplay.tiledMapsManager
       .tiledMaps(areaId)
-      .render(worldSpriteBatch, worldCameraPos)
+      .renderBottomLayers(worldSpriteBatch, worldCameraPos)
 
     creatureRenderer.renderDeadCreatures(
       areaId,
@@ -54,11 +55,28 @@ case class WorldRenderer() {
       worldCameraPos
     )
 
-    creatureRenderer.renderAliveCreatures(
-      areaId,
-      worldSpriteBatch,
-      worldCameraPos
-    )
+    val dynamicLayerRenderables: List[Renderable] =
+      game.gameplay.tiledMapsManager.tiledMaps(areaId).getDynamicLayerCells()
+    val aliveCreatureRenderables: List[Renderable] =
+      creatureRenderer.getAliveCreatureRenderables(areaId)
+
+    val width =
+      game.gameplay.tiledMapsManager.tiledMaps(areaId).layerWidth("fill")
+
+    val topOfMap = Vector2f(0, width)
+
+    val sortedRenderables =
+      (dynamicLayerRenderables ++ aliveCreatureRenderables).sortBy(_.pos())(
+        (v1: Vector2f, v2: Vector2f) => {
+          if (v1.distance(topOfMap) - v2.distance(topOfMap) >= 0f) {
+            1
+          } else {
+            -1
+          }
+        }
+      )
+
+    sortedRenderables.foreach(_.render(worldSpriteBatch, worldCameraPos))
 
     abilityRenderer.renderAbilities(
       areaId,
@@ -70,6 +88,10 @@ case class WorldRenderer() {
       areaId,
       worldSpriteBatch
     )
+
+    game.gameplay.tiledMapsManager
+      .tiledMaps(areaId)
+      .renderTopLayers(worldSpriteBatch, worldCameraPos)
 
     worldSpriteBatch.end()
   }

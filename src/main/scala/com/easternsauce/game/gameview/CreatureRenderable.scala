@@ -5,7 +5,12 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont
 import com.easternsauce.game.core.CoreGame
 import com.easternsauce.game.gamestate.GameState
 import com.easternsauce.game.gamestate.creature.CreatureAnimationType.CreatureAnimationType
-import com.easternsauce.game.gamestate.creature.{Creature, CreatureAnimationType, PrimaryWeaponType, SecondaryWeaponType}
+import com.easternsauce.game.gamestate.creature.{
+  Creature,
+  CreatureAnimationType,
+  PrimaryWeaponType,
+  SecondaryWeaponType
+}
 import com.easternsauce.game.gamestate.id.{AreaId, GameEntityId}
 import com.easternsauce.game.math.{GameRectangle, IsometricProjection, Vector2f}
 
@@ -47,8 +52,8 @@ case class CreatureRenderable(creatureId: GameEntityId[Creature])
     creature.params.currentAreaId
   }
 
-  override def renderCreature(batch: GameSpriteBatch, worldCameraPos: Vector2f)(
-      implicit game: CoreGame
+  override def render(batch: GameSpriteBatch, worldCameraPos: Vector2f)(implicit
+      game: CoreGame
   ): Unit = {
     val creature = game.gameState.creatures(creatureId)
 

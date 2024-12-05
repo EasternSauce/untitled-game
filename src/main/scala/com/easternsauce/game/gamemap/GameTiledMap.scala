@@ -23,7 +23,7 @@ case class GameTiledMap(areaId: AreaId) {
 
     val iterator = tiledMap.getLayers.iterator()
 
-    var layerNames: List[String] = List() // TODO ????
+    var layerNames: List[String] = List()
 
     while (iterator.hasNext) {
       layerNames = layerNames.appended(iterator.next().getName)
@@ -44,20 +44,49 @@ case class GameTiledMap(areaId: AreaId) {
     } yield {
       Option(layer.getCell(x, y)).map(
         GameMapCell(_, areaId, Vector2f(x.toFloat, y.toFloat))
-      ) // TODO: new parameter for render priority (decided by layer name)
+      )
     }
 
     GameMapLayer(layerName, cells.flatten)
   }
 
-  def render(batch: GameSpriteBatch, worldCameraPos: Vector2f)(implicit
+  def layerWidth(layerName: String): Float = tiledMap.getLayers
+    .get(layerName)
+    .asInstanceOf[TiledMapTileLayer]
+    .getWidth * Constants.TileSize
+  def layerHeight(layerName: String): Float = tiledMap.getLayers
+    .get(layerName)
+    .asInstanceOf[TiledMapTileLayer]
+    .getHeight * Constants.TileSize
+
+  def renderBottomLayers(batch: GameSpriteBatch, worldCameraPos: Vector2f)(
+      implicit game: CoreGame
+  ): Unit = {
+    for {
+      layer <- Constants.BottomLayers.flatMap(layers.get(_))
+      cell <- layer.cells
+    } yield {
+      cell.render(batch, worldCameraPos)
+    }
+  }
+
+  def getDynamicLayerCells()(implicit game: CoreGame): List[GameMapCell] = {
+    for {
+      layer <- Constants.DynamicLayers.flatMap(layers.get(_))
+      cell <- layer.cells
+    } yield {
+      cell
+    }
+  }
+
+  def renderTopLayers(batch: GameSpriteBatch, worldCameraPos: Vector2f)(implicit
       game: CoreGame
   ): Unit = {
     for {
-      layer <- Constants.LayersByRenderingOrder.flatMap(layers.get(_))
+      layer <- Constants.TopLayers.flatMap(layers.get(_))
       cell <- layer.cells
     } yield {
-      cell.renderCreature(batch, worldCameraPos)
+      cell.render(batch, worldCameraPos)
     }
   }
 

@@ -1,6 +1,7 @@
 package com.easternsauce.game.gamestate.event
 import com.easternsauce.game.Constants
 import com.easternsauce.game.core.CoreGame
+import com.easternsauce.game.gamephysics.MakeBodySensorEvent
 import com.easternsauce.game.gamestate.GameState
 import com.easternsauce.game.gamestate.ability.AbilityComponent
 import com.easternsauce.game.gamestate.creature.Creature
@@ -31,23 +32,28 @@ case class AbilityComponentHitsCreatureEvent(
           creature.params.recentlyHitTimer.time > Constants.InvulnerabilityFramesTime)
 
       gameState.transformIf(isHitAllowed) {
+        val lifeAfterHit =
+          if (creature.params.life - abilityComponent.params.damage <= 0) { 0 }
+          else {
+            creature.params.life - abilityComponent.params.damage
+          }
+
+        val isHitFatal = lifeAfterHit <= 0
+
+        if (isHitFatal) {
+          game.queues.physicsEvents += MakeBodySensorEvent(creatureId)
+        }
+
         gameState
           .modify(_.creatures.at(creatureId))
           .using(creature =>
             creature
               .modify(_.params.life)
-              .using(life => {
-                val lifeAfter = life - abilityComponent.params.damage
-                if (lifeAfter <= 0) {
-                  0
-                } else {
-                  lifeAfter
-                }
-              })
-              .modify(_.params.deathAnimationTimer)
-              .using(_.restart())
+              .setTo(lifeAfterHit)
               .modify(_.params.recentlyHitTimer)
               .using(_.restart())
+              .modify(_.params.deathAnimationTimer)
+              .usingIf(isHitFatal)(_.restart())
           )
           .modify(_.abilityComponents)
           .usingIf(creature.isAlive && abilityComponent.isDestroyedOnContact)(

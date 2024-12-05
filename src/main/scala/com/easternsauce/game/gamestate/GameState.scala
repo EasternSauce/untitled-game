@@ -3,7 +3,11 @@ package com.easternsauce.game.gamestate
 import com.easternsauce.game.Constants
 import com.easternsauce.game.core.CoreGame
 import com.easternsauce.game.entitycreator.GameEntityCreators
-import com.easternsauce.game.gamestate.ability.{Ability, AbilityComponent, AbilityState}
+import com.easternsauce.game.gamestate.ability.{
+  Ability,
+  AbilityComponent,
+  AbilityState
+}
 import com.easternsauce.game.gamestate.creature.Creature
 import com.easternsauce.game.gamestate.event.GameStateEvent
 import com.easternsauce.game.gamestate.id.{AreaId, GameEntityId}
@@ -81,15 +85,13 @@ case class GameState(
   def markAbilityAsFinishedIfNoComponentsExist(
       abilityId: GameEntityId[Ability]
   ): GameState = {
-    if (
+    this.transformIf(
       !abilityComponents.values
         .exists(_.params.abilityId == abilityId)
     ) {
       this
         .modify(_.abilities.at(abilityId))
         .using(_.modify(_.params.state).setTo(AbilityState.Finished))
-    } else {
-      this
     }
   }
 
@@ -99,7 +101,7 @@ case class GameState(
     this
       .modify(_.creatures.each)
       .using(creature =>
-        if (
+        creature.transformIf(
           creature.currentAreaId == areaId && activePlayerIds
             .contains(creature.id) || !creature.params.isPlayer
         ) {
@@ -107,8 +109,6 @@ case class GameState(
             delta,
             game.gameplay.physics.creatureBodyPositions.get(creature.id)
           )
-        } else {
-          creature
         }
       )
   }
@@ -118,10 +118,8 @@ case class GameState(
     this
       .modify(_.abilities.each)
       .using(ability =>
-        if (ability.currentAreaId == areaId) {
+        ability.transformIf(ability.currentAreaId == areaId) {
           ability.update(delta)
-        } else {
-          ability
         }
       )
   }
@@ -132,13 +130,11 @@ case class GameState(
     this
       .modify(_.abilityComponents.each)
       .using(abilityComponent =>
-        if (abilityComponent.currentAreaId == areaId) {
+        abilityComponent.transformIf(abilityComponent.currentAreaId == areaId) {
           abilityComponent.update(
             delta,
             game.gameplay.physics.abilityBodyPositions.get(abilityComponent.id)
           )
-        } else {
-          abilityComponent
         }
       )
   }

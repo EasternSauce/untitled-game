@@ -1,6 +1,12 @@
 package com.easternsauce.game.queues
 
-import com.easternsauce.game.entitycreator.{AbilityComponentToCreate, AbilityToCreate, EnemyToCreate, PlayerToCreate}
+import com.easternsauce.game.entitycreator.{
+  AbilityComponentToCreate,
+  AbilityToCreate,
+  EnemyToCreate,
+  PlayerToCreate
+}
+import com.easternsauce.game.gamephysics.PhysicsEvent
 import com.easternsauce.game.gamestate.event.GameStateEvent
 
 case class GameQueues(
@@ -14,5 +20,6 @@ case class GameQueues(
       ConcurrentListBuffer(),
     broadcastEvents: ConcurrentListBuffer[GameStateEvent] =
       ConcurrentListBuffer(),
-    localEvents: ConcurrentListBuffer[GameStateEvent] = ConcurrentListBuffer()
+    localEvents: ConcurrentListBuffer[GameStateEvent] = ConcurrentListBuffer(),
+    physicsEvents: ConcurrentListBuffer[PhysicsEvent] = ConcurrentListBuffer()
 )

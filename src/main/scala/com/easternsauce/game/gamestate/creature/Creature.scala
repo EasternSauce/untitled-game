@@ -3,16 +3,18 @@ package com.easternsauce.game.gamestate.creature
 import com.easternsauce.game.core.CoreGame
 import com.easternsauce.game.gamestate.WorldDirection.WorldDirection
 import com.easternsauce.game.gamestate.creature.CreatureType.CreatureType
-import com.easternsauce.game.gamestate.creature.behavior.CreatureBehavior
+import com.easternsauce.game.gamestate.creature.behavior.{
+  CreatureBehavior,
+  EnemyBehavior,
+  NeutralBehavior
+}
 import com.easternsauce.game.gamestate.id.{AreaId, GameEntityId}
 import com.easternsauce.game.gamestate.{GameEntity, WorldDirection}
 import com.easternsauce.game.math.Vector2f
-import com.easternsauce.game.util.TransformIf
 import com.softwaremill.quicklens.{ModifyPimp, QuicklensMapAt}
 
 case class Creature(params: CreatureParams, behavior: CreatureBehavior)
-    extends GameEntity
-    with TransformIf {
+    extends GameEntity {
   def id: GameEntityId[Creature] = params.id
 
   def pos: Vector2f = params.pos
@@ -31,6 +33,9 @@ case class Creature(params: CreatureParams, behavior: CreatureBehavior)
       delta: Float,
       newPos: Option[Vector2f]
   )(implicit game: CoreGame): Creature = {
+    if (params.isPlayer) {
+      println(pos)
+    }
     this
       .updateTimers(delta)
       .updateAutonomousBehavior()

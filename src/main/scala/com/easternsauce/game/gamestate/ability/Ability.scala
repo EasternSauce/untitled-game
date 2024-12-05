@@ -32,7 +32,7 @@ trait Ability extends GameEntity {
   }
 
   private def updateActivation()(implicit game: CoreGame): Ability = {
-    if (
+    this.transformIf(
       currentState == AbilityState.Channelling && currentStateTime > channelTime
     ) {
       this
@@ -41,8 +41,6 @@ trait Ability extends GameEntity {
         .modify(_.params.stateTimer)
         .using(_.restart())
         .onActiveStart()
-    } else {
-      this
     }
   }
 

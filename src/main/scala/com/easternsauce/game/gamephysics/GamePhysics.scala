@@ -8,7 +8,6 @@ import com.easternsauce.game.gamestate.id.{AreaId, GameEntityId}
 import com.easternsauce.game.math.Vector2f
 
 import scala.collection.mutable
-import scala.collection.mutable.ListBuffer
 
 case class GamePhysics() {
   var areaWorlds: mutable.Map[AreaId, AreaWorld] = _
@@ -16,8 +15,6 @@ case class GamePhysics() {
   private var abilityBodyPhysics: AbilityBodyPhysics = _
   private var creatureBodyPhysics: CreatureBodyPhysics = _
   private var staticBodyPhysics: StaticBodyPhysics = _
-  private var eventQueue: ListBuffer[PhysicsEvent] = _
-  private var collisionQueue: ListBuffer[GameStateEvent] = _
 
   def init(
       tiledMaps: mutable.Map[AreaId, GameTiledMap]
@@ -35,15 +32,12 @@ case class GamePhysics() {
 
     staticBodyPhysics = StaticBodyPhysics()
     staticBodyPhysics.init(tiledMaps, areaWorlds)
-
-    eventQueue = ListBuffer()
-    collisionQueue = ListBuffer()
   }
 
   def update(areaId: AreaId)(implicit game: CoreGame): Unit = {
     areaWorlds(areaId).update()
 
-    handleEvents(eventQueue.toList, areaId)
+    handleEvents(areaId)
 
     correctBodyPositions(areaId)
 
@@ -72,10 +66,9 @@ case class GamePhysics() {
   }
 
   private def handleEvents(
-      eventsToBeProcessed: List[PhysicsEvent],
       areaId: AreaId
   )(implicit game: CoreGame): Unit = {
-    eventsToBeProcessed.foreach {
+    game.queues.physicsEvents.toList.foreach {
       case TeleportEvent(creatureId, pos) =>
         if (
           game.gameState.creatures.contains(creatureId) && game.gameState
@@ -106,23 +99,7 @@ case class GamePhysics() {
       case _ =>
     }
 
-    eventQueue = eventQueue.filter(!eventsToBeProcessed.contains(_))
-  }
-
-  def pollCollisionEvents(): List[GameStateEvent] = {
-    val collisionEvents = List().appendedAll(collisionQueue)
-
-    collisionQueue.clear()
-
-    collisionEvents
-  }
-
-  def scheduleEvents(events: List[PhysicsEvent]): Unit = {
-    eventQueue.addAll(events)
-  }
-
-  def scheduleCollisions(collisions: List[GameStateEvent]): Unit = {
-    collisionQueue.addAll(collisions)
+    game.queues.physicsEvents.clear()
   }
 
   def creatureBodyPositions: Map[GameEntityId[Creature], Vector2f] =

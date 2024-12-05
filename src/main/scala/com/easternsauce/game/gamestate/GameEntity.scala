@@ -1,3 +1,5 @@
 package com.easternsauce.game.gamestate
 
-trait GameEntity
+import com.easternsauce.game.util.TransformIf
+
+trait GameEntity extends TransformIf
