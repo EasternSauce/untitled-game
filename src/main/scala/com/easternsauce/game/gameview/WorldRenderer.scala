@@ -68,10 +68,12 @@ case class WorldRenderer() {
     val sortedRenderables =
       (dynamicLayerRenderables ++ aliveCreatureRenderables).sortBy(_.pos())(
         (v1: Vector2f, v2: Vector2f) => {
-          if (v1.distance(topOfMap) - v2.distance(topOfMap) >= 0f) {
+          if (v2.distance(topOfMap) - v1.distance(topOfMap) > 0f) {
+            -1
+          } else if (v2.distance(topOfMap) - v1.distance(topOfMap) < 0f) {
             1
           } else {
-            -1
+            0
           }
         }
       )

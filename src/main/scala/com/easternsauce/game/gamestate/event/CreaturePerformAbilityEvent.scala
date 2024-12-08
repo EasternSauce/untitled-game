@@ -2,7 +2,6 @@ package com.easternsauce.game.gamestate.event
 import com.easternsauce.game.core.CoreGame
 import com.easternsauce.game.entitycreator.AbilityToCreate
 import com.easternsauce.game.gamestate.GameState
-import com.easternsauce.game.gamestate.ability.AbilityType
 import com.easternsauce.game.gamestate.ability.AbilityType.AbilityType
 import com.easternsauce.game.gamestate.creature.Creature
 import com.easternsauce.game.gamestate.id.{AreaId, GameEntityId}
@@ -14,7 +13,8 @@ case class CreaturePerformAbilityEvent(
     areaId: AreaId,
     abilityType: AbilityType,
     pos: Vector2f,
-    destination: Vector2f
+    destination: Vector2f,
+    targetId: Option[GameEntityId[Creature]]
 ) extends AreaGameStateEvent {
 
   override def applyToGameState(
@@ -22,20 +22,23 @@ case class CreaturePerformAbilityEvent(
   )(implicit game: CoreGame): GameState = {
     val creature = game.gameState.creatures(creatureId)
 
-    if (
-      !creature.params
-        .abilityCooldownTimers(AbilityType.Arrow)
-        .isRunning || creature.params
-        .abilityCooldownTimers(AbilityType.Arrow)
-        .time > 1f
+    gameState.transformIf(
+      creature.isAlive && (!creature.params
+        .abilityCooldownTimers(abilityType)
+        .isRunning ||
+        creature.params
+          .abilityCooldownTimers(abilityType)
+          .time > abilityType.cooldown)
     ) {
       game.queues.abilitiesToCreate += AbilityToCreate(
         abilityType,
         areaId,
         creatureId,
         pos,
-        creature.pos.vectorTowards(destination)
+        creature.pos.vectorTowards(destination),
+        targetId
       )
+
       gameState
         .modify(
           _.creatures
@@ -51,8 +54,6 @@ case class CreaturePerformAbilityEvent(
         .setTo(creature.pos)
         .modify(_.creatures.at(creatureId).params.facingVector)
         .setTo(creature.pos.vectorTowards(destination))
-    } else {
-      gameState
     }
 
   }

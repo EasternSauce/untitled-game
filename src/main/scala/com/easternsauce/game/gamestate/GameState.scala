@@ -82,8 +82,11 @@ case class GameState(
       abilityId: GameEntityId[Ability]
   ): GameState = {
     this.transformIf(
-      !abilityComponents.values
-        .exists(_.params.abilityId == abilityId)
+      abilities.contains(abilityId) && abilities(
+        abilityId
+      ).finishWhenComponentsDestroyed &&
+        !abilityComponents.values
+          .exists(_.params.abilityId == abilityId)
     ) {
       this
         .modify(_.abilities.at(abilityId))

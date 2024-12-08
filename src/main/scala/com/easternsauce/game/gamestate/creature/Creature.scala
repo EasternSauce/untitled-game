@@ -29,9 +29,6 @@ case class Creature(params: CreatureParams, behavior: CreatureBehavior)
       delta: Float,
       newPos: Option[Vector2f]
   )(implicit game: CoreGame): Creature = {
-    if (params.isPlayer) {
-      println(pos)
-    }
     this
       .updateTimers(delta)
       .updateAutonomousBehavior()

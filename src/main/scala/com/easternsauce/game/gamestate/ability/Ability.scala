@@ -25,6 +25,12 @@ trait Ability extends GameEntity {
 
   def channelTime: Float
 
+  def finishWhenComponentsDestroyed: Boolean = false
+
+  def range: Float = 0f
+
+  def isMelee: Boolean = false
+
   private def updateTimers(delta: Float)(implicit game: CoreGame): Ability = {
     this
       .modify(_.params.stateTimer)

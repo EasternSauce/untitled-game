@@ -3,14 +3,14 @@ import com.easternsauce.game.Constants
 import com.easternsauce.game.core.CoreGame
 import com.easternsauce.game.gamephysics.MakeBodySensorEvent
 import com.easternsauce.game.gamestate.GameState
-import com.easternsauce.game.gamestate.ability.AbilityComponent
+import com.easternsauce.game.gamestate.ability.Ability
 import com.easternsauce.game.gamestate.creature.Creature
 import com.easternsauce.game.gamestate.id.{AreaId, GameEntityId}
 import com.softwaremill.quicklens.{ModifyPimp, QuicklensMapAt}
 
-case class AbilityComponentHitsCreatureEvent(
+case class MeleeAttackHitsCreatureEvent(
     creatureId: GameEntityId[Creature],
-    abilityComponentId: GameEntityId[AbilityComponent],
+    abilityId: GameEntityId[Ability],
     areaId: AreaId
 ) extends AreaGameStateEvent {
 
@@ -18,11 +18,12 @@ case class AbilityComponentHitsCreatureEvent(
       gameState: GameState
   )(implicit game: CoreGame): GameState = {
     gameState.transformIf(
-      gameState.abilityComponents.contains(abilityComponentId) &&
-        gameState.creatures.contains(creatureId)
+      gameState.abilities
+        .contains(abilityId) && gameState.creatures.contains(
+        creatureId
+      )
     ) {
-      val abilityComponent = gameState.abilityComponents(abilityComponentId)
-      val ability = gameState.abilities(abilityComponent.params.abilityId)
+      val ability = gameState.abilities(abilityId)
       val creature = gameState.creatures(creatureId)
 
       val isHitAllowed =
@@ -32,10 +33,9 @@ case class AbilityComponentHitsCreatureEvent(
 
       gameState.transformIf(isHitAllowed) {
         val lifeAfterHit =
-          if (creature.params.life - abilityComponent.params.damage <= 0) {
-            0
-          } else {
-            creature.params.life - abilityComponent.params.damage
+          if (creature.params.life - ability.params.damage <= 0) { 0 }
+          else {
+            creature.params.life - ability.params.damage
           }
 
         val isHitFatal = lifeAfterHit <= 0
@@ -55,11 +55,6 @@ case class AbilityComponentHitsCreatureEvent(
               .modify(_.params.deathAnimationTimer)
               .usingIf(isHitFatal)(_.restart())
           )
-          .modify(_.abilityComponents)
-          .usingIf(creature.isAlive && abilityComponent.isDestroyedOnContact)(
-            _.removed(abilityComponentId)
-          )
-          .markAbilityAsFinishedIfNoComponentsExist(abilityComponent.abilityId)
       }
     }
   }

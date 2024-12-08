@@ -18,5 +18,6 @@ case class AbilityParams(
     damage: Float = 10f,
     stateTimer: SimpleTimer = SimpleTimer(isRunning = true),
     velocity: Vector2f = Vector2f(0, 1),
-    speed: Float = 10f
+    speed: Float = 10f,
+    targetId: Option[GameEntityId[Creature]] = None
 ) {}

@@ -86,8 +86,8 @@ object Constants {
       areaId = AreaId("area1"),
       pos = Vector2f(5, 415),
       creaturesToSpawn = List(
-        CreaturesToSpawn(CreatureType.Rat, 1),
-        CreaturesToSpawn(CreatureType.Zombie, 1)
+        CreaturesToSpawn(CreatureType.Rat, 10),
+        CreaturesToSpawn(CreatureType.Zombie, 10)
       )
     )
   )
@@ -101,14 +101,16 @@ object Constants {
 
   val TimeBetweenGameStateBroadcasts = 0.5f
 
-  val InvulnerabilityFramesTime = 0.5f
+  val InvulnerabilityFramesTime = 0.2f
 
-  val AggroDistance = 7f
-  val WalkUpDistance = 2f
+  val AggroDistance = 14f
+  val WalkUpDistance = 1.4f
+  val AttackDistance = 2f
 
   val BottomLayers: List[String] =
     List("fill", "background", "manual_object_bottom")
-  val DynamicLayers: List[String] = List("object")
-  val TopLayers: List[String] = List("manual_object_top")
+  val DynamicLayers: List[String] = List("object", "manual_object_top")
+  val TopLayers: List[String] = List()
 
+  val MeleeAttackRangeForgiveness = 0.3f
 }

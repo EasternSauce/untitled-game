@@ -20,6 +20,8 @@ case class Arrow(params: AbilityParams) extends Ability {
 
   override def channelTime: Float = 0.5f
 
+  override def finishWhenComponentsDestroyed: Boolean = true
+
   override def copy(params: AbilityParams): Ability = Arrow(params)
 
 }

@@ -50,8 +50,8 @@ object CreatureType extends Enumeration {
   )
 
   val Rat: Value = CreatureTypeDetails(
-    baseSpeed = 5f,
-    maxLife = 1f,
+    baseSpeed = 6f,
+    maxLife = 40f,
     damage = 10f,
     attackRange = 1.6f,
     texturePaths = Map(
@@ -68,7 +68,7 @@ object CreatureType extends Enumeration {
 
   val Zombie: Value = CreatureTypeDetails(
     baseSpeed = 5f,
-    maxLife = 1f,
+    maxLife = 65f,
     damage = 20f,
     attackRange = 1.6f,
     texturePaths = Map(

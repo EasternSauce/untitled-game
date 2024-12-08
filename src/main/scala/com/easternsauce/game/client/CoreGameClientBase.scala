@@ -81,13 +81,13 @@ abstract class CoreGameClientBase extends CoreGame {
       .filter(gameState.creatures.contains)
       .map(gameState.creatures(_))
 
+    val currentAbilityType = AbilityType.Arrow
+
     clientCreature.foreach { creature =>
       if (
-        !creature.params
-          .abilityCooldownTimers(AbilityType.Arrow)
-          .isRunning || creature.params
-          .abilityCooldownTimers(AbilityType.Arrow)
-          .time > 1f
+        creature.isAlive &&
+        (!creature.params.abilityCooldownTimers(currentAbilityType).isRunning ||
+          creature.params.abilityCooldownTimers(currentAbilityType).time > 1f)
       ) {
         val destination = MousePosTransformations.mouseWorldPos(
           Gdx.input.getX.toFloat,
@@ -100,9 +100,10 @@ abstract class CoreGameClientBase extends CoreGame {
             CreaturePerformAbilityEvent(
               creature.id,
               creature.currentAreaId,
-              AbilityType.Arrow,
+              currentAbilityType,
               creature.pos,
-              destination
+              destination,
+              None
             )
           )
         )

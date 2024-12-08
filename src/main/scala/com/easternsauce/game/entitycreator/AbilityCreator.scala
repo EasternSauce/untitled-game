@@ -26,11 +26,14 @@ trait AbilityCreator {
           abilityType = abilityToCreate.abilityType,
           state = AbilityState.Channelling,
           pos = abilityToCreate.pos,
-          facingVector = abilityToCreate.facingVector
+          facingVector = abilityToCreate.facingVector,
+          targetId = abilityToCreate.targetId
         )
         val ability =
           if (abilityToCreate.abilityType == AbilityType.Arrow) {
             Arrow(params)
+          } else if (abilityToCreate.abilityType == AbilityType.MeleeAttack) {
+            MeleeAttack(params)
           } else {
             throw new RuntimeException("incorrect ability component type")
           }

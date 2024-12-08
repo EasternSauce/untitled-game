@@ -10,5 +10,6 @@ case class AbilityToCreate(
     currentAreaId: AreaId,
     creatureId: GameEntityId[Creature],
     pos: Vector2f,
-    facingVector: Vector2f
+    facingVector: Vector2f,
+    targetId: Option[GameEntityId[Creature]]
 )
