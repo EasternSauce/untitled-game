@@ -3,6 +3,7 @@ package com.easternsauce.game.gamestate
 import com.easternsauce.game.Constants
 import com.easternsauce.game.core.CoreGame
 import com.easternsauce.game.entitycreator.GameEntityCreators
+import com.easternsauce.game.gamestate.ability.scenario.{AbilityComponentScenarioRunStepEvent, AbilityComponentScenarioStepParams}
 import com.easternsauce.game.gamestate.ability.{Ability, AbilityComponent, AbilityState}
 import com.easternsauce.game.gamestate.creature.Creature
 import com.easternsauce.game.gamestate.event.GameStateEvent
@@ -22,6 +23,7 @@ case class GameState(
 ) extends TransformIf
     with GameEntityCreators
     with SpawnPointUpdater {
+
   def init(): GameState = {
     val spawnPoints = Constants.MapAreaSpawnPoints
 
@@ -40,7 +42,7 @@ case class GameState(
       game: CoreGame
   ): GameState = {
     this
-      .updateCreaturesForArea(areaId, delta)
+      .updateCreatures(areaId, delta)
       .createEntities
       .updateSpawnPoints(areaId)
   }
@@ -53,7 +55,7 @@ case class GameState(
     }
   }
 
-  private def updateCreaturesForArea(
+  private def updateCreatures(
       areaId: AreaId,
       delta: Float
   )(implicit game: CoreGame): GameState = {
@@ -61,21 +63,40 @@ case class GameState(
       .filter(ability =>
         ability.currentState == AbilityState.Cancelled || ability.currentState == AbilityState.Finished
       )
-      .map(_.id)
       .toList
 
     val abilityComponentsToRemove = abilityComponents.values
-      .filter(component => abilitiesToRemove.contains(component.abilityId))
-      .map(_.id)
+      .filter(component => {
+        abilitiesToRemove.contains(
+          component.abilityId
+        ) || component.params.isScheduledToBeRemoved
+      })
+      .toList
+
+    abilityComponentsToRemove.filter(_.params.isContinueScenario).foreach {
+      component =>
+        game.queues.abilityScenarioEvents += AbilityComponentScenarioRunStepEvent(
+          AbilityComponentScenarioStepParams(
+            component.abilityId,
+            component.currentAreaId,
+            component.params.creatureId,
+            component.pos,
+            component.params.facingVector,
+            component.params.damage,
+            component.params.scenarioStepNo + 1
+          )
+        )
+    }
 
     this
       .updateCreatures(delta, areaId)
       .updateAbilities(delta, areaId)
       .updateAbilityComponents(delta, areaId)
       .modify(_.abilities)
-      .using(_.removedAll(abilitiesToRemove))
+      .using(_.removedAll(abilitiesToRemove.map(_.id)))
       .modify(_.abilityComponents)
-      .using(_.removedAll(abilityComponentsToRemove))
+      .using(_.removedAll(abilityComponentsToRemove.map(_.id)))
+
   }
 
   def markAbilityAsFinishedIfNoComponentsExist(
@@ -137,4 +158,5 @@ case class GameState(
         }
       )
   }
+
 }

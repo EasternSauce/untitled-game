@@ -55,10 +55,15 @@ case class AbilityComponentHitsCreatureEvent(
               .modify(_.params.deathAnimationTimer)
               .usingIf(isHitFatal)(_.restart())
           )
-          .modify(_.abilityComponents)
-          .usingIf(creature.isAlive && abilityComponent.isDestroyedOnContact)(
-            _.removed(abilityComponentId)
+          .modify(
+            _.abilityComponents
+              .at(abilityComponentId)
+              .params
+              .isScheduledToBeRemoved
           )
+          .setToIf(
+            creature.isAlive && abilityComponent.isDestroyedOnCreatureContact
+          )(true)
           .markAbilityAsFinishedIfNoComponentsExist(abilityComponent.abilityId)
       }
     }

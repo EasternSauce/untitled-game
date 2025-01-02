@@ -29,14 +29,19 @@ trait AbilityComponentCreator {
           pos = abilityComponentToCreate.pos,
           facingVector = abilityComponentToCreate.facingVector,
           damage = abilityComponentToCreate.damage,
-          velocity = abilityComponentToCreate.facingVector.normalized.multiply(
-            ability.params.speed
-          )
+          scenarioStepNo = abilityComponentToCreate.scenarioStepNo,
+          expirationTime = abilityComponentToCreate.expirationTime
         )
         val abilityComponent =
           if (
             abilityComponentToCreate.componentType == AbilityComponentType.ArrowComponent
           ) { ArrowComponent(params) }
+          else if (
+            abilityComponentToCreate.componentType == AbilityComponentType.GhostArrowComponent
+          ) { GhostArrowComponent(params) }
+          else if (
+            abilityComponentToCreate.componentType == AbilityComponentType.ExplosionComponent
+          ) { ExplosionComponent(params) }
           else {
             throw new RuntimeException("incorrect ability component type")
           }

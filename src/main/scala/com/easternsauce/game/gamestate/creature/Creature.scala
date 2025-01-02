@@ -19,7 +19,7 @@ case class Creature(params: CreatureParams, behavior: CreatureBehavior)
     WorldDirection.fromVector(params.facingVector)
   }
 
-  def isMoving: Boolean = params.velocity.length > 0
+  def isMoving: Boolean = params.velocity.len > 0
 
   def isAlive: Boolean = params.life > 0
 
@@ -60,7 +60,7 @@ case class Creature(params: CreatureParams, behavior: CreatureBehavior)
   )(implicit game: CoreGame): Creature = {
     val vectorTowardsDest = pos.vectorTowards(params.destination)
 
-    val movementStopCondition = vectorTowardsDest.length <= 0.4f
+    val movementStopCondition = vectorTowardsDest.len <= 0.4f
 
     val velocity =
       if (isAlive && !params.isDestinationReached && !movementStopCondition) {

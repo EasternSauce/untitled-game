@@ -2,7 +2,7 @@ package com.easternsauce.game.gamestate.ability
 
 import com.easternsauce.game.gamestate.creature.FramesDefinition
 
-case class ArrowComponent(params: AbilityComponentParams)
+case class GhostArrowComponent(params: AbilityComponentParams)
     extends AbilityComponent {
   override val textureFileName: String = "arrow"
 
@@ -14,16 +14,16 @@ case class ArrowComponent(params: AbilityComponentParams)
 
   override val speed: Float = 12f
 
-  override def init(): ArrowComponent = {
+  override def init(): GhostArrowComponent = {
     this
   }
 
-  override def isDestroyedOnCreatureContact: Boolean = true
+  override def isDestroyedOnCreatureContact: Boolean = false
 
   override def isDestroyedOnTerrainContact: Boolean = true
 
   override def copy(params: AbilityComponentParams): AbilityComponent = {
-    ArrowComponent(params)
+    GhostArrowComponent(params)
   }
 
 }

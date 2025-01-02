@@ -11,6 +11,7 @@ case class GameView() {
 
   private var viewportManager: ViewportManager = _
   private var worldRenderer: WorldRenderer = _
+  private var fpsCountRenderer: FpsCountRenderer = _
 
   var skin: Skin = _
   var spriteBatchHolder: SpriteBatchHolder = _
@@ -26,6 +27,9 @@ case class GameView() {
 
     worldRenderer = WorldRenderer()
     worldRenderer.init()
+
+    fpsCountRenderer = FpsCountRenderer()
+    fpsCountRenderer.init()
   }
 
   def update(areaId: AreaId, delta: Float)(implicit
@@ -55,6 +59,14 @@ case class GameView() {
     if (Constants.EnableDebug) {
       viewportManager.renderDebug(game.gameplay.physics.areaWorlds(areaId))
     }
+
+    renderHud()
+  }
+
+  private def renderHud(): Unit = {
+    spriteBatchHolder.hudSpriteBatch.begin()
+    fpsCountRenderer.render(spriteBatchHolder, skin)
+    spriteBatchHolder.hudSpriteBatch.end()
   }
 
   def resize(width: Int, height: Int): Unit = {

@@ -41,7 +41,7 @@ case class CreatureGoToEvent(
             _.modify(_.params.destination)
               .setTo(destination)
               .modify(_.params.facingVector)
-              .setToIf(vectorTowardsDestination.length > 0)(
+              .setToIf(vectorTowardsDestination.len > 0)(
                 vectorTowardsDestination
               )
               .modify(_.params.isDestinationReached)

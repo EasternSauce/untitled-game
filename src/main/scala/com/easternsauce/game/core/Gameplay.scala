@@ -2,6 +2,7 @@ package com.easternsauce.game.core
 
 import com.easternsauce.game.gamephysics.GamePhysics
 import com.easternsauce.game.gamestate.GameState
+import com.easternsauce.game.gamestate.ability.scenario.{AbilityComponentScenarioRunStepEvent, AbilityComponentScenarioStepParams}
 import com.easternsauce.game.gamestate.id.AreaId
 import com.easternsauce.game.gameview.GameView
 
@@ -40,8 +41,33 @@ case class Gameplay()(implicit game: CoreGame) {
 
   def update(areaId: AreaId, delta: Float): Unit = {
     gameStateHolder.updateGameState(areaId, delta)
+    updateAbilityScenarios()
     physics.update(areaId)
     view.update(areaId, delta)
+  }
+
+  private def updateAbilityScenarios(): Unit = {
+    game.queues.abilityScenarioEvents.toList.foreach {
+      case event: AbilityComponentScenarioRunStepEvent =>
+        scheduleNextScenarioStepComponents(event.scenarioStepParams)
+    }
+
+    game.queues.abilityScenarioEvents.clear()
+  }
+
+  private def scheduleNextScenarioStepComponents(
+      scenarioStepParams: AbilityComponentScenarioStepParams
+  )(implicit game: CoreGame): Unit = {
+    if (game.gameState.abilities.contains(scenarioStepParams.abilityId)) {
+      val ability = game.gameState.abilities(scenarioStepParams.abilityId)
+
+      if (scenarioStepParams.scenarioStepNo < ability.scenarioSteps.length) {
+        val scenarioStep =
+          ability.scenarioSteps(scenarioStepParams.scenarioStepNo)
+
+        scenarioStep.scheduleComponents(scenarioStepParams)
+      }
+    }
   }
 
   def render(areaId: AreaId, delta: Float): Unit = {

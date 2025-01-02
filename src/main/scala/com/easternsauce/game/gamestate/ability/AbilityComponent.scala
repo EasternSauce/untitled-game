@@ -37,6 +37,7 @@ trait AbilityComponent extends GameEntity with TransformIf {
     updateTimers(delta)
       .updateMovement(newPos)
       .updateFacingVector()
+      .removeIfExpired()
   }
 
   private def updateMovement(newPos: Option[Vector2f]): AbilityComponent = {
@@ -49,14 +50,22 @@ trait AbilityComponent extends GameEntity with TransformIf {
 
   private def updateTimers(delta: Float): AbilityComponent = {
     this
-      .modify(_.params.animationTimer)
+      .modify(_.params.generalTimer)
       .using(_.update(delta))
   }
 
   private def updateFacingVector(): AbilityComponent = {
     this
       .modify(_.params.facingVector)
-      .setToIf(velocity.length > 0)(velocity)
+      .setToIf(velocity.len > 0)(velocity)
+  }
+
+  private def removeIfExpired(): AbilityComponent = {
+    this.transformIf(
+      params.expirationTime.nonEmpty && params.generalTimer.time > params.expirationTime.get
+    ) {
+      this.modify(_.params.isScheduledToBeRemoved).setTo(true)
+    }
   }
 
   def velocity: Vector2f = {
@@ -66,7 +75,9 @@ trait AbilityComponent extends GameEntity with TransformIf {
   def abilityId: GameEntityId[Ability] = params.abilityId
   def currentAreaId: AreaId = params.currentAreaId
 
-  def isDestroyedOnContact: Boolean
+  def isDestroyedOnCreatureContact: Boolean
+
+  def isDestroyedOnTerrainContact: Boolean
 
   def copy(params: AbilityComponentParams): AbilityComponent
 

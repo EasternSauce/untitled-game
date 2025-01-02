@@ -69,9 +69,14 @@ case class GameSpriteBatch() {
     )
   }
 
-  def drawFont(font: BitmapFont, str: String, pos: Vector2f): Unit = {
+  def drawFont(
+      font: BitmapFont,
+      str: String,
+      pos: Vector2f,
+      color: Color
+  ): Unit = {
+    font.setColor(color)
     font.draw(spriteBatch, str, pos.x, pos.y)
-
   }
 
   def underlyingSpriteBatch: SpriteBatch = spriteBatch

@@ -1,3 +1,3 @@
 package com.easternsauce.game.gamemap
 
-case class GameMapLayer(name: String, cells: List[GameMapCell]) {}
+case class GameMapLayer(name: String, cells: List[GameMapCell])

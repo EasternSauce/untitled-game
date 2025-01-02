@@ -112,7 +112,7 @@ case class CreatureRenderable(creatureId: GameEntityId[Creature])
           creatureScreenPos.y + 70
         )
 
-        spriteBatch.drawFont(font, creature.id.value, namePos)
+        spriteBatch.drawFont(font, creature.id.value, namePos, Color.WHITE)
       }
     }
   }

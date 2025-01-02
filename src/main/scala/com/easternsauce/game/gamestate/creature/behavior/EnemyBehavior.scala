@@ -37,7 +37,7 @@ case class EnemyBehavior() extends CreatureBehavior {
     val vectorTowardsTarget =
       creature.pos.vectorTowards(target.pos)
 
-    val distanceToTarget = vectorTowardsTarget.length
+    val distanceToTarget = vectorTowardsTarget.len
 
     val posInFrontOfTarget = creature.pos.add(
       vectorTowardsTarget.normalized.multiply(

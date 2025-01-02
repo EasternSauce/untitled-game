@@ -20,4 +20,4 @@ case class AbilityParams(
     velocity: Vector2f = Vector2f(0, 1),
     speed: Float = 10f,
     targetId: Option[GameEntityId[Creature]] = None
-) {}
+)

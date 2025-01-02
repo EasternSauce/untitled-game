@@ -1,19 +1,16 @@
-package com.easternsauce.game.entitycreator
+package com.easternsauce.game.gamestate.ability.scenario
 
 import com.easternsauce.game.gamestate.ability.Ability
-import com.easternsauce.game.gamestate.ability.AbilityComponentType.AbilityComponentType
 import com.easternsauce.game.gamestate.creature.Creature
 import com.easternsauce.game.gamestate.id.{AreaId, GameEntityId}
 import com.easternsauce.game.math.Vector2f
 
-case class AbilityComponentToCreate(
+case class AbilityComponentScenarioStepParams(
     abilityId: GameEntityId[Ability],
-    componentType: AbilityComponentType,
     currentAreaId: AreaId,
     creatureId: GameEntityId[Creature],
     pos: Vector2f,
     facingVector: Vector2f,
     damage: Float,
-    scenarioStepNo: Int,
-    expirationTime: Option[Float]
-)
+    scenarioStepNo: Int
+) {}

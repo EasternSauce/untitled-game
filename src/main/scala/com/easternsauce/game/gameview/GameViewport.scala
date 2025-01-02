@@ -5,7 +5,6 @@ import com.badlogic.gdx.math.Vector3
 import com.badlogic.gdx.physics.box2d.{Box2DDebugRenderer, World}
 import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.utils.viewport.FitViewport
-import com.easternsauce.game.Constants
 import com.easternsauce.game.core.CoreGame
 import com.easternsauce.game.gamestate.creature.Creature
 import com.easternsauce.game.gamestate.id.GameEntityId
@@ -20,6 +19,8 @@ case class GameViewport() {
   import com.badlogic.gdx.graphics.OrthographicCamera
 
   def init(
+      width: Float,
+      height: Float,
       zoom: Float,
       coordinateTransformation: Vector2f => Vector2f
   ): Unit = {
@@ -29,8 +30,8 @@ case class GameViewport() {
     this.coordinateTransformation = coordinateTransformation
 
     viewport = new FitViewport(
-      Constants.ViewportWorldWidth,
-      Constants.ViewportWorldHeight,
+      width,
+      height,
       camera
     )
   }

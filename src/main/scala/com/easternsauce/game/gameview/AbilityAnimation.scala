@@ -51,24 +51,24 @@ case class AbilityAnimation(abilityId: GameEntityId[AbilityComponent]) {
   }
 
   def render(batch: GameSpriteBatch)(implicit game: CoreGame): Unit = {
-    val ability = game.gameState.abilityComponents(abilityId)
+    val component = game.gameState.abilityComponents(abilityId)
 
-    val frame = animation.getKeyFrame(ability.params.animationTimer.time, false)
+    val frame = animation.getKeyFrame(component.params.generalTimer.time, false)
 
     val pos = IsometricProjection.translatePosIsoToScreen(
-      Vector2f(ability.pos.x, ability.pos.y)
+      Vector2f(component.pos.x, component.pos.y)
     )
 
     val angle = IsometricProjection
-      .translatePosIsoToScreen(ability.params.facingVector)
+      .translatePosIsoToScreen(component.params.facingVector)
       .angleDeg
 
     batch.draw(
       frame,
-      pos.x - ability.textureSize / 2f,
-      pos.y - ability.textureSize / 2f,
-      ability.textureSize,
-      ability.textureSize,
+      pos.x - component.textureSize / 2f,
+      pos.y - component.textureSize / 2f,
+      component.textureSize,
+      component.textureSize,
       angle
     )
 

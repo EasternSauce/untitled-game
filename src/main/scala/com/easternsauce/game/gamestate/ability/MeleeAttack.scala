@@ -2,6 +2,8 @@ package com.easternsauce.game.gamestate.ability
 
 import com.easternsauce.game.Constants
 import com.easternsauce.game.core.CoreGame
+import com.easternsauce.game.gamestate.ability.scenario.NextStepCondition
+import com.easternsauce.game.gamestate.ability.scenario.step.{AbilityScenarioStep, GenericScenarioStep}
 import com.easternsauce.game.gamestate.event.MeleeAttackHitsCreatureEvent
 import com.softwaremill.quicklens.ModifyPimp
 
@@ -45,4 +47,11 @@ case class MeleeAttack(params: AbilityParams) extends Ability {
 
   override def copy(params: AbilityParams): Ability = MeleeAttack(params)
 
+  override def scenarioSteps: List[AbilityScenarioStep] = List(
+    GenericScenarioStep(
+      None,
+      NextStepCondition.NullCondition,
+      None
+    )
+  )
 }

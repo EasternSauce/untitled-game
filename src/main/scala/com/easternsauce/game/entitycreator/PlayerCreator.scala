@@ -43,7 +43,7 @@ trait PlayerCreator {
               creatureId,
               Constants.DefaultAreaId,
               Vector2f(
-                5f,
+                55f,
                 415f
               ),
               creatureType = CreatureType.Human,

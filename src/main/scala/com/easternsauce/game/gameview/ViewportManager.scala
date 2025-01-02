@@ -2,6 +2,7 @@ package com.easternsauce.game.gameview
 
 import com.badlogic.gdx.math.Vector3
 import com.badlogic.gdx.scenes.scene2d.Stage
+import com.easternsauce.game.Constants
 import com.easternsauce.game.core.CoreGame
 import com.easternsauce.game.gamephysics.AreaWorld
 import com.easternsauce.game.gamestate.creature.Creature
@@ -17,17 +18,28 @@ case class ViewportManager() {
 
   def init(): Unit = {
     worldViewport.init(
+      Constants.ViewportWorldWidth,
+      Constants.ViewportWorldHeight,
       1,
       pos => IsometricProjection.translatePosIsoToScreen(pos)
     )
-    b2DebugViewport.init(0.02f, Predef.identity)
+    b2DebugViewport.init(
+      Constants.ViewportWorldWidth,
+      Constants.ViewportWorldHeight,
+      0.02f,
+      Predef.identity
+    )
 
     worldTextViewport.init(
+      Constants.ViewportWorldWidth,
+      Constants.ViewportWorldHeight,
       1,
       pos => IsometricProjection.translatePosIsoToScreen(pos)
     )
 
     hudViewport.init(
+      Constants.WindowWidth,
+      Constants.WindowHeight,
       1,
       Predef.identity
     )
@@ -38,7 +50,7 @@ case class ViewportManager() {
     worldTextViewport.setProjectionMatrix(
       spriteBatchHolder.worldTextSpriteBatch
     )
-    hudViewport.setProjectionMatrix(spriteBatchHolder.hudBatch)
+    hudViewport.setProjectionMatrix(spriteBatchHolder.hudSpriteBatch)
   }
 
   def updateCameras(
@@ -47,7 +59,7 @@ case class ViewportManager() {
     worldViewport.updateCamera(creatureId)
     b2DebugViewport.updateCamera(creatureId)
     worldTextViewport.updateCamera(creatureId)
-    hudViewport.updateCamera(creatureId)
+//    hudViewport.updateCamera(creatureId)
   }
 
   def resize(width: Int, height: Int): Unit = {

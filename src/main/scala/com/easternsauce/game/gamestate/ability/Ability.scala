@@ -3,6 +3,8 @@ package com.easternsauce.game.gamestate.ability
 import com.easternsauce.game.core.CoreGame
 import com.easternsauce.game.gamestate.GameEntity
 import com.easternsauce.game.gamestate.ability.AbilityState.AbilityState
+import com.easternsauce.game.gamestate.ability.scenario.AbilityComponentScenarioStepParams
+import com.easternsauce.game.gamestate.ability.scenario.step.AbilityScenarioStep
 import com.easternsauce.game.gamestate.id.{AreaId, GameEntityId}
 import com.softwaremill.quicklens.ModifyPimp
 
@@ -41,6 +43,20 @@ trait Ability extends GameEntity {
     this.transformIf(
       currentState == AbilityState.Channelling && currentStateTime > channelTime
     ) {
+      val scenarioStep = scenarioSteps.head
+
+      scenarioStep.scheduleComponents(
+        AbilityComponentScenarioStepParams(
+          abilityId = id,
+          params.currentAreaId,
+          params.creatureId,
+          params.pos,
+          params.facingVector,
+          params.damage,
+          scenarioStepNo = 0
+        )
+      )
+
       this
         .modify(_.params.state)
         .setTo(AbilityState.Active)
@@ -49,6 +65,8 @@ trait Ability extends GameEntity {
         .onActiveStart()
     }
   }
+
+  def scenarioSteps: List[AbilityScenarioStep]
 
   def copy(params: AbilityParams): Ability
 

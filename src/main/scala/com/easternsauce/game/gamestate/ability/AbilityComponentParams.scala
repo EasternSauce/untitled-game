@@ -13,6 +13,9 @@ case class AbilityComponentParams(
     pos: Vector2f,
     facingVector: Vector2f = Vector2f(0, 1),
     damage: Float,
-    animationTimer: SimpleTimer = SimpleTimer(isRunning = true),
-    velocity: Vector2f = Vector2f(0, 1)
-) {}
+    generalTimer: SimpleTimer = SimpleTimer(isRunning = true),
+    scenarioStepNo: Int,
+    isScheduledToBeRemoved: Boolean = false,
+    isContinueScenario: Boolean = true,
+    expirationTime: Option[Float]
+)

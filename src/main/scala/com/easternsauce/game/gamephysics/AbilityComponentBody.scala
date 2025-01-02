@@ -54,8 +54,8 @@ case class AbilityComponentBody(
       val creature = gameState.abilityComponents(abilityComponentId)
 
       b2Body.setLinearVelocity(
-        creature.params.velocity.x,
-        creature.params.velocity.y
+        creature.velocity.x,
+        creature.velocity.y
       )
     }
   }
