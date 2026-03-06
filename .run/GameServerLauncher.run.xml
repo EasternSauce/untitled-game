@@ -1,7 +1,7 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="GameServerLauncher" type="Application" factoryName="Application">
     <option name="MAIN_CLASS_NAME" value="com.easternsauce.game.server.GameServerLauncher" />
-    <module name="untitled-game" />
+    <module name="untitled-game.main" />
     <option name="VM_PARAMETERS" value="--add-opens java.base/java.util=ALL-UNNAMED --add-opens java.base/java.lang.invoke=ALL-UNNAMED" />
     <extension name="coverage">
       <pattern>

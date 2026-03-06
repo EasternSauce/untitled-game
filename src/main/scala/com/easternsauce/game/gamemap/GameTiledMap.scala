@@ -1,6 +1,6 @@
 package com.easternsauce.game.gamemap
 
-import com.badlogic.gdx.maps.tiled.{TiledMap, TiledMapTileLayer, TmxMapLoader}
+import com.badlogic.gdx.maps.tiled.{BaseTmxMapLoader, TiledMap, TiledMapTileLayer, TmxMapLoader}
 import com.easternsauce.game.Constants
 import com.easternsauce.game.core.CoreGame
 import com.easternsauce.game.gamestate.id.AreaId
@@ -13,13 +13,9 @@ case class GameTiledMap(areaId: AreaId) {
   private var layers: Map[String, GameMapLayer] = _
 
   def init(): Unit = {
-    val params = new TmxMapLoader.Parameters()
-
-    tiledMap = new TmxMapLoader()
-      .load(
-        s"${Constants.MapFilesLocation}/${areaId.name}/${areaId.name}.tmx",
-        params
-      )
+    tiledMap = new TmxMapLoader().load(
+      s"${Constants.MapFilesLocation}/${areaId.name}/${areaId.name}.tmx"
+    )
 
     val iterator = tiledMap.getLayers.iterator()
 
