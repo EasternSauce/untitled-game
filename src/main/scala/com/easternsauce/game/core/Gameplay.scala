@@ -1,15 +1,18 @@
 package com.easternsauce.game.core
 
-import com.easternsauce.game.gamephysics.GamePhysics
+import com.easternsauce.game.gamephysics.WorldSimulation
 import com.easternsauce.game.gamestate.GameState
-import com.easternsauce.game.gamestate.ability.scenario.{AbilityComponentScenarioRunStepEvent, AbilityComponentScenarioStepParams}
+import com.easternsauce.game.gamestate.ability.scenario.{
+  AbilityComponentScenarioRunStepEvent,
+  AbilityComponentScenarioStepParams
+}
 import com.easternsauce.game.gamestate.id.AreaId
 import com.easternsauce.game.gameview.GameView
 
 case class Gameplay()(implicit game: CoreGame) {
 
   var view: GameView = _
-  var physics: GamePhysics = _
+  var physics: WorldSimulation = _
   var keyHeldChecker: KeyHeldChecker = _
   var buttonHeldChecker: ButtonHeldChecker = _
   var gameStateHolder: GameStateContainer = _
@@ -25,7 +28,7 @@ case class Gameplay()(implicit game: CoreGame) {
     view = GameView()
     view.init()
 
-    physics = GamePhysics()
+    physics = WorldSimulation()
     physics.init(tiledMapsManager.tiledMaps)
 
     keyHeldChecker = KeyHeldChecker()
