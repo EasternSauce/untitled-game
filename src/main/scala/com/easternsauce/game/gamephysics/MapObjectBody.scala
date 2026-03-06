@@ -8,37 +8,22 @@ import com.easternsauce.game.math.Vector2f
 
 case class MapObjectBody(objectBodyId: String) extends PhysicsBody {
 
-  override def init(areaWorld: AreaWorld, pos: Vector2f)(implicit
-      game: CoreGame
-  ): Unit = {
+  override def init(areaWorld: AreaWorld, pos: Vector2f)(implicit game: CoreGame): Unit = {
+    val vertices = Array(-0.5f, -0.25f, 0.5f, -0.75f, 0.5f, 0.25f, -0.5f, 0.75f)
 
-    val bodyDef = new BodyDef()
-    bodyDef.`type` = BodyType.StaticBody
-    bodyDef.position.set(pos.x + 0.5f, pos.y + 0.5f)
+    this.b2Body = new BodyFactory(areaWorld)
+      .withType(BodyDef.BodyType.StaticBody)
+      .at(Vector2f(pos.x + 0.5f, pos.y + 0.5f))
+      .withPolygon(vertices)
+      .withUserData(this)
+      .build()
 
-    val body = areaWorld.createBody(bodyDef)
-    body.setUserData(this)
-
-    val fixtureDef = new FixtureDef()
-    val shape = new PolygonShape()
-
-    shape.set(Array(-0.5f, -0.25f, 0.5f, -0.75f, 0.5f, 0.25f, -0.5f, 0.75f))
-
-    fixtureDef.shape = shape
-    body.createFixture(fixtureDef)
-
-    this.b2Body = body
     this.areaWorld = areaWorld
     this.sensor = false
   }
 
-  override protected def radius(implicit game: CoreGame): Float =
-    0f
-
-  override protected def velocity(gameState: GameState) =
-    None
-
+  override protected def radius(implicit game: CoreGame): Float = 0f
+  override protected def velocity(gameState: GameState): Option[Vector2f] = None
   override def update(gameState: GameState): Unit = {}
-
   override def onRemove(): Unit = {}
 }

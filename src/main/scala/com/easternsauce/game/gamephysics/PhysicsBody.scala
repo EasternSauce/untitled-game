@@ -2,9 +2,6 @@ package com.easternsauce.game.gamephysics
 
 import com.badlogic.gdx.physics.box2d.Body
 import com.badlogic.gdx.physics.box2d.BodyDef
-import com.badlogic.gdx.physics.box2d.CircleShape
-import com.badlogic.gdx.physics.box2d.FixtureDef
-import com.badlogic.gdx.physics.box2d.MassData
 import com.easternsauce.game.core.CoreGame
 import com.easternsauce.game.gamestate.GameState
 import com.easternsauce.game.gamestate.id.AreaId
@@ -21,11 +18,8 @@ abstract class PhysicsBody {
     Vector2f(p.x, p.y)
   }
 
-  def areaId: AreaId =
-    areaWorld.areaId
-
-  def isSensor: Boolean =
-    sensor
+  def areaId: AreaId = areaWorld.areaId
+  def isSensor: Boolean = sensor
 
   def setPos(pos: Vector2f): Unit = {
     b2Body.setTransform(pos.x, pos.y, b2Body.getAngle)
@@ -51,54 +45,28 @@ abstract class PhysicsBody {
     }
   }
 
+  // Subclasses define their parameters
   protected def radius(implicit game: CoreGame): Float
-
   protected def velocity(gameState: GameState): Option[Vector2f]
-
   protected def initialSensor: Boolean = false
-
-  protected def bodyType: BodyDef.BodyType =
-    BodyDef.BodyType.DynamicBody
-
+  protected def bodyType: BodyDef.BodyType = BodyDef.BodyType.DynamicBody
   protected def linearDamping: Float = 0f
-
   protected def mass: Option[Float] = None
 
+  // Generic init using BodyFactory
   def init(areaWorld: AreaWorld, pos: Vector2f)(implicit game: CoreGame): Unit = {
-    this.b2Body = createBody(areaWorld, pos)
+    this.b2Body = new BodyFactory(areaWorld)
+      .withType(bodyType)
+      .at(pos)
+      .withCircle(radius)
+      .withSensor(initialSensor)
+      .withLinearDamping(linearDamping)
+      .withMass(mass.getOrElse(0f))
+      .withUserData(this)
+      .build()
+
     this.areaWorld = areaWorld
     this.sensor = initialSensor
-  }
-
-  private def createBody(areaWorld: AreaWorld, pos: Vector2f)(implicit game: CoreGame): Body = {
-
-    val bodyDef = new BodyDef()
-    bodyDef.`type` = bodyType
-    bodyDef.position.set(pos.x, pos.y)
-
-    val body = areaWorld.createBody(bodyDef)
-    body.setUserData(this)
-
-    val shape = new CircleShape()
-    shape.setRadius(radius)
-
-    val fixtureDef = new FixtureDef()
-    fixtureDef.shape = shape
-
-    val fixture = body.createFixture(fixtureDef)
-    fixture.setSensor(initialSensor)
-
-    if (linearDamping > 0f) {
-      body.setLinearDamping(linearDamping)
-    }
-
-    mass.foreach { m =>
-      val massData = new MassData
-      massData.mass = m
-      body.setMassData(massData)
-    }
-
-    body
   }
 
   def update(gameState: GameState): Unit = {
