@@ -7,12 +7,13 @@ import com.easternsauce.game.math.Vector2f
 
 sealed trait PhysicsEvent
 
-// --- Creature events ---
-case class TeleportEvent(creatureId: GameEntityId[Creature], pos: Vector2f) extends PhysicsEvent
-case class MakeBodySensorEvent(creatureId: GameEntityId[Creature]) extends PhysicsEvent
-case class MakeBodyNonSensorEvent(creatureId: GameEntityId[Creature]) extends PhysicsEvent
+// --- Creature-specific events ---
+case class CreatureTeleportEvent(creatureId: GameEntityId[Creature], pos: Vector2f)
+    extends PhysicsEvent
+case class CreatureMakeSensorEvent(creatureId: GameEntityId[Creature]) extends PhysicsEvent
+case class CreatureMakeNonSensorEvent(creatureId: GameEntityId[Creature]) extends PhysicsEvent
 
-// --- Ability events ---
+// --- Ability events (keep as-is for now) ---
 case class AbilityTeleportEvent(abilityId: GameEntityId[AbilityComponent], pos: Vector2f)
     extends PhysicsEvent
 case class AbilityMakeSensorEvent(abilityId: GameEntityId[AbilityComponent]) extends PhysicsEvent

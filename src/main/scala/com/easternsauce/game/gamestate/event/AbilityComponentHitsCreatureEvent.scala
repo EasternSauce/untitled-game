@@ -1,7 +1,7 @@
 package com.easternsauce.game.gamestate.event
 import com.easternsauce.game.Constants
 import com.easternsauce.game.core.CoreGame
-import com.easternsauce.game.gamephysics.MakeBodySensorEvent
+import com.easternsauce.game.gamephysics.CreatureMakeSensorEvent
 import com.easternsauce.game.gamestate.GameState
 import com.easternsauce.game.gamestate.ability.AbilityComponent
 import com.easternsauce.game.gamestate.creature.Creature
@@ -41,7 +41,7 @@ case class AbilityComponentHitsCreatureEvent(
         val isHitFatal = lifeAfterHit <= 0
 
         if (isHitFatal) {
-          game.queues.physicsEvents += MakeBodySensorEvent(creatureId)
+          game.queues.physicsEvents += CreatureMakeSensorEvent(creatureId)
         }
 
         gameState

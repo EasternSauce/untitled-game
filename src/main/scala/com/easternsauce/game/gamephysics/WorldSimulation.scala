@@ -74,13 +74,13 @@ case class WorldSimulation() {
     game.queues.physicsEvents.clear()
 
     events.foreach {
-      case TeleportEvent(creatureId, pos) =>
+      case CreatureTeleportEvent(creatureId, pos) =>
         creatureUpdater.teleportIfInArea(creatureId, pos, areaId, game)
 
-      case MakeBodySensorEvent(creatureId) =>
+      case CreatureMakeSensorEvent(creatureId) =>
         creatureUpdater.setSensorIfInArea(creatureId, areaId, game)
 
-      case MakeBodyNonSensorEvent(creatureId) =>
+      case CreatureMakeNonSensorEvent(creatureId) =>
         creatureUpdater.setNonSensorIfInArea(creatureId, areaId, game)
 
       case AbilityTeleportEvent(abilityId, pos) =>
