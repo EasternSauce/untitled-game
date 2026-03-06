@@ -14,7 +14,7 @@ case class FpsCountRenderer() {
     val font = skin.getFont("default-font")
     spriteBatchHolder.hudSpriteBatch.drawFont(
       font,
-      fps + " fps",
+      fps.toString + " fps",
       Vector2f(Constants.WindowWidth / 2f - 50f, Constants.WindowHeight / 2f),
       Color.ORANGE
     )

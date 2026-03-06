@@ -16,7 +16,9 @@ case class WorldSimulation() {
   private var creatureUpdater: CreatureUpdater = _
   private var creatureRegistry: CreatureRegistry = _
 
-  private var abilityBodyPhysics: AbilityBodyPhysics = _
+  private var abilitySpawner: AbilitySpawner = _
+  private var abilityUpdater: AbilityUpdater = _
+  private var abilityRegistry: AbilityRegistry = _
 
   def init(tiledMaps: mutable.Map[AreaId, GameTiledMap])(implicit game: CoreGame): Unit = {
 
@@ -26,6 +28,7 @@ case class WorldSimulation() {
 
     areaWorlds.values.foreach(_.init(PhysicsContactListener()))
 
+    // --- Creatures ---
     creatureSpawner = CreatureSpawner()
     creatureSpawner.init(areaWorlds)
 
@@ -35,8 +38,15 @@ case class WorldSimulation() {
     creatureRegistry = CreatureRegistry()
     creatureRegistry.init(creatureSpawner)
 
-    abilityBodyPhysics = AbilityBodyPhysics()
-    abilityBodyPhysics.init(areaWorlds)
+    // --- Abilities ---
+    abilitySpawner = AbilitySpawner()
+    abilitySpawner.init(areaWorlds, game.gameState.abilityComponents.values)
+
+    abilityUpdater = AbilityUpdater()
+    abilityUpdater.init(abilitySpawner.allBodies, areaWorlds)
+
+    abilityRegistry = AbilityRegistry()
+    abilityRegistry.init(abilitySpawner)
   }
 
   def update(areaId: AreaId)(implicit game: CoreGame): Unit = {
@@ -73,30 +83,42 @@ case class WorldSimulation() {
       case MakeBodyNonSensorEvent(creatureId) =>
         creatureUpdater.setNonSensorIfInArea(creatureId, areaId, game)
 
+      case AbilityTeleportEvent(abilityId, pos) =>
+        abilityUpdater.setBodyPosIfInArea(abilityId, pos, areaId, game)
+
+      case AbilityMakeSensorEvent(abilityId) =>
+        abilityUpdater.setSensorIfInArea(abilityId, areaId, game)
+
+      case AbilityMakeNonSensorEvent(abilityId) =>
+        abilityUpdater.setNonSensorIfInArea(abilityId, areaId, game)
+
       case _ =>
     }
   }
 
+  // --- Creature positions ---
   def creatureBodyPositions: Map[GameEntityId[Creature], Vector2f] =
     creatureRegistry.positionsForAllAreas()
 
+  // --- Ability positions ---
   def abilityBodyPositions: Map[GameEntityId[AbilityComponent], Vector2f] =
-    abilityBodyPhysics.abilityBodyPositions
+    abilityRegistry.positionsForAllAreas()
 
+  // --- Correct positions ---
   def correctBodyPositions(areaId: AreaId)(implicit game: CoreGame): Unit = {
-
     creatureUpdater.correctPositions(areaId)
-
-    abilityBodyPhysics.correctBodyPositions(areaId)
+    abilityUpdater.correctPositions(areaId)
   }
 
+  // --- Synchronize ---
   private def synchronize(areaId: AreaId)(implicit game: CoreGame): Unit = {
     creatureUpdater.synchronize(areaId)
-    abilityBodyPhysics.synchronize(areaId)
+    abilityUpdater.synchronize(areaId)
   }
 
+  // --- Update bodies ---
   private def updateBodies(areaId: AreaId)(implicit game: CoreGame): Unit = {
     creatureUpdater.update(areaId)
-    abilityBodyPhysics.update(areaId)
+    abilityUpdater.update(areaId)
   }
 }
