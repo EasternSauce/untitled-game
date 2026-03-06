@@ -18,7 +18,7 @@ case class PhysicsContactListener()(implicit game: CoreGame) extends ContactList
 
   private def onContactStart(objA: Any, objB: Any): Unit = {
     (objA, objB) match {
-      case (componentBody: AbilityComponentBody, creatureBody: CreatureBody) =>
+      case (componentBody: AbilityBody, creatureBody: CreatureBody) =>
         val component =
           game.gameState.abilityComponents.get(componentBody.abilityComponentId)
 
@@ -30,7 +30,7 @@ case class PhysicsContactListener()(implicit game: CoreGame) extends ContactList
           )
         )
 
-      case (componentBody: AbilityComponentBody, _: MapTerrainBody) =>
+      case (componentBody: AbilityBody, _: TerrainTileBody) =>
         val component =
           game.gameState.abilityComponents.get(componentBody.abilityComponentId)
 

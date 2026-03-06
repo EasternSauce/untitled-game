@@ -7,13 +7,13 @@ import com.easternsauce.game.gamestate.id.{AreaId, GameEntityId}
 import scala.collection.mutable
 
 case class AbilityBodySynchronizer() {
-  private var abilityBodies: mutable.Map[GameEntityId[AbilityComponent], AbilityComponentBody] = _
+  private var abilityBodies: mutable.Map[GameEntityId[AbilityComponent], AbilityBody] = _
   private var areaWorlds: mutable.Map[AreaId, AreaWorld] = _
 
   def init(
       abilityBodies: mutable.Map[GameEntityId[
         AbilityComponent
-      ], AbilityComponentBody],
+      ], AbilityBody],
       areaWorlds: mutable.Map[AreaId, AreaWorld]
   ): Unit = {
     this.abilityBodies = abilityBodies
@@ -41,7 +41,7 @@ case class AbilityBodySynchronizer() {
   )(implicit game: CoreGame): Unit = {
     val ability = gameState.abilityComponents(abilityId)
 
-    val abilityBody = AbilityComponentBody(abilityId)
+    val abilityBody = AbilityBody(abilityId)
 
     val areaWorld = areaWorlds(ability.params.currentAreaId)
 

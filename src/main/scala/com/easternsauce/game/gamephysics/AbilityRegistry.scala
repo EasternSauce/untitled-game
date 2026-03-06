@@ -7,7 +7,7 @@ import scala.collection.mutable
 
 case class AbilityRegistry() {
 
-  private var abilityBodies: mutable.Map[GameEntityId[AbilityComponent], AbilityComponentBody] = _
+  private var abilityBodies: mutable.Map[GameEntityId[AbilityComponent], AbilityBody] = _
 
   def init(spawner: AbilitySpawner): Unit =
     abilityBodies = spawner.allBodies

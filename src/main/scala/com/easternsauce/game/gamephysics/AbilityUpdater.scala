@@ -9,12 +9,12 @@ import scala.collection.mutable
 
 case class AbilityUpdater() {
 
-  private var abilityBodies: mutable.Map[GameEntityId[AbilityComponent], AbilityComponentBody] = _
+  private var abilityBodies: mutable.Map[GameEntityId[AbilityComponent], AbilityBody] = _
   private var areaWorlds: mutable.Map[AreaId, AreaWorld] = _
   private var synchronizer: AbilityBodySynchronizer = _
 
   def init(
-      abilityBodies: mutable.Map[GameEntityId[AbilityComponent], AbilityComponentBody],
+      abilityBodies: mutable.Map[GameEntityId[AbilityComponent], AbilityBody],
       areaWorlds: mutable.Map[AreaId, AreaWorld]
   ): Unit = {
     this.abilityBodies = abilityBodies

@@ -1,20 +1,17 @@
 package com.easternsauce.game.gamephysics
 
-import com.badlogic.gdx.physics.box2d.BodyDef.BodyType
-import com.badlogic.gdx.physics.box2d.{BodyDef, FixtureDef, PolygonShape}
+import com.badlogic.gdx.physics.box2d.BodyDef
 import com.easternsauce.game.core.CoreGame
 import com.easternsauce.game.gamestate.GameState
 import com.easternsauce.game.math.Vector2f
 
-case class MapObjectBody(objectBodyId: String) extends PhysicsBody {
+case class TerrainTileBody(terrainId: String) extends PhysicsBody {
 
   override def init(areaWorld: AreaWorld, pos: Vector2f)(implicit game: CoreGame): Unit = {
-    val vertices = Array(-0.5f, -0.25f, 0.5f, -0.75f, 0.5f, 0.25f, -0.5f, 0.75f)
-
     this.b2Body = new BodyFactory(areaWorld)
       .withType(BodyDef.BodyType.StaticBody)
       .at(Vector2f(pos.x + 0.5f, pos.y + 0.5f))
-      .withPolygon(vertices)
+      .withBox(0.5f, 0.5f)
       .withUserData(this)
       .build()
 

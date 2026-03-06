@@ -17,75 +17,73 @@ case class StaticBodyPhysics() {
       areaWorlds: mutable.Map[AreaId, AreaWorld]
   )(implicit game: CoreGame): Unit = {
     areaWorlds.foreach { case (areaId, world) =>
-      val GameTiledMap = tiledMaps(areaId)
+      val gameTiledMap = tiledMaps(areaId)
 
-      val mapTerrainCollisions =
-        mapTerrainCollisionCells(GameTiledMap) ++ largeMapObjectCells(
-          GameTiledMap
-        )
+      val terrainTiles =
+        terrainTileCells(gameTiledMap) ++ largeStaticObjectCells(gameTiledMap)
 
-      val mapObjectCollisions = mapObjectCollisionCells(GameTiledMap)
+      val staticObjects = staticObjectCells(gameTiledMap)
 
-      staticBodies = createStaticBodies(mapTerrainCollisions, mapObjectCollisions, world)
+      staticBodies = createStaticBodies(terrainTiles, staticObjects, world)
     }
 
     this.areaWorlds = areaWorlds
   }
 
   private def createStaticBodies(
-      mapTerrainCollisions: List[GameMapCell],
-      mapObjectCollisions: List[GameMapCell],
+      terrainTileCells: List[GameMapCell],
+      staticObjectCells: List[GameMapCell],
       world: AreaWorld
   )(implicit game: CoreGame): List[PhysicsBody] = {
-    createMapTerrainBodies(mapTerrainCollisions, world) ++
-      createMapObjectBodies(mapObjectCollisions, world)
+    createTerrainTileBodies(terrainTileCells, world) ++
+      createStaticObjectBodies(staticObjectCells, world)
   }
 
-  private def createMapObjectBodies(
-      objectCollisions: List[GameMapCell],
+  private def createStaticObjectBodies(
+      staticObjectCells: List[GameMapCell],
       world: AreaWorld
-  )(implicit game: CoreGame): List[MapObjectBody] = {
-    objectCollisions
+  )(implicit game: CoreGame): List[StaticObjectBody] = {
+    staticObjectCells
       .map(_.pos())
       .distinct
-      .map(createMapObjectBody(_, world))
+      .map(createStaticObjectBody(_, world))
   }
 
-  private def createMapTerrainBodies(
-      terrainCollisions: List[GameMapCell],
+  private def createTerrainTileBodies(
+      terrainTileCells: List[GameMapCell],
       world: AreaWorld
-  )(implicit game: CoreGame): List[MapTerrainBody] = {
-    terrainCollisions
+  )(implicit game: CoreGame): List[TerrainTileBody] = {
+    terrainTileCells
       .map(_.pos())
       .distinct
-      .map(createMapTerrainBody(_, world))
+      .map(createTerrainTileBody(_, world))
   }
 
-  private def createMapObjectBody(
+  private def createStaticObjectBody(
       pos: Vector2f,
       world: AreaWorld
   )(implicit game: CoreGame) = {
-    val objectBody = MapObjectBody("objectBody_" + pos.x + "_" + pos.y)
+    val objectBody = StaticObjectBody("staticObject_" + pos.x + "_" + pos.y)
     objectBody.init(world, pos)
     objectBody
   }
 
-  private def createMapTerrainBody(
+  private def createTerrainTileBody(
       pos: Vector2f,
       world: AreaWorld
   )(implicit game: CoreGame) = {
-    val mapTerrainBody = MapTerrainBody("terrainBody_" + pos.x + "_" + pos.y)
-    mapTerrainBody.init(world, pos)
-    mapTerrainBody
+    val terrainTileBody = TerrainTileBody("terrainTile_" + pos.x + "_" + pos.y)
+    terrainTileBody.init(world, pos)
+    terrainTileBody
   }
 
-  private def largeMapObjectCells(
+  private def largeStaticObjectCells(
       gameTiledMap: GameTiledMap
   ): List[GameMapCell] = {
     gameTiledMap.layer("object").cells
   }
 
-  private def mapObjectCollisionCells(
+  private def staticObjectCells(
       gameTiledMap: GameTiledMap
   ): List[GameMapCell] = {
     gameTiledMap
@@ -102,7 +100,7 @@ case class StaticBodyPhysics() {
         )
   }
 
-  private def mapTerrainCollisionCells(
+  private def terrainTileCells(
       GameTiledMap: GameTiledMap
   ): List[GameMapCell] = {
     GameTiledMap

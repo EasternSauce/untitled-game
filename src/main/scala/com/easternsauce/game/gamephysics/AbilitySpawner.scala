@@ -7,7 +7,7 @@ import scala.collection.mutable
 
 case class AbilitySpawner() {
 
-  private var abilityBodies: mutable.Map[GameEntityId[AbilityComponent], AbilityComponentBody] = _
+  private var abilityBodies: mutable.Map[GameEntityId[AbilityComponent], AbilityBody] = _
   private var areaWorlds: mutable.Map[AreaId, AreaWorld] = _
 
   def init(
@@ -18,14 +18,14 @@ case class AbilitySpawner() {
     this.areaWorlds = areaWorlds
 
     existingAbilities.foreach { ability =>
-      val body = AbilityComponentBody(ability.id)
+      val body = AbilityBody(ability.id)
       body.init(areaWorlds(ability.currentAreaId), ability.pos)
       abilityBodies(ability.id) = body
     }
   }
 
   def spawn(ability: AbilityComponent)(implicit game: CoreGame): Unit = {
-    val body = AbilityComponentBody(ability.id)
+    val body = AbilityBody(ability.id)
     body.init(areaWorlds(ability.currentAreaId), ability.pos)
     abilityBodies(ability.id) = body
   }
@@ -34,5 +34,5 @@ case class AbilitySpawner() {
     abilityBodies.remove(abilityId)
   }
 
-  def allBodies: mutable.Map[GameEntityId[AbilityComponent], AbilityComponentBody] = abilityBodies
+  def allBodies: mutable.Map[GameEntityId[AbilityComponent], AbilityBody] = abilityBodies
 }
