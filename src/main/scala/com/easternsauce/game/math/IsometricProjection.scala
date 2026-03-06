@@ -34,8 +34,10 @@ object IsometricProjection {
 
   // Apply tile size and map texture scaling
   private def screenScale(x: Float, y: Float): Vector2f =
-    Vector2f(x * Constants.TileSize * Constants.MapTextureScale,
-      y * Constants.TileSize * Constants.MapTextureScale)
+    Vector2f(
+      x * Constants.TileSize * Constants.MapTextureScale,
+      y * Constants.TileSize * Constants.MapTextureScale
+    )
 
   // Converts world iso coordinates to screen coordinates with visual adjustment
   def isoToScreenAdjusted(pos: Vector2f): Vector2f = {

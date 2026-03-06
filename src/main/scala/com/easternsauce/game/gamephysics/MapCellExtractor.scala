@@ -6,27 +6,31 @@ import com.easternsauce.game.gamemap.{GameMapCell, GameTiledMap}
 
 object MapCellExtractor {
 
-  /**
-   * Terrain tiles: walls, water, or large objects that act as immovable terrain.
-   * These positions will be excluded from static objects to prevent overlap.
-   */
+  /** Terrain tiles: walls, water, or large objects that act as immovable terrain. These positions
+    * will be excluded from static objects to prevent overlap.
+    */
   def terrainTiles(map: GameTiledMap): List[GameMapCell] = {
-    val collisionCells = map.layer("collision").cells.filter(cell => {
-      val id = cell.tiledCell.getTile.getId
-      id == Constants.WallCollisionCellId ||
+    val collisionCells = map
+      .layer("collision")
+      .cells
+      .filter(cell => {
+        val id = cell.tiledCell.getTile.getId
+        id == Constants.WallCollisionCellId ||
         id == Constants.LargeObjectCollisionCellId ||
         id == Constants.WaterGroundCollisionCellId
-    })
+      })
 
-    val manualCells = map.layer("manual_collision").cells.filter(_.tiledCell.getTile.getId == Constants.WaterGroundCollisionCellId)
+    val manualCells = map
+      .layer("manual_collision")
+      .cells
+      .filter(_.tiledCell.getTile.getId == Constants.WaterGroundCollisionCellId)
 
     collisionCells ++ manualCells
   }
 
-  /**
-   * Static objects: all small/large objects placed on the map.
-   * Any positions that overlap terrain tiles are filtered out to prevent duplicate bodies.
-   */
+  /** Static objects: all small/large objects placed on the map. Any positions that overlap terrain
+    * tiles are filtered out to prevent duplicate bodies.
+    */
   def staticObjects(map: GameTiledMap)(implicit game: CoreGame): List[GameMapCell] = {
     val terrainPositions = terrainTiles(map).map(_.pos()).toSet
 

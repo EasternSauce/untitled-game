@@ -11,9 +11,9 @@ case class StaticEnvironmentBodies() {
   private var staticBodiesByArea: Map[AreaId, List[PhysicsBody]] = Map()
 
   def init(
-            tiledMaps: mutable.Map[AreaId, GameTiledMap],
-            areaWorlds: mutable.Map[AreaId, AreaWorld]
-          )(implicit game: CoreGame): Unit = {
+      tiledMaps: mutable.Map[AreaId, GameTiledMap],
+      areaWorlds: mutable.Map[AreaId, AreaWorld]
+  )(implicit game: CoreGame): Unit = {
 
     this.areaWorlds = areaWorlds
     val factory = StaticBodyFactory()
@@ -22,12 +22,12 @@ case class StaticEnvironmentBodies() {
       val world = areaWorlds(areaId)
 
       // Extract terrain and object cells
-      val terrainCells   = MapCellExtractor.terrainTiles(map)
-      val objectCells    = MapCellExtractor.staticObjects(map) // all static objects combined
+      val terrainCells = MapCellExtractor.terrainTiles(map)
+      val objectCells = MapCellExtractor.staticObjects(map) // all static objects combined
 
       // Create physics bodies
-      val terrainBodies  = factory.createTerrainTileBodies(terrainCells, world)
-      val objectBodies   = factory.createStaticObjectBodies(objectCells, world)
+      val terrainBodies = factory.createTerrainTileBodies(terrainCells, world)
+      val objectBodies = factory.createStaticObjectBodies(objectCells, world)
 
       // Store bodies for the area
       staticBodiesByArea += (areaId -> (terrainBodies ++ objectBodies))
