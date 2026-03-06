@@ -131,7 +131,7 @@ case class CreatureAnimation(
           .getKeyFrame(creature.params.animationTimer.time, true)
       }
 
-    val pos = IsometricProjection.translatePosIsoToScreen(
+    val pos = IsometricProjection.translatePosIsoToScreenAdjusted(
       Vector2f(creature.pos.x, creature.pos.y)
     )
 

@@ -23,7 +23,7 @@ case class GameMapCell(tiledCell: Cell, areaId: AreaId, pos: Vector2f) extends R
     val textureHeight = textureRegion.getRegionHeight
 
     val screenPos =
-      IsometricProjection.translatePosIsoToScreen(
+      IsometricProjection.translatePosIsoToScreenAdjusted(
         Vector2f(pos.x + Constants.RenderShiftX, pos.y + Constants.RenderShiftY)
       )
 

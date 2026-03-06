@@ -21,7 +21,7 @@ case class ViewportManager() {
       Constants.ViewportWorldWidth,
       Constants.ViewportWorldHeight,
       1,
-      pos => IsometricProjection.translatePosIsoToScreen(pos)
+      pos => IsometricProjection.translatePosIsoToScreenAdjusted(pos)
     )
     b2DebugViewport.init(
       Constants.ViewportWorldWidth,
@@ -34,7 +34,7 @@ case class ViewportManager() {
       Constants.ViewportWorldWidth,
       Constants.ViewportWorldHeight,
       1,
-      pos => IsometricProjection.translatePosIsoToScreen(pos)
+      pos => IsometricProjection.translatePosIsoToScreenAdjusted(pos)
     )
 
     hudViewport.init(
