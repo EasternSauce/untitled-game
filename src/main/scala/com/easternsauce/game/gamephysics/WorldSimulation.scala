@@ -21,7 +21,7 @@ case class WorldSimulation() {
   private var abilityRegistry: AbilityRegistry = _
 
   // --- static terrain bodies ---
-  private var staticBodyPhysics: StaticBodyPhysics = _
+  private var staticEnvironmentBodies: StaticEnvironmentBodies = _
 
   def init(tiledMaps: mutable.Map[AreaId, GameTiledMap])(implicit game: CoreGame): Unit = {
 
@@ -52,8 +52,8 @@ case class WorldSimulation() {
     abilityRegistry.init(abilitySpawner)
 
     // --- Static terrain ---
-    staticBodyPhysics = StaticBodyPhysics()
-    staticBodyPhysics.init(tiledMaps, areaWorlds)
+    staticEnvironmentBodies = StaticEnvironmentBodies()
+    staticEnvironmentBodies.init(tiledMaps, areaWorlds)
   }
 
   def update(areaId: AreaId)(implicit game: CoreGame): Unit = {
