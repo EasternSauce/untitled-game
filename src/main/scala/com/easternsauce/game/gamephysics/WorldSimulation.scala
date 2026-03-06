@@ -20,6 +20,9 @@ case class WorldSimulation() {
   private var abilityUpdater: AbilityUpdater = _
   private var abilityRegistry: AbilityRegistry = _
 
+  // --- static terrain bodies ---
+  private var staticBodyPhysics: StaticBodyPhysics = _
+
   def init(tiledMaps: mutable.Map[AreaId, GameTiledMap])(implicit game: CoreGame): Unit = {
 
     areaWorlds = mutable.Map() ++ tiledMaps.map { case (areaId, _) =>
@@ -47,6 +50,10 @@ case class WorldSimulation() {
 
     abilityRegistry = AbilityRegistry()
     abilityRegistry.init(abilitySpawner)
+
+    // --- Static terrain ---
+    staticBodyPhysics = StaticBodyPhysics()
+    staticBodyPhysics.init(tiledMaps, areaWorlds)
   }
 
   def update(areaId: AreaId)(implicit game: CoreGame): Unit = {
@@ -55,7 +62,7 @@ case class WorldSimulation() {
     // Step 1: step physics world
     area.update()
 
-    // Step 2: handle physics events
+    // Step 2: handle events
     handleEvents(areaId)
 
     // Step 3: correct drift
@@ -69,7 +76,6 @@ case class WorldSimulation() {
   }
 
   private def handleEvents(areaId: AreaId)(implicit game: CoreGame): Unit = {
-
     val events = game.queues.physicsEvents.toList
     game.queues.physicsEvents.clear()
 
@@ -96,29 +102,27 @@ case class WorldSimulation() {
     }
   }
 
-  // --- Creature positions ---
-  def creatureBodyPositions: Map[GameEntityId[Creature], Vector2f] =
-    creatureRegistry.positionsForAllAreas()
-
-  // --- Ability positions ---
-  def abilityBodyPositions: Map[GameEntityId[AbilityComponent], Vector2f] =
-    abilityRegistry.positionsForAllAreas()
-
-  // --- Correct positions ---
-  def correctBodyPositions(areaId: AreaId)(implicit game: CoreGame): Unit = {
-    creatureUpdater.correctPositions(areaId)
-    abilityUpdater.correctPositions(areaId)
-  }
-
-  // --- Synchronize ---
-  private def synchronize(areaId: AreaId)(implicit game: CoreGame): Unit = {
-    creatureUpdater.synchronize(areaId)
-    abilityUpdater.synchronize(areaId)
-  }
-
-  // --- Update bodies ---
   private def updateBodies(areaId: AreaId)(implicit game: CoreGame): Unit = {
     creatureUpdater.update(areaId)
     abilityUpdater.update(areaId)
+    // static bodies do not need updating
   }
+
+  private def synchronize(areaId: AreaId)(implicit game: CoreGame): Unit = {
+    creatureUpdater.synchronize(areaId)
+    abilityUpdater.synchronize(areaId)
+    // static bodies do not need synchronizing
+  }
+
+  def correctBodyPositions(areaId: AreaId)(implicit game: CoreGame): Unit = {
+    creatureUpdater.correctPositions(areaId)
+    abilityUpdater.correctPositions(areaId)
+    // static bodies do not need correction
+  }
+
+  def creatureBodyPositions: Map[GameEntityId[Creature], Vector2f] =
+    creatureRegistry.positionsForAllAreas()
+
+  def abilityBodyPositions: Map[GameEntityId[AbilityComponent], Vector2f] =
+    abilityRegistry.positionsForAllAreas()
 }
