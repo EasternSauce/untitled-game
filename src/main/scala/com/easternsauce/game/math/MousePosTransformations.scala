@@ -10,7 +10,7 @@ object MousePosTransformations {
       playerPos: Vector2f
   ): Vector2f = {
     val mouseScreenPos =
-      IsometricProjection.translatePosScreenToIso(
+      IsometricProjection.screenToIso(
         mousePosByViewport(screenX, screenY)
       )
 

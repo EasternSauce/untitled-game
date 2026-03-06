@@ -55,12 +55,12 @@ case class AbilityAnimation(abilityId: GameEntityId[AbilityComponent]) {
 
     val frame = animation.getKeyFrame(component.params.generalTimer.time, false)
 
-    val pos = IsometricProjection.translatePosIsoToScreenAdjusted(
+    val pos = IsometricProjection.isoToScreenAdjusted(
       Vector2f(component.pos.x, component.pos.y)
     )
 
     val angle = IsometricProjection
-      .translatePosIsoToScreenAdjusted(component.params.facingVector)
+      .isoToScreenAdjusted(component.params.facingVector)
       .angleDeg
 
     batch.draw(

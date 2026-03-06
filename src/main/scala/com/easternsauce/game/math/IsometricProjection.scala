@@ -5,51 +5,52 @@ import com.easternsauce.game.Constants
 
 object IsometricProjection {
 
-  // Original transformation
+  // --- Base isometric transform factors ---
+  private val ISO_SCALE_X: Float = (Math.sqrt(2.0) / 2.0).toFloat
+  private val ISO_SCALE_Y: Float = (Math.sqrt(2.0) / 4.0).toFloat
+  private val ISO_ROTATION_DEG: Float = -45f
+
+  // Base isometric transformation matrix
   private val isoTransform: Matrix4 = {
-    val matrix: Matrix4 = new Matrix4()
-    matrix.idt()
-    matrix.scale((Math.sqrt(2.0) / 2.0).toFloat, (Math.sqrt(2.0) / 4.0).toFloat, 1.0f)
-    matrix.rotate(0.0f, 0.0f, 1.0f, -45)
-    matrix
+    val m = new Matrix4()
+    m.idt()
+    m.scale(ISO_SCALE_X, ISO_SCALE_Y, 1f)
+    m.rotate(0f, 0f, 1f, ISO_ROTATION_DEG)
+    m
   }
 
-  private val invIsoTransform = new Matrix4(isoTransform).inv
+  private val invIsoTransform: Matrix4 = new Matrix4(isoTransform).inv()
 
-  // --- Visual compensation parameters ---
-  // tweak these to adjust perceived movement speed
-  var visualScaleX: Float = 0.85f
-  var visualScaleY: Float = 1.0f
+  // --- Visual compensation for perceived movement ---
+  private val visualScaleX: Float = 0.85f
+  private val visualScaleY: Float = 1.0f
 
-  /** Converts world iso coordinates to screen coordinates for physics/render consistency */
-  private def translatePosIsoToScreen(pos: Vector2f): Vector2f = {
-    val screenPos = new Vector3()
-    screenPos.set(pos.x, pos.y, 0)
-    screenPos.mul(isoTransform)
-    Vector2f(
-      screenPos.x * Constants.TileSize * Constants.MapTextureScale,
-      screenPos.y * Constants.TileSize * Constants.MapTextureScale
-    )
+  // Converts world isometric position to screen coordinates (raw, unadjusted)
+  private def isoToScreen(pos: Vector2f): Vector2f = {
+    val temp = new Vector3(pos.x, pos.y, 0)
+    temp.mul(isoTransform)
+    screenScale(temp.x, temp.y)
   }
 
-  /** Converts world iso coordinates to screen coordinates with visual compensation */
-  def translatePosIsoToScreenAdjusted(pos: Vector2f): Vector2f = {
-    val baseScreenPos = translatePosIsoToScreen(pos)
-    // apply tunable visual scaling
-    Vector2f(
-      baseScreenPos.x * visualScaleX,
-      baseScreenPos.y * visualScaleY
-    )
+  // Apply tile size and map texture scaling
+  private def screenScale(x: Float, y: Float): Vector2f =
+    Vector2f(x * Constants.TileSize * Constants.MapTextureScale,
+      y * Constants.TileSize * Constants.MapTextureScale)
+
+  // Converts world iso coordinates to screen coordinates with visual adjustment
+  def isoToScreenAdjusted(pos: Vector2f): Vector2f = {
+    val base = isoToScreen(pos)
+    Vector2f(base.x * visualScaleX, base.y * visualScaleY)
   }
 
-  def translatePosScreenToIso(pos: Vector2f): Vector2f = {
-    val screenPos = new Vector3()
-    screenPos.set(
+  // Converts screen coordinates back to world iso coordinates
+  def screenToIso(pos: Vector2f): Vector2f = {
+    val temp = new Vector3(
       pos.x / (Constants.TileSize * Constants.MapTextureScale),
       pos.y / (Constants.TileSize * Constants.MapTextureScale),
       0
     )
-    screenPos.mul(invIsoTransform)
-    Vector2f(screenPos.x, screenPos.y)
+    temp.mul(invIsoTransform)
+    Vector2f(temp.x, temp.y)
   }
 }
