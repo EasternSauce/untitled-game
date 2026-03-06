@@ -1,6 +1,10 @@
 package com.easternsauce.game
 
-import com.easternsauce.game.gamestate.creature.{AnimationDefinition, CreatureType, FramesDefinition}
+import com.easternsauce.game.gamestate.creature.{
+  AnimationDefinition,
+  CreatureType,
+  FramesDefinition
+}
 import com.easternsauce.game.gamestate.id.AreaId
 import com.easternsauce.game.math.Vector2f
 import com.easternsauce.game.spawnpoint.{CreaturesToSpawn, SpawnPoint}
@@ -24,14 +28,10 @@ object Constants {
     frameHeight = 128,
     stanceFrames = FramesDefinition(start = 0, count = 4, frameDuration = 0.3f),
     walkFrames = FramesDefinition(start = 4, count = 8, frameDuration = 0.075f),
-    meleeAttackFrames =
-      FramesDefinition(start = 12, count = 4, frameDuration = 0.1f),
-    deathFrames =
-      FramesDefinition(start = 16, count = 8, frameDuration = 0.12f),
-    spellcastFrames =
-      Some(FramesDefinition(start = 24, count = 4, frameDuration = 0.3f)),
-    bowShotFrames =
-      Some(FramesDefinition(start = 28, count = 4, frameDuration = 0.15f))
+    meleeAttackFrames = FramesDefinition(start = 12, count = 4, frameDuration = 0.1f),
+    deathFrames = FramesDefinition(start = 16, count = 8, frameDuration = 0.12f),
+    spellcastFrames = Some(FramesDefinition(start = 24, count = 4, frameDuration = 0.3f)),
+    bowShotFrames = Some(FramesDefinition(start = 28, count = 4, frameDuration = 0.15f))
   )
 
   val RatAnimationDefinition: AnimationDefinition = AnimationDefinition(
@@ -39,10 +39,8 @@ object Constants {
     frameHeight = 128,
     stanceFrames = FramesDefinition(start = 0, count = 4, frameDuration = 0.4f),
     walkFrames = FramesDefinition(start = 4, count = 8, frameDuration = 0.04f),
-    meleeAttackFrames =
-      FramesDefinition(start = 12, count = 7, frameDuration = 0.08f),
-    deathFrames =
-      FramesDefinition(start = 17, count = 11, frameDuration = 0.045f)
+    meleeAttackFrames = FramesDefinition(start = 12, count = 7, frameDuration = 0.08f),
+    deathFrames = FramesDefinition(start = 17, count = 11, frameDuration = 0.045f)
   )
 
   val ZombieAnimationDefinition: AnimationDefinition = AnimationDefinition(
@@ -50,8 +48,7 @@ object Constants {
     frameHeight = 128,
     stanceFrames = FramesDefinition(start = 0, count = 4, frameDuration = 0.4f),
     walkFrames = FramesDefinition(start = 4, count = 8, frameDuration = 0.08f),
-    meleeAttackFrames =
-      FramesDefinition(start = 12, count = 4, frameDuration = 0.1f),
+    meleeAttackFrames = FramesDefinition(start = 12, count = 4, frameDuration = 0.1f),
     deathFrames = FramesDefinition(start = 22, count = 6, frameDuration = 0.1f)
   )
 
@@ -60,8 +57,7 @@ object Constants {
     frameHeight = 256,
     stanceFrames = FramesDefinition(start = 0, count = 8, frameDuration = 0.1f),
     walkFrames = FramesDefinition(start = 8, count = 8, frameDuration = 0.08f),
-    meleeAttackFrames =
-      FramesDefinition(start = 16, count = 8, frameDuration = 0.1f),
+    meleeAttackFrames = FramesDefinition(start = 16, count = 8, frameDuration = 0.1f),
     deathFrames = FramesDefinition(start = 48, count = 8, frameDuration = 0.1f)
   )
 

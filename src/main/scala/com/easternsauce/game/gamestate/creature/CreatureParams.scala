@@ -37,10 +37,9 @@ case class CreatureParams(
     deathAnimationTimer: SimpleTimer = SimpleTimer(isRunning = false),
     isRespawnDelayInProgress: Boolean = false,
     isDestinationReached: Boolean = true,
-    abilityCooldownTimers: Map[AbilityType, SimpleTimer] =
-      AbilityType.values.toList
-        .map(abilityType => abilityType -> SimpleTimer(isRunning = false))
-        .toMap,
+    abilityCooldownTimers: Map[AbilityType, SimpleTimer] = AbilityType.values.toList
+      .map(abilityType => abilityType -> SimpleTimer(isRunning = false))
+      .toMap,
     spawnPointId: Option[String],
     creatureType: CreatureType,
     recentlyHitTimer: SimpleTimer = SimpleTimer(isRunning = false)

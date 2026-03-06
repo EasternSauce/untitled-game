@@ -18,17 +18,19 @@ case class GameStateBroadcaster(game: CoreGameServer) {
 
   private def createBroadcastThread(endPoint: Server): Thread = new Thread {
     override def run(): Unit = {
-      try while ({
-        true
-      }) {
-        Thread.sleep(
-          (Constants.TimeBetweenGameStateBroadcasts * 1000f).toInt
-        )
-        val connections = endPoint.getConnections
-        for (connection <- connections) {
-          broadcastToConnection(connection)
+      try
+        while ({
+          true
+        }) {
+          Thread.sleep(
+            (Constants.TimeBetweenGameStateBroadcasts * 1000f).toInt
+          )
+          val connections = endPoint.getConnections
+          for (connection <- connections) {
+            broadcastToConnection(connection)
+          }
         }
-      } catch {
+      catch {
         case _: InterruptedException =>
 
         // do nothing

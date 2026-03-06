@@ -55,8 +55,8 @@ case class GameTiledMap(areaId: AreaId) {
     .asInstanceOf[TiledMapTileLayer]
     .getHeight * Constants.TileSize
 
-  def renderBottomLayers(batch: GameSpriteBatch, worldCameraPos: Vector2f)(
-      implicit game: CoreGame
+  def renderBottomLayers(batch: GameSpriteBatch, worldCameraPos: Vector2f)(implicit
+      game: CoreGame
   ): Unit = {
     for {
       layer <- Constants.BottomLayers.flatMap(layers.get(_))

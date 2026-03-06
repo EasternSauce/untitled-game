@@ -4,8 +4,7 @@ import com.badlogic.gdx.Input.Keys
 import com.badlogic.gdx.InputProcessor
 import com.easternsauce.game.core.CoreGame
 
-case class ClientPauseMenuInputProcessor()(implicit game: CoreGame)
-    extends InputProcessor {
+case class ClientPauseMenuInputProcessor()(implicit game: CoreGame) extends InputProcessor {
   override def keyDown(keycode: Int): Boolean = {
     keycode match {
       case Keys.ESCAPE => game.setGameplayScreen()

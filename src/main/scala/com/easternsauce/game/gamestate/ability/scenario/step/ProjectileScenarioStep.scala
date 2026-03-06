@@ -19,21 +19,20 @@ case class ProjectileScenarioStep(
       scenarioStepParams: AbilityComponentScenarioStepParams
   )(implicit game: CoreGame): Unit = {
     abilityComponentType.foreach(abilityComponentType =>
-      game.queues.abilityComponentsToCreate ++= (0 until numOfProjectiles).map(
-        projectileNum =>
-          AbilityComponentToCreate(
-            abilityId = scenarioStepParams.abilityId,
-            componentType = abilityComponentType,
-            currentAreaId = scenarioStepParams.currentAreaId,
-            creatureId = scenarioStepParams.creatureId,
-            pos = scenarioStepParams.pos,
-            facingVector = scenarioStepParams.facingVector.setAngleDeg(
-              scenarioStepParams.facingVector.angleDeg + startingAngle + projectileNum * angleBetweenProjectiles
-            ),
-            damage = scenarioStepParams.damage,
-            scenarioStepNo = scenarioStepParams.scenarioStepNo,
-            expirationTime = expirationTime
-          )
+      game.queues.abilityComponentsToCreate ++= (0 until numOfProjectiles).map(projectileNum =>
+        AbilityComponentToCreate(
+          abilityId = scenarioStepParams.abilityId,
+          componentType = abilityComponentType,
+          currentAreaId = scenarioStepParams.currentAreaId,
+          creatureId = scenarioStepParams.creatureId,
+          pos = scenarioStepParams.pos,
+          facingVector = scenarioStepParams.facingVector.setAngleDeg(
+            scenarioStepParams.facingVector.angleDeg + startingAngle + projectileNum * angleBetweenProjectiles
+          ),
+          damage = scenarioStepParams.damage,
+          scenarioStepNo = scenarioStepParams.scenarioStepNo,
+          expirationTime = expirationTime
+        )
       )
     )
   }

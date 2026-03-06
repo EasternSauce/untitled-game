@@ -8,8 +8,7 @@ import com.easternsauce.game.gamestate.creature.Creature
 import com.easternsauce.game.gamestate.id.GameEntityId
 import com.easternsauce.game.math.Vector2f
 
-case class CreatureBody(creatureId: GameEntityId[Creature])
-    extends PhysicsBody {
+case class CreatureBody(creatureId: GameEntityId[Creature]) extends PhysicsBody {
 
   def init(areaWorld: AreaWorld, pos: Vector2f)(implicit
       game: CoreGame

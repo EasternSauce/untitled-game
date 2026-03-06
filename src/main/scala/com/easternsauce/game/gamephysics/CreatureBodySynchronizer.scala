@@ -4,12 +4,10 @@ import com.easternsauce.game.core.CoreGame
 import com.easternsauce.game.gamestate.GameState
 import com.easternsauce.game.gamestate.creature.Creature
 import com.easternsauce.game.gamestate.id.{AreaId, GameEntityId}
-
 import scala.collection.mutable
 
 case class CreatureBodySynchronizer() {
-  private var creatureBodies
-      : mutable.Map[GameEntityId[Creature], CreatureBody] = _
+  private var creatureBodies: mutable.Map[GameEntityId[Creature], CreatureBody] = _
   private var areaWorlds: mutable.Map[AreaId, AreaWorld] = _
 
   def init(
@@ -47,9 +45,7 @@ case class CreatureBodySynchronizer() {
       game: CoreGame
   ): Unit = {
     game.gameState.activePlayerIds
-      .filter(creatureId =>
-        game.gameState.creatures(creatureId).params.currentAreaId == areaId
-      )
+      .filter(creatureId => game.gameState.creatures(creatureId).params.currentAreaId == areaId)
       .foreach(creatureId => {
         val creature = game.gameState.creatures(creatureId)
 

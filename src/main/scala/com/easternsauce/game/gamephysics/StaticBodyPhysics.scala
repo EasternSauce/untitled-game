@@ -5,7 +5,6 @@ import com.easternsauce.game.core.CoreGame
 import com.easternsauce.game.gamemap.{GameMapCell, GameTiledMap}
 import com.easternsauce.game.gamestate.id.AreaId
 import com.easternsauce.game.math.Vector2f
-
 import scala.collection.mutable
 
 case class StaticBodyPhysics() {
@@ -27,8 +26,7 @@ case class StaticBodyPhysics() {
 
       val mapObjectCollisions = mapObjectCollisionCells(GameTiledMap)
 
-      staticBodies =
-        createStaticBodies(mapTerrainCollisions, mapObjectCollisions, world)
+      staticBodies = createStaticBodies(mapTerrainCollisions, mapObjectCollisions, world)
     }
 
     this.areaWorlds = areaWorlds

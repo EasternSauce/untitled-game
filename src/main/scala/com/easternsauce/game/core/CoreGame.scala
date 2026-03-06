@@ -79,9 +79,7 @@ abstract class CoreGame extends Game {
       clientData.port = Some(port)
     }
 
-    clientData.clientId.foreach(clientId =>
-      queues.playersToCreate += PlayerToCreate(clientId)
-    )
+    clientData.clientId.foreach(clientId => queues.playersToCreate += PlayerToCreate(clientId))
   }
 
   def setPauseScreen(): Unit = {

@@ -2,8 +2,7 @@ package com.easternsauce.game.gamestate.ability
 
 import com.easternsauce.game.gamestate.creature.FramesDefinition
 
-case class ExplosionComponent(params: AbilityComponentParams)
-    extends AbilityComponent {
+case class ExplosionComponent(params: AbilityComponentParams) extends AbilityComponent {
   override val textureFileName: String = "explosion"
 
   override val textureSize: Int = 64

@@ -6,8 +6,7 @@ import com.easternsauce.game.gamestate.ability.AbilityComponent
 import com.easternsauce.game.gamestate.id.{AreaId, GameEntityId}
 import com.easternsauce.game.math.Vector2f
 
-case class AbilityRenderable(abilityId: GameEntityId[AbilityComponent])
-    extends Renderable {
+case class AbilityRenderable(abilityId: GameEntityId[AbilityComponent]) extends Renderable {
   private var animation: AbilityAnimation = _
 
   def init()(implicit game: CoreGame): Unit = {

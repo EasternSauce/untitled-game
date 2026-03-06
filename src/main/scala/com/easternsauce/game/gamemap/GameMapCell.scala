@@ -8,8 +8,7 @@ import com.easternsauce.game.gamestate.id.AreaId
 import com.easternsauce.game.gameview.{GameSpriteBatch, Renderable}
 import com.easternsauce.game.math.{IsometricProjection, Vector2f}
 
-case class GameMapCell(tiledCell: Cell, areaId: AreaId, pos: Vector2f)
-    extends Renderable {
+case class GameMapCell(tiledCell: Cell, areaId: AreaId, pos: Vector2f) extends Renderable {
   override def pos()(implicit game: CoreGame): Vector2f = pos
 
   override def areaId(gameState: GameState): AreaId = areaId

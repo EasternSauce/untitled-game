@@ -3,7 +3,10 @@ package com.easternsauce.game.gamestate
 import com.easternsauce.game.Constants
 import com.easternsauce.game.core.CoreGame
 import com.easternsauce.game.entitycreator.GameEntityCreators
-import com.easternsauce.game.gamestate.ability.scenario.{AbilityComponentScenarioRunStepEvent, AbilityComponentScenarioStepParams}
+import com.easternsauce.game.gamestate.ability.scenario.{
+  AbilityComponentScenarioRunStepEvent,
+  AbilityComponentScenarioStepParams
+}
 import com.easternsauce.game.gamestate.ability.{Ability, AbilityComponent, AbilityState}
 import com.easternsauce.game.gamestate.creature.Creature
 import com.easternsauce.game.gamestate.event.GameStateEvent
@@ -15,8 +18,7 @@ import com.softwaremill.quicklens.{ModifyPimp, QuicklensMapAt}
 case class GameState(
     creatures: Map[GameEntityId[Creature], Creature] = Map(),
     abilities: Map[GameEntityId[Ability], Ability] = Map(),
-    abilityComponents: Map[GameEntityId[AbilityComponent], AbilityComponent] =
-      Map(),
+    abilityComponents: Map[GameEntityId[AbilityComponent], AbilityComponent] = Map(),
     activePlayerIds: Set[GameEntityId[Creature]] = Set(),
     spawnPoints: Map[String, SpawnPoint] = Map(),
     mainTimer: SimpleTimer = SimpleTimer(isRunning = true)
@@ -73,19 +75,18 @@ case class GameState(
       })
       .toList
 
-    abilityComponentsToRemove.filter(_.params.isContinueScenario).foreach {
-      component =>
-        game.queues.abilityScenarioEvents += AbilityComponentScenarioRunStepEvent(
-          AbilityComponentScenarioStepParams(
-            component.abilityId,
-            component.currentAreaId,
-            component.params.creatureId,
-            component.pos,
-            component.params.facingVector,
-            component.params.damage,
-            component.params.scenarioStepNo + 1
-          )
+    abilityComponentsToRemove.filter(_.params.isContinueScenario).foreach { component =>
+      game.queues.abilityScenarioEvents += AbilityComponentScenarioRunStepEvent(
+        AbilityComponentScenarioStepParams(
+          component.abilityId,
+          component.currentAreaId,
+          component.params.creatureId,
+          component.pos,
+          component.params.facingVector,
+          component.params.damage,
+          component.params.scenarioStepNo + 1
         )
+      )
     }
 
     this

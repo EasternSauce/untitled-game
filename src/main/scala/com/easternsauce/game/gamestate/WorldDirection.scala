@@ -5,8 +5,7 @@ import com.easternsauce.game.math.Vector2f
 object WorldDirection extends Enumeration {
 
   type WorldDirection = Value
-  private val NorthWest, North, NorthEast, East, SouthEast, South, SouthWest,
-      West =
+  private val NorthWest, North, NorthEast, East, SouthEast, South, SouthWest, West =
     Value
 
   def fromVector(vector: Vector2f): WorldDirection = {
@@ -17,8 +16,7 @@ object WorldDirection extends Enumeration {
       case angle if angle >= 202.5 && angle < 247.5 => WorldDirection.NorthWest
       case angle if angle >= 247.5 && angle < 292.5 => WorldDirection.West
       case angle if angle >= 292.5 && angle < 337.5 => WorldDirection.SouthWest
-      case angle
-          if (angle >= 337.5 && angle <= 360) || (angle >= 0 && angle < 22.5) =>
+      case angle if (angle >= 337.5 && angle <= 360) || (angle >= 0 && angle < 22.5) =>
         WorldDirection.South
       case angle if angle >= 22.5 && angle < 67.5 => WorldDirection.SouthEast
       case _                                      => throw new RuntimeException("unreachable")

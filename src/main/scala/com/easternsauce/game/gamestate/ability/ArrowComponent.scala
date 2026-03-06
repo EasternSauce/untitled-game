@@ -2,8 +2,7 @@ package com.easternsauce.game.gamestate.ability
 
 import com.easternsauce.game.gamestate.creature.FramesDefinition
 
-case class ArrowComponent(params: AbilityComponentParams)
-    extends AbilityComponent {
+case class ArrowComponent(params: AbilityComponentParams) extends AbilityComponent {
   override val textureFileName: String = "arrow"
 
   override val textureSize: Int = 64

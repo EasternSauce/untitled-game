@@ -3,8 +3,7 @@ import com.easternsauce.game.client.CoreGameClientBase
 import com.esotericsoftware.kryonet.{Client, KryoSerialization, Listener}
 import com.twitter.chill.{Kryo, ScalaKryoInstantiator}
 
-case class GameClientConnectivity(game: CoreGameClientBase)
-    extends GameConnectivity {
+case class GameClientConnectivity(game: CoreGameClientBase) extends GameConnectivity {
 
   override val endPoint: Client = {
     if (!game.isOffline) {

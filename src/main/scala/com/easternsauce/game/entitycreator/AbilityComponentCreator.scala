@@ -33,10 +33,9 @@ trait AbilityComponentCreator {
           expirationTime = abilityComponentToCreate.expirationTime
         )
         val abilityComponent =
-          if (
-            abilityComponentToCreate.componentType == AbilityComponentType.ArrowComponent
-          ) { ArrowComponent(params) }
-          else if (
+          if (abilityComponentToCreate.componentType == AbilityComponentType.ArrowComponent) {
+            ArrowComponent(params)
+          } else if (
             abilityComponentToCreate.componentType == AbilityComponentType.GhostArrowComponent
           ) { GhostArrowComponent(params) }
           else if (

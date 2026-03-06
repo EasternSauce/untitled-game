@@ -22,7 +22,7 @@ case class GameSpriteBatch() {
     val pixmap = new Pixmap(1, 1, Pixmap.Format.RGBA8888)
     pixmap.setColor(Color.WHITE)
     pixmap.drawPixel(0, 0)
-    texture = new Texture(pixmap) //remember to dispose of later
+    texture = new Texture(pixmap) // remember to dispose of later
 
     pixmap.dispose()
     new TextureRegion(texture, 0, 0, 1, 1)
