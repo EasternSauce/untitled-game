@@ -1,45 +1,113 @@
 package com.easternsauce.game.gamephysics
 
 import com.badlogic.gdx.physics.box2d.Body
+import com.badlogic.gdx.physics.box2d.BodyDef
+import com.badlogic.gdx.physics.box2d.CircleShape
+import com.badlogic.gdx.physics.box2d.FixtureDef
+import com.badlogic.gdx.physics.box2d.MassData
 import com.easternsauce.game.core.CoreGame
 import com.easternsauce.game.gamestate.GameState
 import com.easternsauce.game.gamestate.id.AreaId
 import com.easternsauce.game.math.Vector2f
 
-trait PhysicsBody {
+abstract class PhysicsBody {
+
   protected var b2Body: Body = _
   protected var areaWorld: AreaWorld = _
-  protected var sensor: Boolean = _
+  protected var sensor: Boolean = false
 
-  def init(areaWorld: AreaWorld, pos: Vector2f)(implicit game: CoreGame): Unit
+  def pos: Vector2f = {
+    val p = b2Body.getPosition
+    Vector2f(p.x, p.y)
+  }
 
-  def update(gameState: GameState): Unit
+  def areaId: AreaId =
+    areaWorld.areaId
 
-  def isSensor: Boolean = sensor
+  def isSensor: Boolean =
+    sensor
+
+  def setPos(pos: Vector2f): Unit = {
+    b2Body.setTransform(pos.x, pos.y, b2Body.getAngle)
+  }
 
   def setSensor(): Unit = {
-    b2Body.getFixtureList.get(0).setSensor(true)
     sensor = true
+    val fixtures = b2Body.getFixtureList
+    var i = 0
+    while (i < fixtures.size) {
+      fixtures.get(i).setSensor(true)
+      i += 1
+    }
   }
 
   def setNonSensor(): Unit = {
-    b2Body.getFixtureList.get(0).setSensor(false)
     sensor = false
+    val fixtures = b2Body.getFixtureList
+    var i = 0
+    while (i < fixtures.size) {
+      fixtures.get(i).setSensor(false)
+      i += 1
+    }
   }
 
-  def setPos(pos: Vector2f): Unit = {
-    b2Body.setTransform(
-      pos.x,
-      pos.y,
-      b2Body.getAngle
-    )
+  protected def radius(implicit game: CoreGame): Float
+
+  protected def velocity(gameState: GameState): Option[Vector2f]
+
+  protected def initialSensor: Boolean = false
+
+  protected def bodyType: BodyDef.BodyType =
+    BodyDef.BodyType.DynamicBody
+
+  protected def linearDamping: Float = 0f
+
+  protected def mass: Option[Float] = None
+
+  def init(areaWorld: AreaWorld, pos: Vector2f)(implicit game: CoreGame): Unit = {
+    this.b2Body = createBody(areaWorld, pos)
+    this.areaWorld = areaWorld
+    this.sensor = initialSensor
   }
 
-  def pos: Vector2f = {
-    Vector2f(b2Body.getPosition.x, b2Body.getPosition.y)
+  private def createBody(areaWorld: AreaWorld, pos: Vector2f)(implicit game: CoreGame): Body = {
+
+    val bodyDef = new BodyDef()
+    bodyDef.`type` = bodyType
+    bodyDef.position.set(pos.x, pos.y)
+
+    val body = areaWorld.createBody(bodyDef)
+    body.setUserData(this)
+
+    val shape = new CircleShape()
+    shape.setRadius(radius)
+
+    val fixtureDef = new FixtureDef()
+    fixtureDef.shape = shape
+
+    val fixture = body.createFixture(fixtureDef)
+    fixture.setSensor(initialSensor)
+
+    if (linearDamping > 0f) {
+      body.setLinearDamping(linearDamping)
+    }
+
+    mass.foreach { m =>
+      val massData = new MassData
+      massData.mass = m
+      body.setMassData(massData)
+    }
+
+    body
   }
 
-  def onRemove(): Unit
+  def update(gameState: GameState): Unit = {
+    velocity(gameState).foreach { v =>
+      b2Body.setLinearVelocity(v.x, v.y)
+    }
+  }
 
-  def areaId: AreaId = areaWorld.areaId
+  def onRemove(): Unit = {
+    areaWorld.b2World.destroyBody(b2Body)
+  }
 }
