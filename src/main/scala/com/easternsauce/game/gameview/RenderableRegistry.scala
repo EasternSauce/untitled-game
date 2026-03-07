@@ -27,11 +27,11 @@ abstract class RenderableRegistry[
     val ents = entities
 
     val toCreate =
-      (ents.keySet -- renderables.keySet)
+      (ents.keySet -- renderables.keySet.toSet)
         .filter(id => entityArea(ents(id)) == areaId)
 
     val toDestroy =
-      (renderables.keySet -- ents.keySet)
+      (renderables.keySet.toSet -- ents.keySet)
         .filter(id =>
           !ents.contains(id) ||
             entityArea(ents(id)) == areaId

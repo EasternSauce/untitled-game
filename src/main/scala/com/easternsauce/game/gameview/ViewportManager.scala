@@ -38,8 +38,8 @@ case class ViewportManager() {
     )
 
     hudViewport.init(
-      Constants.WindowWidth,
-      Constants.WindowHeight,
+      Constants.WindowWidth.toFloat,
+      Constants.WindowHeight.toFloat,
       1,
       Predef.identity
     )

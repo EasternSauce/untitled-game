@@ -45,7 +45,7 @@ case class GameState(
   ): GameState = {
     this
       .updateCreatures(areaId, delta)
-      .createEntities
+      .createEntities()
       .updateSpawnPoints(areaId)
   }
 

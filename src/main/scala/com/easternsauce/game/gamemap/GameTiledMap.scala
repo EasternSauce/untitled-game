@@ -49,11 +49,11 @@ case class GameTiledMap(areaId: AreaId) {
   def layerWidth(layerName: String): Float = tiledMap.getLayers
     .get(layerName)
     .asInstanceOf[TiledMapTileLayer]
-    .getWidth * Constants.TileSize
+    .getWidth * Constants.TileSize.toFloat
   def layerHeight(layerName: String): Float = tiledMap.getLayers
     .get(layerName)
     .asInstanceOf[TiledMapTileLayer]
-    .getHeight * Constants.TileSize
+    .getHeight * Constants.TileSize.toFloat
 
   def renderBottomLayers(batch: GameSpriteBatch, worldCameraPos: Vector2f)(implicit
       game: CoreGame

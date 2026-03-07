@@ -10,6 +10,11 @@ val libGdxVersion = "1.14.0"
 
 resolvers += "jitpack" at "https://jitpack.io"
 
+scalacOptions ++= Seq(
+  "-deprecation", // show deprecation warnings
+  "-feature"      // optional: show feature warnings
+)
+
 libraryDependencies ++= Seq(
   "com.badlogicgames.gdx" % "gdx" % libGdxVersion,
   "com.badlogicgames.gdx" % "gdx-box2d" % libGdxVersion,
