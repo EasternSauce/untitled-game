@@ -1,5 +1,5 @@
 ThisBuild / version := "0.1.0-SNAPSHOT"
-ThisBuild / scalaVersion := "2.13.14"
+ThisBuild / scalaVersion := "2.13.18"
 
 // ------------------- Project -------------------
 lazy val root = (project in file("."))
@@ -10,12 +10,7 @@ lazy val root = (project in file("."))
     scalacOptions ++= Seq(
       "-deprecation", // show deprecation warnings
       "-feature"      // optional: show feature warnings
-    ),
-
-    // ------------------- Scalafix -------------------
-    // Organize imports automatically on compile
-    scalafixDependencies += "com.github.liancheng" %% "organize-imports" % "0.6.0",
-    scalafixOnCompile := true
+    )
   )
 
 // ------------------- Dependencies -------------------
