@@ -2,7 +2,6 @@ package com.easternsauce.game.gamephysics
 
 import com.easternsauce.game.core.CoreGame
 import com.easternsauce.game.gamemap.GameMapCell
-import com.easternsauce.game.math.Vector2f
 
 case class StaticBodyFactory() {
 

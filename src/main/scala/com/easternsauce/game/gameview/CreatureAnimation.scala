@@ -7,12 +7,7 @@ import com.easternsauce.game.core.CoreGame
 import com.easternsauce.game.gamestate.WorldDirection
 import com.easternsauce.game.gamestate.creature.CreatureAnimationType.CreatureAnimationType
 import com.easternsauce.game.gamestate.creature.EquipmentSlotType.EquipmentSlotType
-import com.easternsauce.game.gamestate.creature.{
-  Creature,
-  EquipmentSlotType,
-  FramesDefinition,
-  PrimaryWeaponType
-}
+import com.easternsauce.game.gamestate.creature.{Creature, EquipmentSlotType, FramesDefinition, PrimaryWeaponType}
 import com.easternsauce.game.gamestate.id.GameEntityId
 import com.easternsauce.game.math.{IsometricProjection, Vector2f}
 

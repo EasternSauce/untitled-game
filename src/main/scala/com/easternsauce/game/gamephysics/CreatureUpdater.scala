@@ -5,6 +5,7 @@ import com.easternsauce.game.core.CoreGame
 import com.easternsauce.game.gamestate.creature.Creature
 import com.easternsauce.game.gamestate.id.{AreaId, GameEntityId}
 import com.easternsauce.game.math.Vector2f
+
 import scala.collection.mutable
 
 case class CreatureUpdater() {

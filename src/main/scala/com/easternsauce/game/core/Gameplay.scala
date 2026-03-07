@@ -2,10 +2,7 @@ package com.easternsauce.game.core
 
 import com.easternsauce.game.gamephysics.WorldSimulation
 import com.easternsauce.game.gamestate.GameState
-import com.easternsauce.game.gamestate.ability.scenario.{
-  AbilityComponentScenarioRunStepEvent,
-  AbilityComponentScenarioStepParams
-}
+import com.easternsauce.game.gamestate.ability.scenario.{AbilityComponentScenarioRunStepEvent, AbilityComponentScenarioStepParams}
 import com.easternsauce.game.gamestate.id.AreaId
 import com.easternsauce.game.gameview.GameView
 

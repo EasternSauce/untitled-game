@@ -3,7 +3,6 @@ package com.easternsauce.game.gameview
 import com.easternsauce.game.core.CoreGame
 import com.easternsauce.game.gamestate.creature.Creature
 import com.easternsauce.game.gamestate.id.{AreaId, GameEntityId}
-import scala.collection.mutable
 
 //noinspection SpellCheckingInspection
 case class CreatureRenderableRegistry()

@@ -3,11 +3,7 @@ package com.easternsauce.game.gamestate.creature
 import com.easternsauce.game.core.CoreGame
 import com.easternsauce.game.gamestate.WorldDirection.WorldDirection
 import com.easternsauce.game.gamestate.creature.CreatureType.CreatureType
-import com.easternsauce.game.gamestate.creature.behavior.{
-  CreatureBehavior,
-  EnemyBehavior,
-  NeutralBehavior
-}
+import com.easternsauce.game.gamestate.creature.behavior.{CreatureBehavior, EnemyBehavior, NeutralBehavior}
 import com.easternsauce.game.gamestate.id.{AreaId, GameEntityId}
 import com.easternsauce.game.gamestate.{GameEntity, WorldDirection}
 import com.easternsauce.game.math.Vector2f

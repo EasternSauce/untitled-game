@@ -3,6 +3,7 @@ package com.easternsauce.game.core
 import com.easternsauce.game.Constants
 import com.easternsauce.game.gamemap.GameTiledMap
 import com.easternsauce.game.gamestate.id.AreaId
+
 import scala.collection.mutable
 
 case class TiledMapsManager() {
