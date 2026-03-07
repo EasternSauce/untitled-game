@@ -23,11 +23,13 @@ trait SpawnPointUpdater {
           ) {
             val spawnX = spawnPoint.pos.x + 1f - Math.random().toFloat * 2
             val spawnY = spawnPoint.pos.y + 1f - Math.random().toFloat * 2
-            game.queues.enemiesToCreate += EnemyToCreate(
-              spawnPointId = spawnPoint.id,
-              creatureType = creaturesToSpawn.creatureType,
-              areaId = spawnPoint.areaId,
-              pos = Vector2f(spawnX, spawnY)
+            game.queues.enemyQueue.enqueue(
+              EnemyToCreate(
+                spawnPointId = spawnPoint.id,
+                creatureType = creaturesToSpawn.creatureType,
+                areaId = spawnPoint.areaId,
+                pos = Vector2f(spawnX, spawnY)
+              )
             )
           }
         })

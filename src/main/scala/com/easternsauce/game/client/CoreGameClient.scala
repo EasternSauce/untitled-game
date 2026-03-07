@@ -10,7 +10,7 @@ case class CoreGameClient() extends CoreGameClientBase {
 
   override protected def processEvents(areaId: AreaId): Unit = {
     val broadcastEventsForCurrentArea =
-      game.queues.broadcastEvents.toList.filter {
+      game.queues.broadcastEventQueue.drain().filter {
         case event: AreaGameStateEvent => event.areaId == areaId
         case _                         => false
       }
@@ -21,15 +21,13 @@ case class CoreGameClient() extends CoreGameClientBase {
       )
     }
 
-    gameplay.gameStateHolder.applyGameStateEvents(
-      game.queues.localEvents.toList.filter {
+    val localEventsForCurrentArea =
+      game.queues.localEventQueue.drain().filter {
         case event: AreaGameStateEvent    => event.areaId == areaId
         case _: OperationalGameStateEvent => true
         case _                            => false
       }
-    )
 
-    game.queues.broadcastEvents.clear()
-    game.queues.localEvents.clear()
+    gameplay.gameStateHolder.applyGameStateEvents(localEventsForCurrentArea)
   }
 }

@@ -12,8 +12,11 @@ trait AbilityComponentCreator {
   private[entitycreator] def createAbilityComponents(implicit
       game: CoreGame
   ): GameState = {
-    val result = game.queues.abilityComponentsToCreate.foldLeft(this) {
-      case (gameState, abilityComponentToCreate) =>
+
+    val componentsToCreate = game.queues.abilityComponentQueue.drain()
+
+    val result = componentsToCreate.foldLeft(this) {
+      case (gameState, abilityComponentToCreate: AbilityComponentToCreate) =>
         val abilityComponentId =
           GameEntityId[AbilityComponent](
             "component" + (Math.random() * 1000000).toInt
@@ -32,17 +35,13 @@ trait AbilityComponentCreator {
           scenarioStepNo = abilityComponentToCreate.scenarioStepNo,
           expirationTime = abilityComponentToCreate.expirationTime
         )
+
         val abilityComponent =
-          if (abilityComponentToCreate.componentType == AbilityComponentType.ArrowComponent) {
-            ArrowComponent(params)
-          } else if (
-            abilityComponentToCreate.componentType == AbilityComponentType.GhostArrowComponent
-          ) { GhostArrowComponent(params) }
-          else if (
-            abilityComponentToCreate.componentType == AbilityComponentType.ExplosionComponent
-          ) { ExplosionComponent(params) }
-          else {
-            throw new RuntimeException("incorrect ability component type")
+          abilityComponentToCreate.componentType match {
+            case AbilityComponentType.ArrowComponent      => ArrowComponent(params)
+            case AbilityComponentType.GhostArrowComponent => GhostArrowComponent(params)
+            case AbilityComponentType.ExplosionComponent  => ExplosionComponent(params)
+            case other => throw new RuntimeException(s"Incorrect ability component type: $other")
           }
 
         gameState
@@ -50,9 +49,6 @@ trait AbilityComponentCreator {
           .using(_.updated(abilityComponentId, abilityComponent.init()))
     }
 
-    game.queues.abilityComponentsToCreate.clear()
-
     result
   }
-
 }

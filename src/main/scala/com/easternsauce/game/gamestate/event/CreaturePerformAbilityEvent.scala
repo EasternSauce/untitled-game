@@ -32,13 +32,15 @@ case class CreaturePerformAbilityEvent(
           .abilityCooldownTimers(abilityType)
           .time > abilityType.cooldown)
     ) {
-      game.queues.abilitiesToCreate += AbilityToCreate(
-        abilityType,
-        areaId,
-        creatureId,
-        pos,
-        creature.pos.vectorTowards(destination),
-        targetId
+      game.queues.abilityQueue.enqueue(
+        AbilityToCreate(
+          abilityType,
+          areaId,
+          creatureId,
+          pos,
+          creature.pos.vectorTowards(destination),
+          targetId
+        )
       )
 
       gameState

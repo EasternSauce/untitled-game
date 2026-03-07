@@ -78,8 +78,8 @@ case class WorldSimulation() {
   }
 
   private def handleEvents(areaId: AreaId)(implicit game: CoreGame): Unit = {
-    val events = game.queues.physicsEvents.toList
-    game.queues.physicsEvents.clear()
+    // drain() returns all events and clears the queue atomically
+    val events = game.queues.physicsEventQueue.drain()
 
     events.foreach {
       case CreatureTeleportEvent(creatureId, pos) =>

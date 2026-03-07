@@ -24,10 +24,12 @@ case class PhysicsContactListener()(implicit game: CoreGame) extends ContactList
           game.gameState.abilityComponents.get(componentBody.abilityComponentId)
 
         component.foreach(component =>
-          game.queues.localEvents += AbilityComponentHitsCreatureEvent(
-            creatureBody.creatureId,
-            componentBody.abilityComponentId,
-            component.currentAreaId
+          game.queues.localEventQueue.enqueue(
+            AbilityComponentHitsCreatureEvent(
+              creatureBody.creatureId,
+              componentBody.abilityComponentId,
+              component.currentAreaId
+            )
           )
         )
 
@@ -36,9 +38,11 @@ case class PhysicsContactListener()(implicit game: CoreGame) extends ContactList
           game.gameState.abilityComponents.get(componentBody.abilityComponentId)
 
         component.foreach(component =>
-          game.queues.localEvents += AbilityComponentHitsTerrainEvent(
-            componentBody.abilityComponentId,
-            component.currentAreaId
+          game.queues.localEventQueue.enqueue(
+            AbilityComponentHitsTerrainEvent(
+              componentBody.abilityComponentId,
+              component.currentAreaId
+            )
           )
         )
 

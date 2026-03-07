@@ -43,7 +43,7 @@ case class AbilityComponentHitsCreatureEvent(
         val isHitFatal = lifeAfterHit <= 0
 
         if (isHitFatal) {
-          game.queues.physicsEvents += CreatureMakeSensorEvent(creatureId)
+          game.queues.physicsEventQueue.enqueue(CreatureMakeSensorEvent(creatureId))
         }
 
         gameState

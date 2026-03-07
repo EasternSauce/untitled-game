@@ -48,12 +48,14 @@ case class Gameplay()(implicit game: CoreGame) {
   }
 
   private def updateAbilityScenarios(): Unit = {
-    game.queues.abilityScenarioEvents.toList.foreach {
+    // drain() returns all items and clears the queue atomically
+    val events = game.queues.abilityScenarioEventQueue.drain()
+
+    events.foreach {
       case event: AbilityComponentScenarioRunStepEvent =>
         scheduleNextScenarioStepComponents(event.scenarioStepParams)
+      case _ => // ignore other events if any
     }
-
-    game.queues.abilityScenarioEvents.clear()
   }
 
   private def scheduleNextScenarioStepComponents(

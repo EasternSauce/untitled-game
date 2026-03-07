@@ -15,18 +15,20 @@ case class GenericScenarioStep(
   override def scheduleComponents(
       scenarioStepParams: AbilityComponentScenarioStepParams
   )(implicit game: CoreGame): Unit = {
-    abilityComponentType.foreach(abilityComponentType =>
-      game.queues.abilityComponentsToCreate += AbilityComponentToCreate(
-        abilityId = scenarioStepParams.abilityId,
-        componentType = abilityComponentType,
-        currentAreaId = scenarioStepParams.currentAreaId,
-        creatureId = scenarioStepParams.creatureId,
-        pos = scenarioStepParams.pos,
-        facingVector = scenarioStepParams.facingVector,
-        damage = scenarioStepParams.damage,
-        scenarioStepNo = scenarioStepParams.scenarioStepNo,
-        expirationTime = expirationTime
+    abilityComponentType.foreach { abilityComponentType =>
+      game.queues.abilityComponentQueue.enqueue(
+        AbilityComponentToCreate(
+          abilityId = scenarioStepParams.abilityId,
+          componentType = abilityComponentType,
+          currentAreaId = scenarioStepParams.currentAreaId,
+          creatureId = scenarioStepParams.creatureId,
+          pos = scenarioStepParams.pos,
+          facingVector = scenarioStepParams.facingVector,
+          damage = scenarioStepParams.damage,
+          scenarioStepNo = scenarioStepParams.scenarioStepNo,
+          expirationTime = expirationTime
+        )
       )
-    )
+    }
   }
 }

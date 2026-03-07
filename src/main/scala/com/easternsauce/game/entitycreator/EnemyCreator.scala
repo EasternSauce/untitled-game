@@ -8,15 +8,14 @@ import com.softwaremill.quicklens.ModifyPimp
 
 trait EnemyCreator {
   this: GameState =>
-  private[entitycreator] def createEnemies(implicit
-      game: CoreGame
-  ): GameState = {
-    val result = game.queues.enemiesToCreate.foldLeft(this) {
-      case (gameState, enemyToCreate: EnemyToCreate) =>
-        createEnemy(gameState, enemyToCreate)
-    }
 
-    game.queues.enemiesToCreate.clear()
+  private[entitycreator] def createEnemies(implicit game: CoreGame): GameState = {
+    // drain items from the enemy queue
+    val enemiesToCreate = game.queues.enemyQueue.drain()
+
+    val result = enemiesToCreate.foldLeft(this) { (gameState, enemyToCreate) =>
+      createEnemy(gameState, enemyToCreate)
+    }
 
     result
   }
@@ -25,10 +24,9 @@ trait EnemyCreator {
       gameState: GameState,
       enemyToCreate: EnemyToCreate
   ): GameState = {
-    val enemyId =
-      GameEntityId[Creature](
-        "enemy" + (Math.random() * 1000000).toInt
-      )
+    val enemyId = GameEntityId[Creature](
+      "enemy" + (Math.random() * 1000000).toInt
+    )
 
     gameState
       .modify(_.creatures)
@@ -45,5 +43,4 @@ trait EnemyCreator {
         )
       )
   }
-
 }

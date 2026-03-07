@@ -11,15 +11,14 @@ import com.softwaremill.quicklens.ModifyPimp
 
 trait PlayerCreator {
   this: GameState =>
-  private[entitycreator] def createPlayers(implicit
-      game: CoreGame
-  ): GameState = {
-    val result = game.queues.playersToCreate.foldLeft(this) {
-      case (gameState, playerToCreate: PlayerToCreate) =>
-        createPlayer(gameState, playerToCreate)
-    }
 
-    game.queues.playersToCreate.clear()
+  private[entitycreator] def createPlayers(implicit game: CoreGame): GameState = {
+    // drain all players from the player queue
+    val playersToCreate = game.queues.playerQueue.drain()
+
+    val result = playersToCreate.foldLeft(this) { (gameState, playerToCreate) =>
+      createPlayer(gameState, playerToCreate)
+    }
 
     result
   }
@@ -31,9 +30,7 @@ trait PlayerCreator {
     val creatureId = GameEntityId[Creature](playerToCreate.clientId)
 
     if (gameState.creatures.contains(creatureId)) {
-      gameState
-        .modify(_.activePlayerIds)
-        .using(_ + creatureId)
+      gameState.modify(_.activePlayerIds).using(_ + creatureId)
     } else {
       gameState
         .modify(_.creatures)
@@ -43,10 +40,7 @@ trait PlayerCreator {
             Creature.producePlayer(
               creatureId,
               Constants.DefaultAreaId,
-              Vector2f(
-                55f,
-                415f
-              ),
+              Vector2f(55f, 415f),
               creatureType = CreatureType.Human,
               spawnPointId = None
             )

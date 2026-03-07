@@ -79,15 +79,17 @@ case class GameState(
       .toList
 
     abilityComponentsToRemove.filter(_.params.isContinueScenario).foreach { component =>
-      game.queues.abilityScenarioEvents += AbilityComponentScenarioRunStepEvent(
-        AbilityComponentScenarioStepParams(
-          component.abilityId,
-          component.currentAreaId,
-          component.params.creatureId,
-          component.pos,
-          component.params.facingVector,
-          component.params.damage,
-          component.params.scenarioStepNo + 1
+      game.queues.abilityScenarioEventQueue.enqueue(
+        AbilityComponentScenarioRunStepEvent(
+          AbilityComponentScenarioStepParams(
+            component.abilityId,
+            component.currentAreaId,
+            component.params.creatureId,
+            component.pos,
+            component.params.facingVector,
+            component.params.damage,
+            component.params.scenarioStepNo + 1
+          )
         )
       )
     }

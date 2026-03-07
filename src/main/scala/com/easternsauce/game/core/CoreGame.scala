@@ -67,7 +67,7 @@ abstract class CoreGame extends Game {
   def sendLocalEvents(
       events: List[GameStateEvent]
   )(implicit game: CoreGame): Unit = {
-    game.queues.localEvents ++= events
+    game.queues.localEventQueue.enqueueAll(events)
   }
 
   def setClientData(clientId: String, host: String, port: String): Unit = {
@@ -81,7 +81,7 @@ abstract class CoreGame extends Game {
       clientData.port = Some(port)
     }
 
-    clientData.clientId.foreach(clientId => queues.playersToCreate += PlayerToCreate(clientId))
+    clientData.clientId.foreach(clientId => queues.playerQueue.enqueue(PlayerToCreate(clientId)))
   }
 
   def setPauseScreen(): Unit = {

@@ -137,7 +137,7 @@ abstract class CoreGameClientBase extends CoreGame {
   }
 
   override def sendBroadcastEvents(events: List[GameStateEvent]): Unit = {
-    game.queues.broadcastEvents ++= events
+    game.queues.broadcastEventQueue.enqueueAll(events)
   }
 
   def registerClient(clientId: String): Unit = {

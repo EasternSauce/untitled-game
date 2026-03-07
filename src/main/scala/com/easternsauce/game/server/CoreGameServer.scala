@@ -18,9 +18,7 @@ case class CoreGameServer() extends CoreGame {
 
   var clientConnectionManager: ClientConnectionManager = _
 
-  private val gameStateBroadcaster: GameStateBroadcaster = GameStateBroadcaster(
-    this
-  )
+  private val gameStateBroadcaster: GameStateBroadcaster = GameStateBroadcaster(this)
 
   private var _gameplay: Gameplay = _
   private var _connectivity: GameServerConnectivity = _
@@ -57,12 +55,11 @@ case class CoreGameServer() extends CoreGame {
   }
 
   private def processEvents(): Unit = {
-    gameplay.gameStateHolder.applyGameStateEvents(
-      game.queues.broadcastEvents.toList ++ game.queues.localEvents.toList
-    )
+    // Drain broadcast and local events from their queues
+    val eventsToApply: List[GameStateEvent] =
+      game.queues.broadcastEventQueue.drain() ++ game.queues.localEventQueue.drain()
 
-    game.queues.broadcastEvents.clear()
-    game.queues.localEvents.clear()
+    gameplay.gameStateHolder.applyGameStateEvents(eventsToApply)
   }
 
   def sendCommandToAllClients(command: ActionsPerformCommand): Unit = {
@@ -70,21 +67,16 @@ case class CoreGameServer() extends CoreGame {
   }
 
   def runServer(): Unit = {
-    new Thread(new Runnable() {
-      override def run(): Unit = {
-        server.start()
-        server.bind(54555, 54777)
-
-        server.addListener(listener)
-      }
+    new Thread(() => {
+      server.start()
+      server.bind(54555, 54777)
+      server.addListener(listener)
     }).start()
   }
 
   def generateNewClientId(): String = {
     val id = "client" + clientCounter
-
-    clientCounter = clientCounter + 1
-
+    clientCounter += 1
     id
   }
 
@@ -107,8 +99,6 @@ case class CoreGameServer() extends CoreGame {
   override def dispose(): Unit = {
     super.dispose()
     server.stop()
-
     gameStateBroadcaster.stop()
   }
-
 }

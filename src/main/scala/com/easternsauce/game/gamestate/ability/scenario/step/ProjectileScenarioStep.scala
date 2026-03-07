@@ -18,8 +18,8 @@ case class ProjectileScenarioStep(
   override def scheduleComponents(
       scenarioStepParams: AbilityComponentScenarioStepParams
   )(implicit game: CoreGame): Unit = {
-    abilityComponentType.foreach(abilityComponentType =>
-      game.queues.abilityComponentsToCreate ++= (0 until numOfProjectiles).map(projectileNum =>
+    abilityComponentType.foreach { abilityComponentType =>
+      val components = (0 until numOfProjectiles).map { projectileNum =>
         AbilityComponentToCreate(
           abilityId = scenarioStepParams.abilityId,
           componentType = abilityComponentType,
@@ -33,7 +33,8 @@ case class ProjectileScenarioStep(
           scenarioStepNo = scenarioStepParams.scenarioStepNo,
           expirationTime = expirationTime
         )
-      )
-    )
+      }
+      game.queues.abilityComponentQueue.enqueueAll(components)
+    }
   }
 }
