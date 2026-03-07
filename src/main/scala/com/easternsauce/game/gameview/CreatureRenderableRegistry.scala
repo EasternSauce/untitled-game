@@ -2,9 +2,9 @@ package com.easternsauce.game.gameview
 
 import com.easternsauce.game.core.CoreGame
 import com.easternsauce.game.gamestate.creature.Creature
-import com.easternsauce.game.gamestate.id.{AreaId, GameEntityId}
+import com.easternsauce.game.gamestate.id.GameEntityId
 
-//noinspection SpellCheckingInspection
+/** Registry for creature renderables */
 case class CreatureRenderableRegistry()
     extends RenderableRegistry[
       Creature,
@@ -21,9 +21,6 @@ case class CreatureRenderableRegistry()
 
     existing.map(id => id -> game.gameState.creatures(id)).toMap
   }
-
-  protected def entityArea(entity: Creature): AreaId =
-    entity.currentAreaId
 
   protected def createRenderable(
       id: GameEntityId[Creature]

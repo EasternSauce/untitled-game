@@ -2,9 +2,9 @@ package com.easternsauce.game.gameview
 
 import com.easternsauce.game.core.CoreGame
 import com.easternsauce.game.gamestate.ability.AbilityComponent
-import com.easternsauce.game.gamestate.id.{AreaId, GameEntityId}
+import com.easternsauce.game.gamestate.id.GameEntityId
 
-//noinspection SpellCheckingInspection
+/** Registry for ability renderables */
 case class AbilityRenderableRegistry()
     extends RenderableRegistry[
       AbilityComponent,
@@ -16,9 +16,6 @@ case class AbilityRenderableRegistry()
       game: CoreGame
   ): Map[GameEntityId[AbilityComponent], AbilityComponent] =
     game.gameState.abilityComponents
-
-  protected def entityArea(entity: AbilityComponent): AreaId =
-    entity.currentAreaId
 
   protected def createRenderable(
       id: GameEntityId[AbilityComponent]

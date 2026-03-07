@@ -3,9 +3,9 @@ package com.easternsauce.game.gameview
 import com.easternsauce.game.core.CoreGame
 import com.easternsauce.game.gamestate.GameEntity
 import com.easternsauce.game.gamestate.id.{AreaId, GameEntityId}
-
 import scala.collection.mutable
 
+/** Base registry for keeping renderables in sync with game entities */
 abstract class RenderableRegistry[
     E <: GameEntity,
     Id <: GameEntityId[E],
@@ -17,27 +17,31 @@ abstract class RenderableRegistry[
   def init(renderables: mutable.Map[Id, R]): Unit =
     this.renderables = renderables
 
+  /** Provides all current game entities */
   protected def entities(implicit game: CoreGame): Map[Id, E]
 
-  protected def entityArea(entity: E): AreaId
-
+  /** Creates a new renderable for a given entity ID */
   protected def createRenderable(id: Id)(implicit game: CoreGame): R
 
+  /** Destroys a renderable; can be overridden for cleanup */
+  protected def destroyRenderable(id: Id)(implicit game: CoreGame): Unit =
+    renderables.remove(id)
+
+  /** Synchronizes renderables with game entities for the given area */
   def update(areaId: AreaId)(implicit game: CoreGame): Unit = {
     val ents = entities
 
-    val toCreate =
-      (ents.keySet -- renderables.keySet.toSet)
-        .filter(id => entityArea(ents(id)) == areaId)
+    // Create renderables for entities in the current area that aren't already created
+    val toCreate = ents.keysIterator.filter { id =>
+      !renderables.contains(id) && ents(id).currentAreaId == areaId
+    }
 
-    val toDestroy =
-      (renderables.keySet.toSet -- ents.keySet)
-        .filter(id =>
-          !ents.contains(id) ||
-            entityArea(ents(id)) == areaId
-        )
+    // Destroy renderables that no longer exist or are in a different area
+    val toDestroy = renderables.keysIterator.filter { id =>
+      !ents.contains(id) || renderables(id).areaId(game.gameState) != areaId
+    }
 
     toCreate.foreach(id => renderables.update(id, createRenderable(id)))
-    toDestroy.foreach(renderables.remove)
+    toDestroy.foreach(destroyRenderable)
   }
 }
