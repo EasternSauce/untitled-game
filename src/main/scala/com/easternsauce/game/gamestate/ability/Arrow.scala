@@ -1,11 +1,9 @@
 package com.easternsauce.game.gamestate.ability
 import com.easternsauce.game.core.CoreGame
 import com.easternsauce.game.gamestate.ability.scenario.NextStepCondition
-import com.easternsauce.game.gamestate.ability.scenario.step.{
-  AbilityScenarioStep,
-  GenericScenarioStep,
-  ProjectileScenarioStep
-}
+import com.easternsauce.game.gamestate.ability.scenario.step.AbilityScenarioStep
+import com.easternsauce.game.gamestate.ability.scenario.step.GenericScenarioStep
+import com.easternsauce.game.gamestate.ability.scenario.step.ProjectileScenarioStep
 
 case class Arrow(params: AbilityParams) extends Ability {
 

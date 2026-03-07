@@ -7,7 +7,8 @@ import com.easternsauce.game.core.CoreGame
 import com.easternsauce.game.gamephysics.AreaWorld
 import com.easternsauce.game.gamestate.creature.Creature
 import com.easternsauce.game.gamestate.id.GameEntityId
-import com.easternsauce.game.math.{IsometricProjection, Vector2f}
+import com.easternsauce.game.math.IsometricProjection
+import com.easternsauce.game.math.Vector2f
 
 case class ViewportManager() {
 

@@ -1,12 +1,14 @@
 package com.easternsauce.game.core
 
-import com.badlogic.gdx.{Game, Gdx}
+import com.badlogic.gdx.Game
+import com.badlogic.gdx.Gdx
 import com.easternsauce.game.connectivity.GameConnectivity
 import com.easternsauce.game.entitycreator.PlayerToCreate
 import com.easternsauce.game.gamestate.GameState
 import com.easternsauce.game.gamestate.creature.Creature
 import com.easternsauce.game.gamestate.event.GameStateEvent
-import com.easternsauce.game.gamestate.id.{AreaId, GameEntityId}
+import com.easternsauce.game.gamestate.id.AreaId
+import com.easternsauce.game.gamestate.id.GameEntityId
 import com.easternsauce.game.gameview.GameScreen
 import com.easternsauce.game.queues.GameQueues
 import com.esotericsoftware.kryonet.Listener

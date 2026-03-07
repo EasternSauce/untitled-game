@@ -2,6 +2,7 @@ package com.easternsauce.game
 
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.Texture
+
 import scala.collection.mutable
 
 object Assets {

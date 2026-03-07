@@ -2,7 +2,9 @@ package com.easternsauce.game.screen.pausemenu.client
 
 import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.utils.ScreenUtils
-import com.badlogic.gdx.{Gdx, InputMultiplexer, InputProcessor}
+import com.badlogic.gdx.Gdx
+import com.badlogic.gdx.InputMultiplexer
+import com.badlogic.gdx.InputProcessor
 import com.easternsauce.game.client.CoreGameClientBase
 import com.easternsauce.game.gameview.GameScreen
 

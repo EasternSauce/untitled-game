@@ -1,9 +1,15 @@
 package com.easternsauce.game.gameview
 
-import com.badlogic.gdx.graphics.g2d.{BitmapFont, SpriteBatch, TextureRegion}
-import com.badlogic.gdx.graphics.{Color, Pixmap, Texture}
-import com.badlogic.gdx.math.{Matrix4, Rectangle => GdxRectangle}
-import com.easternsauce.game.math.{GameRectangle, Vector2f}
+import com.badlogic.gdx.graphics.g2d.BitmapFont
+import com.badlogic.gdx.graphics.g2d.SpriteBatch
+import com.badlogic.gdx.graphics.g2d.TextureRegion
+import com.badlogic.gdx.graphics.Color
+import com.badlogic.gdx.graphics.Pixmap
+import com.badlogic.gdx.graphics.Texture
+import com.badlogic.gdx.math.Matrix4
+import com.badlogic.gdx.math.{Rectangle => GdxRectangle}
+import com.easternsauce.game.math.GameRectangle
+import com.easternsauce.game.math.Vector2f
 import space.earlygrey.shapedrawer.ShapeDrawer
 
 case class GameSpriteBatch() {

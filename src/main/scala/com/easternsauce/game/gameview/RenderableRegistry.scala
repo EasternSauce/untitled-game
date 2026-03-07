@@ -2,7 +2,9 @@ package com.easternsauce.game.gameview
 
 import com.easternsauce.game.core.CoreGame
 import com.easternsauce.game.gamestate.GameEntity
-import com.easternsauce.game.gamestate.id.{AreaId, GameEntityId}
+import com.easternsauce.game.gamestate.id.AreaId
+import com.easternsauce.game.gamestate.id.GameEntityId
+
 import scala.collection.mutable
 
 /** Base registry for keeping renderables in sync with game entities */

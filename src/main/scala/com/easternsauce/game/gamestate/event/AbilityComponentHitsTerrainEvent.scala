@@ -1,9 +1,12 @@
 package com.easternsauce.game.gamestate.event
 import com.easternsauce.game.core.CoreGame
 import com.easternsauce.game.gamestate.GameState
-import com.easternsauce.game.gamestate.ability.{AbilityComponent, AbilityState}
-import com.easternsauce.game.gamestate.id.{AreaId, GameEntityId}
-import com.softwaremill.quicklens.{ModifyPimp, QuicklensMapAt}
+import com.easternsauce.game.gamestate.ability.AbilityComponent
+import com.easternsauce.game.gamestate.ability.AbilityState
+import com.easternsauce.game.gamestate.id.AreaId
+import com.easternsauce.game.gamestate.id.GameEntityId
+import com.softwaremill.quicklens.ModifyPimp
+import com.softwaremill.quicklens.QuicklensMapAt
 
 case class AbilityComponentHitsTerrainEvent(
     abilityComponentId: GameEntityId[AbilityComponent],

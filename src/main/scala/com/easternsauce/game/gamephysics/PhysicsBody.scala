@@ -1,6 +1,7 @@
 package com.easternsauce.game.gamephysics
 
-import com.badlogic.gdx.physics.box2d.{Body, BodyDef}
+import com.badlogic.gdx.physics.box2d.Body
+import com.badlogic.gdx.physics.box2d.BodyDef
 import com.easternsauce.game.core.CoreGame
 import com.easternsauce.game.gamestate.GameState
 import com.easternsauce.game.gamestate.id.AreaId

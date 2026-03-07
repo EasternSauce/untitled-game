@@ -5,14 +5,15 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont
 import com.easternsauce.game.core.CoreGame
 import com.easternsauce.game.gamestate.GameState
 import com.easternsauce.game.gamestate.creature.CreatureAnimationType.CreatureAnimationType
-import com.easternsauce.game.gamestate.creature.{
-  Creature,
-  CreatureAnimationType,
-  PrimaryWeaponType,
-  SecondaryWeaponType
-}
-import com.easternsauce.game.gamestate.id.{AreaId, GameEntityId}
-import com.easternsauce.game.math.{GameRectangle, IsometricProjection, Vector2f}
+import com.easternsauce.game.gamestate.creature.Creature
+import com.easternsauce.game.gamestate.creature.CreatureAnimationType
+import com.easternsauce.game.gamestate.creature.PrimaryWeaponType
+import com.easternsauce.game.gamestate.creature.SecondaryWeaponType
+import com.easternsauce.game.gamestate.id.AreaId
+import com.easternsauce.game.gamestate.id.GameEntityId
+import com.easternsauce.game.math.GameRectangle
+import com.easternsauce.game.math.IsometricProjection
+import com.easternsauce.game.math.Vector2f
 
 //noinspection SpellCheckingInspection
 case class CreatureRenderable(creatureId: GameEntityId[Creature]) extends Renderable {

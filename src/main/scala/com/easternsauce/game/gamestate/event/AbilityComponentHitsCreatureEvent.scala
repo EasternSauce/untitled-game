@@ -5,8 +5,10 @@ import com.easternsauce.game.gamephysics.CreatureMakeSensorEvent
 import com.easternsauce.game.gamestate.GameState
 import com.easternsauce.game.gamestate.ability.AbilityComponent
 import com.easternsauce.game.gamestate.creature.Creature
-import com.easternsauce.game.gamestate.id.{AreaId, GameEntityId}
-import com.softwaremill.quicklens.{ModifyPimp, QuicklensMapAt}
+import com.easternsauce.game.gamestate.id.AreaId
+import com.easternsauce.game.gamestate.id.GameEntityId
+import com.softwaremill.quicklens.ModifyPimp
+import com.softwaremill.quicklens.QuicklensMapAt
 
 case class AbilityComponentHitsCreatureEvent(
     creatureId: GameEntityId[Creature],
