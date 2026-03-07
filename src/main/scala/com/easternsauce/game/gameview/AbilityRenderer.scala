@@ -9,13 +9,13 @@ import scala.collection.mutable
 //noinspection SpellCheckingInspection
 case class AbilityRenderer() {
   private var abilityRenderables: mutable.Map[GameEntityId[AbilityComponent], AbilityRenderable] = _
-  private var abilityRenderableSynchronizer: AbilityRenderableSynchronizer =
+  private var abilityRenderableSynchronizer: AbilityRenderableRegistry =
     _
 
   def init(): Unit = {
     abilityRenderables = mutable.Map()
 
-    abilityRenderableSynchronizer = AbilityRenderableSynchronizer()
+    abilityRenderableSynchronizer = AbilityRenderableRegistry()
     abilityRenderableSynchronizer.init(abilityRenderables)
   }
 
@@ -42,6 +42,6 @@ case class AbilityRenderer() {
   }
 
   def synchronizeRenderables(areaId: AreaId)(implicit game: CoreGame): Unit = {
-    abilityRenderableSynchronizer.synchronizeForArea(areaId)
+    abilityRenderableSynchronizer.update(areaId)
   }
 }

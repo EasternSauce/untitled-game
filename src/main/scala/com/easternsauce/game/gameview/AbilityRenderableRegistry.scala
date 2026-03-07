@@ -6,7 +6,7 @@ import com.easternsauce.game.gamestate.id.{AreaId, GameEntityId}
 import scala.collection.mutable
 
 //noinspection SpellCheckingInspection
-case class AbilityRenderableSynchronizer() {
+case class AbilityRenderableRegistry() {
   private var abilityRenderables: mutable.Map[GameEntityId[AbilityComponent], AbilityRenderable] = _
 
   def init(
@@ -17,11 +17,11 @@ case class AbilityRenderableSynchronizer() {
     this.abilityRenderables = abilityRenderables
   }
 
-  def synchronizeForArea(areaId: AreaId)(implicit game: CoreGame): Unit = {
+  def update(areaId: AreaId)(implicit game: CoreGame): Unit = {
     val abilityRenderablesToCreate =
       (game.gameState.abilityComponents.keys.toSet -- abilityRenderables.keys.toSet)
         .filter(game.gameState.abilityComponents(_).currentAreaId == areaId)
-    val abilityRendererablesToDestroy =
+    val abilityRenderablesToDestroy =
       (abilityRenderables.keys.toSet -- game.gameState.abilityComponents.keys.toSet)
         .filter(abilityId =>
           !game.gameState.abilityComponents.contains(abilityId) ||
@@ -29,7 +29,7 @@ case class AbilityRenderableSynchronizer() {
         )
 
     abilityRenderablesToCreate.foreach(createAbilityRenderable(_))
-    abilityRendererablesToDestroy.foreach(destroyAbilityRenderable(_))
+    abilityRenderablesToDestroy.foreach(destroyAbilityRenderable(_))
   }
 
   private def createAbilityRenderable(

@@ -6,7 +6,7 @@ import com.easternsauce.game.gamestate.id.{AreaId, GameEntityId}
 import scala.collection.mutable
 
 //noinspection SpellCheckingInspection
-case class CreatureRenderableSynchronizer() {
+case class CreatureRenderableRegistry() {
   private var creatureRenderables: mutable.Map[GameEntityId[Creature], CreatureRenderable] = _
 
   def init(
@@ -17,7 +17,7 @@ case class CreatureRenderableSynchronizer() {
     this.creatureRenderables = creatureRenderables
   }
 
-  def synchronize(areaId: AreaId)(implicit game: CoreGame): Unit = {
+  def update(areaId: AreaId)(implicit game: CoreGame): Unit = {
     val existingCreatures =
       game.gameState.activePlayerIds ++ game.gameState.creatures.values
         .filterNot(_.params.isPlayer)

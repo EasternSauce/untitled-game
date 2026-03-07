@@ -10,13 +10,13 @@ import scala.collection.mutable
 //noinspection SpellCheckingInspection
 case class CreatureRenderer() {
   private var creatureRenderables: mutable.Map[GameEntityId[Creature], CreatureRenderable] = _
-  private var creatureRenderableSynchronizer: CreatureRenderableSynchronizer =
+  private var creatureRenderableSynchronizer: CreatureRenderableRegistry =
     _
 
   def init(): Unit = {
     creatureRenderables = mutable.Map()
 
-    creatureRenderableSynchronizer = CreatureRenderableSynchronizer()
+    creatureRenderableSynchronizer = CreatureRenderableRegistry()
     creatureRenderableSynchronizer.init(creatureRenderables)
   }
 
@@ -81,7 +81,7 @@ case class CreatureRenderer() {
   }
 
   def synchronizeRenderables(areaId: AreaId)(implicit game: CoreGame): Unit = {
-    creatureRenderableSynchronizer.synchronize(areaId)
+    creatureRenderableSynchronizer.update(areaId)
   }
 
 }
