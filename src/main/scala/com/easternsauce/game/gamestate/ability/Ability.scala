@@ -5,7 +5,8 @@ import com.easternsauce.game.gamestate.GameEntity
 import com.easternsauce.game.gamestate.ability.AbilityState.AbilityState
 import com.easternsauce.game.gamestate.ability.scenario.AbilityComponentScenarioStepParams
 import com.easternsauce.game.gamestate.ability.scenario.step.AbilityScenarioStep
-import com.easternsauce.game.gamestate.id.{AreaId, GameEntityId}
+import com.easternsauce.game.gamestate.id.AreaId
+import com.easternsauce.game.gamestate.id.GameEntityId
 import com.softwaremill.quicklens.ModifyPimp
 
 trait Ability extends GameEntity {

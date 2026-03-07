@@ -4,7 +4,8 @@ import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.Input.Buttons
 import com.easternsauce.game.Constants
 import com.easternsauce.game.connectivity.GameClientConnectivity
-import com.easternsauce.game.core.{CoreGame, Gameplay}
+import com.easternsauce.game.core.CoreGame
+import com.easternsauce.game.core.Gameplay
 import com.easternsauce.game.gamestate.GameState
 import com.easternsauce.game.gamestate.ability.AbilityType
 import com.easternsauce.game.gamestate.event._
@@ -18,8 +19,6 @@ import com.esotericsoftware.kryonet.Client
 
 abstract class CoreGameClientBase extends CoreGame {
   implicit val game: CoreGame = this
-
-  private var clientRegistered = false
 
   private var _gameplay: Gameplay = _
   private var _connectivity: GameClientConnectivity = _

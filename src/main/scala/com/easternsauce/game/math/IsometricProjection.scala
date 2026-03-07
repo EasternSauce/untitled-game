@@ -1,6 +1,7 @@
 package com.easternsauce.game.math
 
-import com.badlogic.gdx.math.{Matrix4, Vector3}
+import com.badlogic.gdx.math.Matrix4
+import com.badlogic.gdx.math.Vector3
 import com.easternsauce.game.Constants
 
 object IsometricProjection {

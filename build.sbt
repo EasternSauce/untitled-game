@@ -1,21 +1,19 @@
 ThisBuild / version := "0.1.0-SNAPSHOT"
-ThisBuild / scalaVersion := "2.13.14"
+ThisBuild / scalaVersion := "2.13.18"
 
-// ------------------- Project -------------------
+// Enable SemanticDB for Scalafix
+ThisBuild / semanticdbEnabled := true
+ThisBuild / semanticdbVersion := "4.15.0" // a published SemanticDB version for Scala 2.13.18
+
 lazy val root = (project in file("."))
   .settings(
     name := "untitled-game",
 
-    // ------------------- Compiler -------------------
     scalacOptions ++= Seq(
-      "-deprecation", // show deprecation warnings
-      "-feature"      // optional: show feature warnings
-    ),
-
-    // ------------------- Scalafix -------------------
-    // Organize imports automatically on compile
-    scalafixDependencies += "com.github.liancheng" %% "organize-imports" % "0.6.0",
-    scalafixOnCompile := true
+      "-deprecation",
+      "-feature",
+      "-Wunused"
+    )
   )
 
 // ------------------- Dependencies -------------------

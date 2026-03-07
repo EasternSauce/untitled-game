@@ -3,17 +3,20 @@ package com.easternsauce.game.gamestate
 import com.easternsauce.game.Constants
 import com.easternsauce.game.core.CoreGame
 import com.easternsauce.game.entitycreator.GameEntityCreators
-import com.easternsauce.game.gamestate.ability.scenario.{
-  AbilityComponentScenarioRunStepEvent,
-  AbilityComponentScenarioStepParams
-}
-import com.easternsauce.game.gamestate.ability.{Ability, AbilityComponent, AbilityState}
+import com.easternsauce.game.gamestate.ability.Ability
+import com.easternsauce.game.gamestate.ability.AbilityComponent
+import com.easternsauce.game.gamestate.ability.AbilityState
+import com.easternsauce.game.gamestate.ability.scenario.AbilityComponentScenarioRunStepEvent
+import com.easternsauce.game.gamestate.ability.scenario.AbilityComponentScenarioStepParams
 import com.easternsauce.game.gamestate.creature.Creature
 import com.easternsauce.game.gamestate.event.GameStateEvent
-import com.easternsauce.game.gamestate.id.{AreaId, GameEntityId}
-import com.easternsauce.game.spawnpoint.{SpawnPoint, SpawnPointUpdater}
+import com.easternsauce.game.gamestate.id.AreaId
+import com.easternsauce.game.gamestate.id.GameEntityId
+import com.easternsauce.game.spawnpoint.SpawnPoint
+import com.easternsauce.game.spawnpoint.SpawnPointUpdater
 import com.easternsauce.game.util.TransformIf
-import com.softwaremill.quicklens.{ModifyPimp, QuicklensMapAt}
+import com.softwaremill.quicklens.ModifyPimp
+import com.softwaremill.quicklens.QuicklensMapAt
 
 case class GameState(
     creatures: Map[GameEntityId[Creature], Creature] = Map(),
