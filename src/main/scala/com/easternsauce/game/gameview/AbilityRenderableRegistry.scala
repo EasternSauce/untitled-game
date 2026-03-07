@@ -7,21 +7,23 @@ import scala.collection.mutable
 
 //noinspection SpellCheckingInspection
 case class AbilityRenderableRegistry()
-  extends RenderableRegistry[
-    AbilityComponent,
-    GameEntityId[AbilityComponent],
-    AbilityRenderable
-  ] {
+    extends RenderableRegistry[
+      AbilityComponent,
+      GameEntityId[AbilityComponent],
+      AbilityRenderable
+    ] {
 
-  protected def entities(implicit game: CoreGame): Map[GameEntityId[AbilityComponent], AbilityComponent] =
+  protected def entities(implicit
+      game: CoreGame
+  ): Map[GameEntityId[AbilityComponent], AbilityComponent] =
     game.gameState.abilityComponents
 
   protected def entityArea(entity: AbilityComponent): AreaId =
     entity.currentAreaId
 
   protected def createRenderable(
-                                  id: GameEntityId[AbilityComponent]
-                                )(implicit game: CoreGame): AbilityRenderable = {
+      id: GameEntityId[AbilityComponent]
+  )(implicit game: CoreGame): AbilityRenderable = {
     val r = AbilityRenderable(id)
     r.init()
     r

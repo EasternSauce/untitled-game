@@ -1,19 +1,27 @@
 ThisBuild / version := "0.1.0-SNAPSHOT"
 ThisBuild / scalaVersion := "2.13.14"
 
+// ------------------- Project -------------------
 lazy val root = (project in file("."))
   .settings(
-    name := "untitled-game"
+    name := "untitled-game",
+
+    // ------------------- Compiler -------------------
+    scalacOptions ++= Seq(
+      "-deprecation", // show deprecation warnings
+      "-feature"      // optional: show feature warnings
+    ),
+
+    // ------------------- Scalafix -------------------
+    // Organize imports automatically on compile
+    scalafixDependencies += "com.github.liancheng" %% "organize-imports" % "0.6.0",
+    scalafixOnCompile := true
   )
 
+// ------------------- Dependencies -------------------
 val libGdxVersion = "1.14.0"
 
 resolvers += "jitpack" at "https://jitpack.io"
-
-scalacOptions ++= Seq(
-  "-deprecation", // show deprecation warnings
-  "-feature"      // optional: show feature warnings
-)
 
 libraryDependencies ++= Seq(
   "com.badlogicgames.gdx" % "gdx" % libGdxVersion,

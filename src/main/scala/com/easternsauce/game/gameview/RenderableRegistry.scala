@@ -3,13 +3,12 @@ package com.easternsauce.game.gameview
 import com.easternsauce.game.core.CoreGame
 import com.easternsauce.game.gamestate.GameEntity
 import com.easternsauce.game.gamestate.id.{AreaId, GameEntityId}
-
 import scala.collection.mutable
 
 abstract class RenderableRegistry[
-  E <: GameEntity,
-  Id <: GameEntityId[E],
-  R <: Renderable
+    E <: GameEntity,
+    Id <: GameEntityId[E],
+    R <: Renderable
 ] {
 
   protected var renderables: mutable.Map[Id, R] = _

@@ -7,11 +7,11 @@ import scala.collection.mutable
 
 //noinspection SpellCheckingInspection
 case class CreatureRenderableRegistry()
-  extends RenderableRegistry[
-    Creature,
-    GameEntityId[Creature],
-    CreatureRenderable
-  ] {
+    extends RenderableRegistry[
+      Creature,
+      GameEntityId[Creature],
+      CreatureRenderable
+    ] {
 
   protected def entities(implicit game: CoreGame): Map[GameEntityId[Creature], Creature] = {
     val existing =
@@ -27,8 +27,8 @@ case class CreatureRenderableRegistry()
     entity.currentAreaId
 
   protected def createRenderable(
-                                  id: GameEntityId[Creature]
-                                )(implicit game: CoreGame): CreatureRenderable = {
+      id: GameEntityId[Creature]
+  )(implicit game: CoreGame): CreatureRenderable = {
     val r = CreatureRenderable(id)
     r.init()
     r
