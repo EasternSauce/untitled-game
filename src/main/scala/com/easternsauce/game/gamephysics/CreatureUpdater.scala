@@ -13,9 +13,9 @@ case class CreatureUpdater() {
   private var areaWorlds: mutable.Map[AreaId, AreaWorld] = _
 
   def init(
-            creatureBodies: mutable.Map[GameEntityId[Creature], CreatureBody],
-            areaWorlds: mutable.Map[AreaId, AreaWorld]
-          ): Unit = {
+      creatureBodies: mutable.Map[GameEntityId[Creature], CreatureBody],
+      areaWorlds: mutable.Map[AreaId, AreaWorld]
+  ): Unit = {
     this.creatureBodies = creatureBodies
     this.areaWorlds = areaWorlds
   }
@@ -32,13 +32,11 @@ case class CreatureUpdater() {
   def synchronize(areaId: AreaId)(implicit game: CoreGame): Unit = {
     val ents = game.gameState.creatures
 
-    val toCreate = ents.values.filter(c =>
-      !creatureBodies.contains(c.id) && c.params.currentAreaId == areaId
-    )
+    val toCreate =
+      ents.values.filter(c => !creatureBodies.contains(c.id) && c.params.currentAreaId == areaId)
 
-    val toDestroy = creatureBodies.values.filter(b =>
-      !ents.contains(b.creatureId) || b.areaId != areaId
-    )
+    val toDestroy =
+      creatureBodies.values.filter(b => !ents.contains(b.creatureId) || b.areaId != areaId)
 
     toCreate.foreach { c =>
       val body = CreatureBody(c.id)
@@ -56,15 +54,20 @@ case class CreatureUpdater() {
     game.gameState.creatures.values.foreach { c =>
       if (
         c.params.currentAreaId == areaId &&
-          creatureBodies.contains(c.id) &&
-          creatureBodies(c.id).pos.distance(c.pos) > Constants.PhysicsBodyCorrectionDistance
+        creatureBodies.contains(c.id) &&
+        creatureBodies(c.id).pos.distance(c.pos) > Constants.PhysicsBodyCorrectionDistance
       ) {
         creatureBodies(c.id).setPos(c.pos)
       }
     }
   }
 
-  def teleportIfInArea(id: GameEntityId[Creature], pos: Vector2f, areaId: AreaId, game: CoreGame): Unit =
+  def teleportIfInArea(
+      id: GameEntityId[Creature],
+      pos: Vector2f,
+      areaId: AreaId,
+      game: CoreGame
+  ): Unit =
     if (game.gameState.creatures.get(id).exists(_.params.currentAreaId == areaId)) {
       creatureBodies(id).setPos(pos)
     }

@@ -13,9 +13,9 @@ case class AbilityUpdater() {
   private var areaWorlds: mutable.Map[AreaId, AreaWorld] = _
 
   def init(
-            abilityBodies: mutable.Map[GameEntityId[AbilityComponent], AbilityBody],
-            areaWorlds: mutable.Map[AreaId, AreaWorld]
-          ): Unit = {
+      abilityBodies: mutable.Map[GameEntityId[AbilityComponent], AbilityBody],
+      areaWorlds: mutable.Map[AreaId, AreaWorld]
+  ): Unit = {
     this.abilityBodies = abilityBodies
     this.areaWorlds = areaWorlds
   }
@@ -32,13 +32,11 @@ case class AbilityUpdater() {
   def synchronize(areaId: AreaId)(implicit game: CoreGame): Unit = {
     val ents = game.gameState.abilityComponents
 
-    val toCreate = ents.values.filter(e =>
-      !abilityBodies.contains(e.id) && e.params.currentAreaId == areaId
-    )
+    val toCreate =
+      ents.values.filter(e => !abilityBodies.contains(e.id) && e.params.currentAreaId == areaId)
 
-    val toDestroy = abilityBodies.values.filter(b =>
-      !ents.contains(b.abilityComponentId) || b.areaId != areaId
-    )
+    val toDestroy =
+      abilityBodies.values.filter(b => !ents.contains(b.abilityComponentId) || b.areaId != areaId)
 
     toCreate.foreach { e =>
       val body = AbilityBody(e.id)
@@ -56,15 +54,22 @@ case class AbilityUpdater() {
     game.gameState.abilityComponents.values.foreach { ability =>
       if (
         ability.params.currentAreaId == areaId &&
-          abilityBodies.contains(ability.id) &&
-          abilityBodies(ability.id).pos.distance(ability.pos) > Constants.PhysicsBodyCorrectionDistance
+        abilityBodies.contains(ability.id) &&
+        abilityBodies(ability.id).pos.distance(
+          ability.pos
+        ) > Constants.PhysicsBodyCorrectionDistance
       ) {
         abilityBodies(ability.id).setPos(ability.pos)
       }
     }
   }
 
-  def setBodyPosIfInArea(id: GameEntityId[AbilityComponent], pos: Vector2f, areaId: AreaId, game: CoreGame): Unit =
+  def setBodyPosIfInArea(
+      id: GameEntityId[AbilityComponent],
+      pos: Vector2f,
+      areaId: AreaId,
+      game: CoreGame
+  ): Unit =
     if (game.gameState.abilityComponents.get(id).exists(_.params.currentAreaId == areaId)) {
       abilityBodies(id).setPos(pos)
     }
@@ -74,7 +79,11 @@ case class AbilityUpdater() {
       abilityBodies(id).setSensor()
     }
 
-  def setNonSensorIfInArea(id: GameEntityId[AbilityComponent], areaId: AreaId, game: CoreGame): Unit =
+  def setNonSensorIfInArea(
+      id: GameEntityId[AbilityComponent],
+      areaId: AreaId,
+      game: CoreGame
+  ): Unit =
     if (game.gameState.abilityComponents.get(id).exists(_.params.currentAreaId == areaId)) {
       abilityBodies(id).setNonSensor()
     }
