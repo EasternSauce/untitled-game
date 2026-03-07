@@ -4,9 +4,9 @@ import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.g2d.BitmapFont
 import com.easternsauce.game.core.CoreGame
 import com.easternsauce.game.gamestate.GameState
-import com.easternsauce.game.gamestate.creature.CreatureAnimationType.CreatureAnimationType
 import com.easternsauce.game.gamestate.creature.Creature
 import com.easternsauce.game.gamestate.creature.CreatureAnimationType
+import com.easternsauce.game.gamestate.creature.CreatureAnimationType.CreatureAnimationType
 import com.easternsauce.game.gamestate.creature.PrimaryWeaponType
 import com.easternsauce.game.gamestate.creature.SecondaryWeaponType
 import com.easternsauce.game.gamestate.id.AreaId

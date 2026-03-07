@@ -8,8 +8,8 @@ import com.easternsauce.game.gamestate.creature.Creature
 import com.easternsauce.game.gamestate.event.PlayerDisconnectEvent
 import com.easternsauce.game.gamestate.id.GameEntityId
 import com.easternsauce.game.server.CoreGameServer
-import com.esotericsoftware.kryonet.FrameworkMessage.KeepAlive
 import com.esotericsoftware.kryonet.Connection
+import com.esotericsoftware.kryonet.FrameworkMessage.KeepAlive
 import com.esotericsoftware.kryonet.Listener
 
 case class ServerListener(game: CoreGameServer) extends Listener {

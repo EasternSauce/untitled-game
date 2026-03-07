@@ -6,10 +6,10 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.easternsauce.game.Assets
 import com.easternsauce.game.core.CoreGame
 import com.easternsauce.game.gamestate.WorldDirection
-import com.easternsauce.game.gamestate.creature.CreatureAnimationType.CreatureAnimationType
-import com.easternsauce.game.gamestate.creature.EquipmentSlotType.EquipmentSlotType
 import com.easternsauce.game.gamestate.creature.Creature
+import com.easternsauce.game.gamestate.creature.CreatureAnimationType.CreatureAnimationType
 import com.easternsauce.game.gamestate.creature.EquipmentSlotType
+import com.easternsauce.game.gamestate.creature.EquipmentSlotType.EquipmentSlotType
 import com.easternsauce.game.gamestate.creature.FramesDefinition
 import com.easternsauce.game.gamestate.creature.PrimaryWeaponType
 import com.easternsauce.game.gamestate.id.GameEntityId
