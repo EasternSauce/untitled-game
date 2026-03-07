@@ -6,49 +6,31 @@ import com.easternsauce.game.gamestate.id.{AreaId, GameEntityId}
 import scala.collection.mutable
 
 //noinspection SpellCheckingInspection
-case class CreatureRenderableRegistry() {
-  private var creatureRenderables: mutable.Map[GameEntityId[Creature], CreatureRenderable] = _
+case class CreatureRenderableRegistry()
+  extends RenderableRegistry[
+    Creature,
+    GameEntityId[Creature],
+    CreatureRenderable
+  ] {
 
-  def init(
-      creatureRenderables: mutable.Map[GameEntityId[
-        Creature
-      ], CreatureRenderable]
-  ): Unit = {
-    this.creatureRenderables = creatureRenderables
+  protected def entities(implicit game: CoreGame): Map[GameEntityId[Creature], Creature] = {
+    val existing =
+      game.gameState.activePlayerIds ++
+        game.gameState.creatures.values
+          .filterNot(_.params.isPlayer)
+          .map(_.id)
+
+    existing.map(id => id -> game.gameState.creatures(id)).toMap
   }
 
-  def update(areaId: AreaId)(implicit game: CoreGame): Unit = {
-    val existingCreatures =
-      game.gameState.activePlayerIds ++ game.gameState.creatures.values
-        .filterNot(_.params.isPlayer)
-        .map(_.id)
+  protected def entityArea(entity: Creature): AreaId =
+    entity.currentAreaId
 
-    val creatureRenderablesToCreate =
-      (existingCreatures -- creatureRenderables.keys.toSet)
-        .filter(game.gameState.creatures(_).currentAreaId == areaId)
-
-    val creatureRendererablesToDestroy =
-      (creatureRenderables.keys.toSet -- existingCreatures)
-        .filter(creatureId =>
-          !game.gameState.creatures.contains(creatureId) ||
-            game.gameState.creatures(creatureId).currentAreaId == areaId
-        )
-
-    creatureRenderablesToCreate.foreach(createCreatureRenderable(_))
-    creatureRendererablesToDestroy.foreach(destroyCreatureRenderable(_))
-  }
-
-  private def createCreatureRenderable(
-      creatureId: GameEntityId[Creature]
-  )(implicit game: CoreGame): Unit = {
-    val creatureRenderable = CreatureRenderable(creatureId)
-    creatureRenderable.init()
-    creatureRenderables.update(creatureId, creatureRenderable)
-  }
-
-  private def destroyCreatureRenderable(
-      creatureId: GameEntityId[Creature]
-  )(implicit game: CoreGame): Unit = {
-    creatureRenderables.remove(creatureId)
+  protected def createRenderable(
+                                  id: GameEntityId[Creature]
+                                )(implicit game: CoreGame): CreatureRenderable = {
+    val r = CreatureRenderable(id)
+    r.init()
+    r
   }
 }
