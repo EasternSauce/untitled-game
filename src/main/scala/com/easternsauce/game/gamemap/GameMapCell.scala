@@ -5,10 +5,8 @@ import com.easternsauce.game._
 import com.easternsauce.game.core.CoreGame
 import com.easternsauce.game.gamestate.GameState
 import com.easternsauce.game.gamestate.id.AreaId
-import com.easternsauce.game.gameview.GameSpriteBatch
-import com.easternsauce.game.gameview.Renderable
-import com.easternsauce.game.math.IsometricProjection
-import com.easternsauce.game.math.Vector2f
+import com.easternsauce.game.gameview.{GameSpriteBatch, Renderable}
+import com.easternsauce.game.math.{IsometricProjection, Vector2f}
 
 case class GameMapCell(tiledCell: Cell, areaId: AreaId, pos: Vector2f) extends Renderable {
   override def pos()(implicit game: CoreGame): Vector2f = pos

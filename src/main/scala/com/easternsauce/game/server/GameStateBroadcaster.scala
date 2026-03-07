@@ -2,8 +2,7 @@ package com.easternsauce.game.server
 
 import com.easternsauce.game.Constants
 import com.easternsauce.game.command.OverrideGameStateCommand
-import com.esotericsoftware.kryonet.Connection
-import com.esotericsoftware.kryonet.Server
+import com.esotericsoftware.kryonet.{Connection, Server}
 
 case class GameStateBroadcaster(game: CoreGameServer) {
   def stop(): Unit = {

@@ -7,8 +7,7 @@ import com.easternsauce.game.gamestate.creature.CreatureAnimationType.CreatureAn
 import com.easternsauce.game.gamestate.creature.CreatureType.CreatureType
 import com.easternsauce.game.gamestate.creature.PrimaryWeaponType.PrimaryWeaponType
 import com.easternsauce.game.gamestate.creature.SecondaryWeaponType.SecondaryWeaponType
-import com.easternsauce.game.gamestate.id.AreaId
-import com.easternsauce.game.gamestate.id.GameEntityId
+import com.easternsauce.game.gamestate.id.{AreaId, GameEntityId}
 import com.easternsauce.game.math.Vector2f
 
 case class CreatureParams(

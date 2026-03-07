@@ -3,8 +3,7 @@ package com.easternsauce.game.server
 import com.easternsauce.game.Constants
 import com.easternsauce.game.command.ActionsPerformCommand
 import com.easternsauce.game.connectivity.GameServerConnectivity
-import com.easternsauce.game.core.CoreGame
-import com.easternsauce.game.core.Gameplay
+import com.easternsauce.game.core.{CoreGame, Gameplay}
 import com.easternsauce.game.gamestate.event.GameStateEvent
 import com.easternsauce.game.gamestate.id.AreaId
 import com.easternsauce.game.gameview.GameScreen

@@ -2,8 +2,8 @@ package com.easternsauce.game.gameview
 
 import com.easternsauce.game.core.CoreGame
 import com.easternsauce.game.gamestate.ability.AbilityComponent
-import com.easternsauce.game.gamestate.id.AreaId
-import com.easternsauce.game.gamestate.id.GameEntityId
+import com.easternsauce.game.gamestate.id.{AreaId, GameEntityId}
+import scala.collection.mutable
 
 //noinspection SpellCheckingInspection
 case class AbilityRenderableRegistry()

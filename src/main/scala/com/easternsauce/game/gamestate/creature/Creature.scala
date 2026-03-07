@@ -1,18 +1,17 @@
 package com.easternsauce.game.gamestate.creature
 
 import com.easternsauce.game.core.CoreGame
-import com.easternsauce.game.gamestate.GameEntity
-import com.easternsauce.game.gamestate.WorldDirection
 import com.easternsauce.game.gamestate.WorldDirection.WorldDirection
 import com.easternsauce.game.gamestate.creature.CreatureType.CreatureType
-import com.easternsauce.game.gamestate.creature.behavior.CreatureBehavior
-import com.easternsauce.game.gamestate.creature.behavior.EnemyBehavior
-import com.easternsauce.game.gamestate.creature.behavior.NeutralBehavior
-import com.easternsauce.game.gamestate.id.AreaId
-import com.easternsauce.game.gamestate.id.GameEntityId
+import com.easternsauce.game.gamestate.creature.behavior.{
+  CreatureBehavior,
+  EnemyBehavior,
+  NeutralBehavior
+}
+import com.easternsauce.game.gamestate.id.{AreaId, GameEntityId}
+import com.easternsauce.game.gamestate.{GameEntity, WorldDirection}
 import com.easternsauce.game.math.Vector2f
-import com.softwaremill.quicklens.ModifyPimp
-import com.softwaremill.quicklens.QuicklensMapAt
+import com.softwaremill.quicklens.{ModifyPimp, QuicklensMapAt}
 
 case class Creature(params: CreatureParams, behavior: CreatureBehavior) extends GameEntity {
   def id: GameEntityId[Creature] = params.id

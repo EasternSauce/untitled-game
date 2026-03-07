@@ -1,8 +1,6 @@
 package com.easternsauce.game.gamemap
 
-import com.badlogic.gdx.maps.tiled.TiledMap
-import com.badlogic.gdx.maps.tiled.TiledMapTileLayer
-import com.badlogic.gdx.maps.tiled.TmxMapLoader
+import com.badlogic.gdx.maps.tiled.{BaseTmxMapLoader, TiledMap, TiledMapTileLayer, TmxMapLoader}
 import com.easternsauce.game.Constants
 import com.easternsauce.game.core.CoreGame
 import com.easternsauce.game.gamestate.id.AreaId

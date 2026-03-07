@@ -1,10 +1,7 @@
 package com.easternsauce.game.connectivity
 import com.easternsauce.game.server.CoreGameServer
-import com.esotericsoftware.kryonet.KryoSerialization
-import com.esotericsoftware.kryonet.Listener
-import com.esotericsoftware.kryonet.Server
-import com.twitter.chill.Kryo
-import com.twitter.chill.ScalaKryoInstantiator
+import com.esotericsoftware.kryonet.{KryoSerialization, Listener, Server}
+import com.twitter.chill.{Kryo, ScalaKryoInstantiator}
 
 case class GameServerConnectivity(game: CoreGameServer) extends GameConnectivity {
 

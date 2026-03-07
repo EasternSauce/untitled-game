@@ -1,7 +1,6 @@
 package com.easternsauce.game.client
 import com.easternsauce.game.command.ActionsPerformRequestCommand
-import com.easternsauce.game.gamestate.event.AreaGameStateEvent
-import com.easternsauce.game.gamestate.event.OperationalGameStateEvent
+import com.easternsauce.game.gamestate.event.{AreaGameStateEvent, OperationalGameStateEvent}
 import com.easternsauce.game.gamestate.id.AreaId
 
 case class CoreGameClient() extends CoreGameClientBase {

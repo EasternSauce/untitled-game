@@ -2,8 +2,7 @@ package com.easternsauce.game.gamephysics
 
 import com.easternsauce.game.Constants
 import com.easternsauce.game.core.CoreGame
-import com.easternsauce.game.gamemap.GameMapCell
-import com.easternsauce.game.gamemap.GameTiledMap
+import com.easternsauce.game.gamemap.{GameMapCell, GameTiledMap}
 
 object MapCellExtractor {
 

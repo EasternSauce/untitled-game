@@ -1,15 +1,13 @@
 package com.easternsauce.game.gameview
 
 import com.badlogic.gdx.graphics.Texture
-import com.badlogic.gdx.graphics.g2d.Animation
-import com.badlogic.gdx.graphics.g2d.TextureRegion
+import com.badlogic.gdx.graphics.g2d.{Animation, TextureRegion}
 import com.easternsauce.game.Assets
 import com.easternsauce.game.core.CoreGame
 import com.easternsauce.game.gamestate.ability.AbilityComponent
 import com.easternsauce.game.gamestate.creature.FramesDefinition
 import com.easternsauce.game.gamestate.id.GameEntityId
-import com.easternsauce.game.math.IsometricProjection
-import com.easternsauce.game.math.Vector2f
+import com.easternsauce.game.math.{IsometricProjection, Vector2f}
 
 case class AbilityAnimation(abilityId: GameEntityId[AbilityComponent]) {
   private var animation: Animation[TextureRegion] = _

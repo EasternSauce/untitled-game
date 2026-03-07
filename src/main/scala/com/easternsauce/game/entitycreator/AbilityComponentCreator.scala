@@ -19,7 +19,7 @@ trait AbilityComponentCreator {
             "component" + (Math.random() * 1000000).toInt
           )
 
-        gameState.abilities(abilityComponentToCreate.abilityId)
+        val ability = gameState.abilities(abilityComponentToCreate.abilityId)
 
         val params = AbilityComponentParams(
           id = abilityComponentId,

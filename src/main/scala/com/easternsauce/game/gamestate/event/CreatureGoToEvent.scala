@@ -2,14 +2,11 @@ package com.easternsauce.game.gamestate.event
 
 import com.easternsauce.game.core.CoreGame
 import com.easternsauce.game.gamestate.GameState
-import com.easternsauce.game.gamestate.ability.Ability
-import com.easternsauce.game.gamestate.ability.AbilityState
+import com.easternsauce.game.gamestate.ability.{Ability, AbilityState}
 import com.easternsauce.game.gamestate.creature.Creature
-import com.easternsauce.game.gamestate.id.AreaId
-import com.easternsauce.game.gamestate.id.GameEntityId
+import com.easternsauce.game.gamestate.id.{AreaId, GameEntityId}
 import com.easternsauce.game.math.Vector2f
-import com.softwaremill.quicklens.ModifyPimp
-import com.softwaremill.quicklens.QuicklensMapAt
+import com.softwaremill.quicklens.{ModifyPimp, QuicklensMapAt}
 
 case class CreatureGoToEvent(
     creatureId: GameEntityId[Creature],

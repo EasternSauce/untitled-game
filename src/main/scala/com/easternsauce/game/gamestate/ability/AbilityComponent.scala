@@ -1,11 +1,9 @@
 package com.easternsauce.game.gamestate.ability
 
-import com.easternsauce.game.gamestate.GameEntity
-import com.easternsauce.game.gamestate.WorldDirection
 import com.easternsauce.game.gamestate.WorldDirection.WorldDirection
 import com.easternsauce.game.gamestate.creature.FramesDefinition
-import com.easternsauce.game.gamestate.id.AreaId
-import com.easternsauce.game.gamestate.id.GameEntityId
+import com.easternsauce.game.gamestate.id.{AreaId, GameEntityId}
+import com.easternsauce.game.gamestate.{GameEntity, WorldDirection}
 import com.easternsauce.game.math.Vector2f
 import com.easternsauce.game.util.TransformIf
 import com.softwaremill.quicklens.ModifyPimp

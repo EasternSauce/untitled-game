@@ -4,11 +4,9 @@ import com.easternsauce.game.entitycreator.AbilityToCreate
 import com.easternsauce.game.gamestate.GameState
 import com.easternsauce.game.gamestate.ability.AbilityType.AbilityType
 import com.easternsauce.game.gamestate.creature.Creature
-import com.easternsauce.game.gamestate.id.AreaId
-import com.easternsauce.game.gamestate.id.GameEntityId
+import com.easternsauce.game.gamestate.id.{AreaId, GameEntityId}
 import com.easternsauce.game.math.Vector2f
-import com.softwaremill.quicklens.ModifyPimp
-import com.softwaremill.quicklens.QuicklensMapAt
+import com.softwaremill.quicklens.{ModifyPimp, QuicklensMapAt}
 
 case class CreaturePerformAbilityEvent(
     creatureId: GameEntityId[Creature],

@@ -1,20 +1,20 @@
 package com.easternsauce.game.gameview
 
 import com.badlogic.gdx.graphics.Texture
-import com.badlogic.gdx.graphics.g2d.Animation
-import com.badlogic.gdx.graphics.g2d.TextureRegion
+import com.badlogic.gdx.graphics.g2d.{Animation, TextureRegion}
 import com.easternsauce.game.Assets
 import com.easternsauce.game.core.CoreGame
 import com.easternsauce.game.gamestate.WorldDirection
-import com.easternsauce.game.gamestate.creature.Creature
 import com.easternsauce.game.gamestate.creature.CreatureAnimationType.CreatureAnimationType
-import com.easternsauce.game.gamestate.creature.EquipmentSlotType
 import com.easternsauce.game.gamestate.creature.EquipmentSlotType.EquipmentSlotType
-import com.easternsauce.game.gamestate.creature.FramesDefinition
-import com.easternsauce.game.gamestate.creature.PrimaryWeaponType
+import com.easternsauce.game.gamestate.creature.{
+  Creature,
+  EquipmentSlotType,
+  FramesDefinition,
+  PrimaryWeaponType
+}
 import com.easternsauce.game.gamestate.id.GameEntityId
-import com.easternsauce.game.math.IsometricProjection
-import com.easternsauce.game.math.Vector2f
+import com.easternsauce.game.math.{IsometricProjection, Vector2f}
 
 case class CreatureAnimation(
     creatureId: GameEntityId[Creature],
@@ -29,7 +29,7 @@ case class CreatureAnimation(
   private var texture: Texture = _
 
   def init()(implicit game: CoreGame): Unit = {
-    EquipmentSlotType.Weapon
+    val slotType: EquipmentSlotType = EquipmentSlotType.Weapon
 
     val creature: Creature = game.gameState.creatures(creatureId)
 
