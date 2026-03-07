@@ -1,6 +1,11 @@
 package com.easternsauce.game.connectivity
 
-import com.easternsauce.game.command.{ActionsPerformCommand, ActionsPerformRequestCommand, RegisterClientRequestCommand, RegisterClientResponseCommand}
+import com.easternsauce.game.command.{
+  ActionsPerformCommand,
+  ActionsPerformRequestCommand,
+  RegisterClientRequestCommand,
+  RegisterClientResponseCommand
+}
 import com.easternsauce.game.gamestate.creature.Creature
 import com.easternsauce.game.gamestate.event.PlayerDisconnectEvent
 import com.easternsauce.game.gamestate.id.GameEntityId
