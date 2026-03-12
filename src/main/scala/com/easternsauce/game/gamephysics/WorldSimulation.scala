@@ -31,8 +31,6 @@ case class WorldSimulation() {
       (areaId, AreaWorld(areaId))
     }
 
-    areaWorlds.values.foreach(_.init())
-
     // --- Creatures ---
     creatureSpawner = CreatureSpawner()
     creatureSpawner.init(areaWorlds)

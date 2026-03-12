@@ -38,6 +38,8 @@ abstract class PhysicsBody {
     this.areaWorld = areaWorld
     this._pos = pos
     this.sensor = initialSensor
+
+    areaWorld.registerBody(this)
   }
 
   def update(gameState: GameState, delta: Float): Unit = {
@@ -51,5 +53,7 @@ abstract class PhysicsBody {
     )
   }
 
-  def onRemove(): Unit = {}
+  def onRemove(): Unit = {
+    areaWorld.removeBody(this)
+  }
 }

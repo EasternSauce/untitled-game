@@ -1,14 +1,24 @@
 package com.easternsauce.game.gamephysics
 
 import com.easternsauce.game.gamestate.id.AreaId
-import com.easternsauce.game.gameview.GameViewport
+
+import scala.collection.mutable
 
 case class AreaWorld(areaId: AreaId) {
 
-  def init(): Unit = {}
+  private val bodies: mutable.Set[PhysicsBody] = mutable.Set()
 
-  def renderDebug(b2DebugViewport: GameViewport): Unit = {}
+  def registerBody(body: PhysicsBody): Unit =
+    bodies.add(body)
 
-  def update(): Unit = {}
+  def removeBody(body: PhysicsBody): Unit =
+    bodies.remove(body)
+
+  def allBodies: Iterable[PhysicsBody] =
+    bodies
+
+  def update(): Unit = {
+    // collisions will run here later
+  }
 
 }

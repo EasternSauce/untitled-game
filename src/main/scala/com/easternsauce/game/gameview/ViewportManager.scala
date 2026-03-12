@@ -74,9 +74,7 @@ case class ViewportManager() {
     hudViewport.createStage(hudBatch)
   }
 
-  def renderDebug(areaWorld: AreaWorld): Unit = {
-    areaWorld.renderDebug(b2DebugViewport)
-  }
+  def renderDebug(areaWorld: AreaWorld): Unit = {}
 
   def unprojectHudCamera(screenCoords: Vector3): Unit = {
     hudViewport.unprojectCamera(screenCoords)
