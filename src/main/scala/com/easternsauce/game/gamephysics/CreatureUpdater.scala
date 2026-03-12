@@ -28,7 +28,9 @@ case class CreatureUpdater() {
         game.gameState.creatures(id).params.currentAreaId == areaId
       }
       .values
-      .foreach(_.update(game.gameState))
+      .foreach { body =>
+        body.update(game.gameState, 1f / 60f)
+      }
   }
 
   def synchronize(areaId: AreaId)(implicit game: CoreGame): Unit = {

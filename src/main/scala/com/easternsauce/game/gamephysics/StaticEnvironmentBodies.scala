@@ -22,16 +22,11 @@ case class StaticEnvironmentBodies() {
     tiledMaps.foreach { case (areaId, map) =>
       val world = areaWorlds(areaId)
 
-      // Extract terrain and object cells
-      val terrainCells = MapCellExtractor.terrainTiles(map)
-      val objectCells = MapCellExtractor.staticObjects(map) // all static objects combined
+      val objectCells = MapCellExtractor.staticObjects(map)
 
-      // Create physics bodies
-      val terrainBodies = factory.createTerrainTileBodies(terrainCells, world)
       val objectBodies = factory.createStaticObjectBodies(objectCells, world)
 
-      // Store bodies for the area
-      staticBodiesByArea += (areaId -> (terrainBodies ++ objectBodies))
+      staticBodiesByArea += (areaId -> objectBodies)
     }
   }
 

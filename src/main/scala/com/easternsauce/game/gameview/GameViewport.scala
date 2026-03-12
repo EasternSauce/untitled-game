@@ -2,8 +2,6 @@ package com.easternsauce.game.gameview
 
 import com.badlogic.gdx.graphics.OrthographicCamera
 import com.badlogic.gdx.math.Vector3
-import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer
-import com.badlogic.gdx.physics.box2d.World
 import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.utils.viewport.FitViewport
 import com.easternsauce.game.core.CoreGame
@@ -65,10 +63,6 @@ case class GameViewport() {
 
   def updateSize(width: Int, height: Int): Unit = {
     viewport.update(width, height)
-  }
-
-  def renderB2Debug(debugRenderer: Box2DDebugRenderer, b2World: World): Unit = {
-    debugRenderer.render(b2World, camera.combined)
   }
 
   def getCameraPos: Vector2f = {

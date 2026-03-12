@@ -20,12 +20,10 @@ resolvers += "jitpack" at "https://jitpack.io"
 
 libraryDependencies ++= Seq(
   "com.badlogicgames.gdx" % "gdx" % libGdxVersion,
-  "com.badlogicgames.gdx" % "gdx-box2d" % libGdxVersion,
   "com.badlogicgames.gdx" % "gdx-backend-lwjgl3" % libGdxVersion,
   "com.badlogicgames.gdx" % "gdx-freetype" % libGdxVersion,
 
   "com.badlogicgames.gdx" % "gdx-platform" % libGdxVersion classifier "natives-desktop",
-  "com.badlogicgames.gdx" % "gdx-box2d-platform" % libGdxVersion classifier "natives-desktop",
   "com.badlogicgames.gdx" % "gdx-freetype-platform" % libGdxVersion classifier "natives-desktop",
 
   "com.softwaremill.quicklens" %% "quicklens" % "1.9.7",

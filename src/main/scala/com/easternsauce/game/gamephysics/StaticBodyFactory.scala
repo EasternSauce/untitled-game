@@ -5,17 +5,6 @@ import com.easternsauce.game.gamemap.GameMapCell
 
 case class StaticBodyFactory() {
 
-  /** Create TerrainTileBody for each cell */
-  def createTerrainTileBodies(cells: List[GameMapCell], world: AreaWorld)(implicit
-      game: CoreGame
-  ): List[TerrainTileBody] = {
-    cells.map(_.pos()).distinct.map { pos =>
-      val body = TerrainTileBody(s"terrainTile_${pos.x}_${pos.y}")
-      body.init(world, pos)
-      body
-    }
-  }
-
   /** Create StaticObjectBody for each cell */
   def createStaticObjectBodies(cells: List[GameMapCell], world: AreaWorld)(implicit
       game: CoreGame
