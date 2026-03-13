@@ -86,4 +86,19 @@ case class CreatureRenderer() {
     creatureRenderableSynchronizer.update(areaId)
   }
 
+  def renderHitboxes(
+      areaId: AreaId,
+      worldSpriteBatch: GameSpriteBatch
+  )(implicit game: CoreGame): Unit = {
+
+    aliveCreatureRenderables(areaId).foreach { renderable =>
+      val creature =
+        game.gameState.creatures(renderable.creatureId)
+
+      renderable.renderHitbox(
+        creature,
+        worldSpriteBatch
+      )
+    }
+  }
 }

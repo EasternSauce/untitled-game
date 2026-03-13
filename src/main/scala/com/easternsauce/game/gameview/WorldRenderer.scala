@@ -91,6 +91,11 @@ case class WorldRenderer() {
       worldSpriteBatch
     )
 
+    creatureRenderer.renderHitboxes(
+      areaId,
+      worldSpriteBatch
+    )
+
     game.gameplay.tiledMapsManager
       .tiledMaps(areaId)
       .renderTopLayers(worldSpriteBatch, worldCameraPos)

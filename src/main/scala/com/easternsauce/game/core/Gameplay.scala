@@ -10,7 +10,7 @@ import com.easternsauce.game.gameview.GameView
 case class Gameplay()(implicit game: CoreGame) {
 
   var view: GameView = _
-  var physics: WorldSimulation = _
+  var worldSimulation: WorldSimulation = _
   var keyHeldChecker: KeyHeldChecker = _
   var buttonHeldChecker: ButtonHeldChecker = _
   var gameStateHolder: GameStateContainer = _
@@ -26,8 +26,8 @@ case class Gameplay()(implicit game: CoreGame) {
     view = GameView()
     view.init()
 
-    physics = WorldSimulation()
-    physics.init(tiledMapsManager.tiledMaps)
+    worldSimulation = WorldSimulation()
+    worldSimulation.init(tiledMapsManager.tiledMaps)
 
     keyHeldChecker = KeyHeldChecker()
     keyHeldChecker.init()
@@ -43,7 +43,7 @@ case class Gameplay()(implicit game: CoreGame) {
   def update(areaId: AreaId, delta: Float): Unit = {
     gameStateHolder.updateGameState(areaId, delta)
     updateAbilityScenarios()
-    physics.update(areaId)
+    worldSimulation.update(areaId)
     view.update(areaId, delta)
   }
 

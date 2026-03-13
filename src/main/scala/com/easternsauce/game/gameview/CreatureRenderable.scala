@@ -2,6 +2,7 @@ package com.easternsauce.game.gameview
 
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.g2d.BitmapFont
+import com.easternsauce.game.Constants
 import com.easternsauce.game.core.CoreGame
 import com.easternsauce.game.gamestate.GameState
 import com.easternsauce.game.gamestate.creature.Creature
@@ -139,5 +140,26 @@ case class CreatureRenderable(creatureId: GameEntityId[Creature]) extends Render
     val creature = gameState.creatures(creatureId)
 
     creature.isAlive
+  }
+
+  def renderHitbox(
+      creature: Creature,
+      worldSpriteBatch: GameSpriteBatch
+  ): Unit = {
+
+    val screenPos =
+      IsometricProjection.isoToScreenAdjusted(creature.pos)
+
+    val screenRadius =
+      creature.params.bodyRadius *
+        Constants.TileSize *
+        Constants.MapTextureScale
+
+    worldSpriteBatch.circle(
+      center = screenPos,
+      radius = screenRadius,
+      color = Color.RED,
+      lineWidth = 2.5f
+    )
   }
 }

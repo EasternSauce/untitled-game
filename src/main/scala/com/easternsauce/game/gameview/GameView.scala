@@ -57,7 +57,7 @@ case class GameView() {
     )
 
     if (Constants.EnableDebug) {
-      viewportManager.renderDebug(game.gameplay.physics.areaWorlds(areaId))
+      viewportManager.renderDebug(game.gameplay.worldSimulation.areaWorlds(areaId))
     }
 
     renderHud()

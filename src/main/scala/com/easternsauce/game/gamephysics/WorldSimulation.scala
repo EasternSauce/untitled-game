@@ -128,4 +128,7 @@ case class WorldSimulation() {
 
   def abilityBodyPositions: Map[GameEntityId[AbilityComponent], Vector2f] =
     abilityRegistry.positionsForAllAreas()
+
+  def creatureBodies: Map[GameEntityId[Creature], CreatureBody] =
+    creatureSpawner.allBodies.toMap
 }

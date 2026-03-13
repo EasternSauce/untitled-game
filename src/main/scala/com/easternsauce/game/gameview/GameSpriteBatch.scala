@@ -75,6 +75,16 @@ case class GameSpriteBatch() {
     )
   }
 
+  def circle(
+      center: Vector2f,
+      radius: Float,
+      color: Color,
+      lineWidth: Float
+  ): Unit = {
+    shapeDrawer.setColor(color)
+    shapeDrawer.circle(center.x, center.y, radius, lineWidth)
+  }
+
   def drawFont(
       font: BitmapFont,
       str: String,

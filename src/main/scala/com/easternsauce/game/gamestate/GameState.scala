@@ -133,7 +133,7 @@ case class GameState(
         ) {
           creature.update(
             delta,
-            game.gameplay.physics.creatureBodyPositions.get(creature.id)
+            game.gameplay.worldSimulation.creatureBodyPositions.get(creature.id)
           )
         }
       )
@@ -159,7 +159,7 @@ case class GameState(
         abilityComponent.transformIf(abilityComponent.currentAreaId == areaId) {
           abilityComponent.update(
             delta,
-            game.gameplay.physics.abilityBodyPositions.get(abilityComponent.id)
+            game.gameplay.worldSimulation.abilityBodyPositions.get(abilityComponent.id)
           )
         }
       )

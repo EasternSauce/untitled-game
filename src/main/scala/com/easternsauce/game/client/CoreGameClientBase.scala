@@ -59,7 +59,7 @@ abstract class CoreGameClientBase extends CoreGame {
   private def processGameStateOverride(): Unit = {
     scheduledOverrideGameState.foreach { gameState =>
       gameplay.gameStateHolder.forceGameStateOverride(gameState)
-      clientCreatureAreaId.foreach(gameplay.physics.correctBodyPositions(_))
+      clientCreatureAreaId.foreach(gameplay.worldSimulation.correctBodyPositions(_))
       scheduledOverrideGameState = None
     }
   }
