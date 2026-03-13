@@ -11,6 +11,6 @@ case class CreatureBody(creatureId: GameEntityId[Creature]) extends PhysicsBody 
   override protected def radius(implicit game: CoreGame): Float =
     game.gameState.creatures(creatureId).params.bodyRadius
 
-  override protected def velocity(gameState: GameState): Option[Vector2f] =
-    gameState.creatures.get(creatureId).map(_.params.velocity)
+  override protected def velocity(implicit game: CoreGame): Option[Vector2f] =
+    game.gameState.creatures.get(creatureId).map(_.params.velocity)
 }

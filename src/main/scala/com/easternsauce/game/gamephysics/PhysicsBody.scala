@@ -30,7 +30,7 @@ abstract class PhysicsBody {
 
   protected def radius(implicit game: CoreGame): Float
 
-  protected def velocity(gameState: GameState): Option[Vector2f]
+  protected def velocity(implicit game: CoreGame): Option[Vector2f]
 
   protected def initialSensor: Boolean = false
 
@@ -42,15 +42,13 @@ abstract class PhysicsBody {
     areaWorld.registerBody(this)
   }
 
-  def update(gameState: GameState, delta: Float): Unit = {
-    velocity(gameState).foreach { v =>
-      _velocity = v
+  def update(delta: Float)(implicit game: CoreGame): Unit = {
+    velocity.foreach { v =>
+      _pos = Vector2f(
+        _pos.x + v.x * delta,
+        _pos.y + v.y * delta
+      )
     }
-
-    _pos = Vector2f(
-      _pos.x + _velocity.x * delta,
-      _pos.y + _velocity.y * delta
-    )
   }
 
   def onRemove(): Unit = {

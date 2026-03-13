@@ -29,7 +29,7 @@ case class CreatureUpdater() {
       }
       .values
       .foreach { body =>
-        body.update(game.gameState, 1f / 60f)
+        body.update(1f / 60f)
       }
   }
 

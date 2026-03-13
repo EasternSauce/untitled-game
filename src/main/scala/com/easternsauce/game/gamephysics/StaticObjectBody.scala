@@ -8,6 +8,7 @@ case class StaticObjectBody(objectBodyId: String) extends PhysicsBody {
 
   override protected def radius(implicit game: CoreGame): Float = 0.5f
 
-  override protected def velocity(gameState: GameState): Option[Vector2f] = None
+  override protected def velocity(implicit game: CoreGame): Option[Vector2f] =
+    None
 
 }

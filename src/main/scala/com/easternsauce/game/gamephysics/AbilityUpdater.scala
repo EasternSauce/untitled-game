@@ -28,7 +28,7 @@ case class AbilityUpdater() {
         game.gameState.abilityComponents(id).params.currentAreaId == areaId
       }
       .values
-      .foreach(_.update(game.gameState, 1f / 60f))
+      .foreach(_.update(1f / 60f))
   }
 
   def synchronize(areaId: AreaId)(implicit game: CoreGame): Unit = {
