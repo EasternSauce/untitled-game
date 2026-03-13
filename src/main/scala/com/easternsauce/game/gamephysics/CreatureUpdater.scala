@@ -75,14 +75,4 @@ case class CreatureUpdater() {
     if (game.gameState.creatures.get(id).exists(_.params.currentAreaId == areaId)) {
       creatureBodies(id).setPos(pos)
     }
-
-  def setSensorIfInArea(id: GameEntityId[Creature], areaId: AreaId, game: CoreGame): Unit =
-    if (game.gameState.creatures.get(id).exists(_.params.currentAreaId == areaId)) {
-      creatureBodies(id).setSensor()
-    }
-
-  def setNonSensorIfInArea(id: GameEntityId[Creature], areaId: AreaId, game: CoreGame): Unit =
-    if (game.gameState.creatures.get(id).exists(_.params.currentAreaId == areaId)) {
-      creatureBodies(id).setNonSensor()
-    }
 }

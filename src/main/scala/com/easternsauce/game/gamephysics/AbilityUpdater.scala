@@ -75,18 +75,4 @@ case class AbilityUpdater() {
     if (game.gameState.abilityComponents.get(id).exists(_.params.currentAreaId == areaId)) {
       abilityBodies(id).setPos(pos)
     }
-
-  def setSensorIfInArea(id: GameEntityId[AbilityComponent], areaId: AreaId, game: CoreGame): Unit =
-    if (game.gameState.abilityComponents.get(id).exists(_.params.currentAreaId == areaId)) {
-      abilityBodies(id).setSensor()
-    }
-
-  def setNonSensorIfInArea(
-      id: GameEntityId[AbilityComponent],
-      areaId: AreaId,
-      game: CoreGame
-  ): Unit =
-    if (game.gameState.abilityComponents.get(id).exists(_.params.currentAreaId == areaId)) {
-      abilityBodies(id).setNonSensor()
-    }
 }

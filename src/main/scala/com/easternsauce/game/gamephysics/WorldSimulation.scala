@@ -101,20 +101,8 @@ case class WorldSimulation() {
       case CreatureTeleportEvent(id, pos) =>
         creatureUpdater.teleportIfInArea(id, pos, areaId, game)
 
-      case CreatureMakeSensorEvent(id) =>
-        creatureUpdater.setSensorIfInArea(id, areaId, game)
-
-      case CreatureMakeNonSensorEvent(id) =>
-        creatureUpdater.setNonSensorIfInArea(id, areaId, game)
-
       case AbilityTeleportEvent(id, pos) =>
         abilityUpdater.setBodyPosIfInArea(id, pos, areaId, game)
-
-      case AbilityMakeSensorEvent(id) =>
-        abilityUpdater.setSensorIfInArea(id, areaId, game)
-
-      case AbilityMakeNonSensorEvent(id) =>
-        abilityUpdater.setNonSensorIfInArea(id, areaId, game)
 
       case _ =>
     }
@@ -130,7 +118,7 @@ case class WorldSimulation() {
     abilityUpdater.synchronize(areaId)
   }
 
-  private def correctBodyPositions(areaId: AreaId)(implicit game: CoreGame): Unit = {
+  def correctBodyPositions(areaId: AreaId)(implicit game: CoreGame): Unit = {
     creatureUpdater.correctPositions(areaId)
     abilityUpdater.correctPositions(areaId)
   }

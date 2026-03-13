@@ -17,5 +17,4 @@ case class AbilityBody(
       .get(abilityComponentId)
       .map(_.velocity)
 
-  override protected def initialSensor: Boolean = true
 }

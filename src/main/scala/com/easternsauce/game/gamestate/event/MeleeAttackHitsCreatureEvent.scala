@@ -1,7 +1,6 @@
 package com.easternsauce.game.gamestate.event
 import com.easternsauce.game.Constants
 import com.easternsauce.game.core.CoreGame
-import com.easternsauce.game.gamephysics.CreatureMakeSensorEvent
 import com.easternsauce.game.gamestate.GameState
 import com.easternsauce.game.gamestate.ability.Ability
 import com.easternsauce.game.gamestate.creature.Creature
@@ -43,9 +42,7 @@ case class MeleeAttackHitsCreatureEvent(
         val isHitFatal = lifeAfterHit <= 0
 
         if (isHitFatal) {
-          game.queues.physicsEventQueue.enqueue(
-            CreatureMakeSensorEvent(creatureId)
-          )
+          // remove creature collision hitbox (at least until revived)
         }
 
         gameState

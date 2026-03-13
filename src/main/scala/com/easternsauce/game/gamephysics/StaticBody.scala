@@ -15,6 +15,4 @@ case class StaticBody(staticId: String) extends PhysicsBody {
   override protected def velocity(implicit game: CoreGame): Option[Vector2f] =
     None
 
-  override protected def initialSensor: Boolean =
-    false
 }
