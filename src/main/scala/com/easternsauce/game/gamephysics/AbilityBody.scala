@@ -9,10 +9,10 @@ case class AbilityBody(
     abilityComponentId: GameEntityId[AbilityComponent]
 ) extends PhysicsBody {
 
-  override protected def radius(implicit game: CoreGame): Float =
+  override def radius(implicit game: CoreGame): Float =
     game.gameState.abilityComponents(abilityComponentId).bodyRadius
 
-  override protected def velocity(implicit game: CoreGame): Option[Vector2f] =
+  override def velocity(implicit game: CoreGame): Option[Vector2f] =
     game.gameState.abilityComponents
       .get(abilityComponentId)
       .map(_.velocity)

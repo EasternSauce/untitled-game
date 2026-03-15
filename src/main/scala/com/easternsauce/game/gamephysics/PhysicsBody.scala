@@ -18,9 +18,11 @@ abstract class PhysicsBody {
   def setPos(pos: Vector2f): Unit =
     _pos = pos
 
-  protected def radius(implicit game: CoreGame): Float
+  def radius(implicit game: CoreGame): Float
 
-  protected def velocity(implicit game: CoreGame): Option[Vector2f]
+  def velocity(implicit game: CoreGame): Option[Vector2f]
+
+  def isStatic: Boolean = false
 
   def init(areaWorld: AreaWorld, pos: Vector2f)(implicit game: CoreGame): Unit = {
     this.areaWorld = areaWorld

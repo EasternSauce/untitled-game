@@ -50,6 +50,8 @@ case class WorldSimulation() {
 
     // Static bodies
     initStaticBodies(tiledMaps)
+
+    areaWorlds.values.foreach(_.buildStaticChunks())
   }
 
   /** Creates terrain and static object bodies for all areas. Kept separate from init() for clarity.

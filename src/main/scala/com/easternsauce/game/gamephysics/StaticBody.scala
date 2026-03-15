@@ -9,10 +9,11 @@ import com.easternsauce.game.math.Vector2f
   */
 case class StaticBody(staticId: String) extends PhysicsBody {
 
-  override protected def radius(implicit game: CoreGame): Float =
+  override def radius(implicit game: CoreGame): Float =
     0.5f // temporary until shape system is introduced
 
-  override protected def velocity(implicit game: CoreGame): Option[Vector2f] =
+  override def velocity(implicit game: CoreGame): Option[Vector2f] =
     None
 
+  override def isStatic: Boolean = true
 }
