@@ -1,10 +1,10 @@
 package com.easternsauce.game.gameview
 
+import com.badlogic.gdx.math.Matrix4
 import com.badlogic.gdx.math.Vector3
 import com.badlogic.gdx.scenes.scene2d.Stage
 import com.easternsauce.game.Constants
 import com.easternsauce.game.core.CoreGame
-import com.easternsauce.game.gamephysics.AreaWorld
 import com.easternsauce.game.gamestate.creature.Creature
 import com.easternsauce.game.gamestate.id.GameEntityId
 import com.easternsauce.game.math.IsometricProjection
@@ -74,12 +74,15 @@ case class ViewportManager() {
     hudViewport.createStage(hudBatch)
   }
 
-  def renderDebug(areaWorld: AreaWorld): Unit = {}
-
   def unprojectHudCamera(screenCoords: Vector3): Unit = {
     hudViewport.unprojectCamera(screenCoords)
   }
 
   def getWorldCameraPos: Vector2f = worldViewport.getCameraPos
 
+  def getWorldCombinedMatrix: Matrix4 =
+    worldViewport.getCombinedMatrix
+
+  def getB2DebugCameraCombined: Matrix4 =
+    b2DebugViewport.getCombinedMatrix
 }

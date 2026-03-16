@@ -5,16 +5,25 @@ import com.easternsauce.game.core.CoreGame
 import com.easternsauce.game.gamestate.id.AreaId
 import com.easternsauce.game.math.Vector2f
 
-//noinspection SpellCheckingInspection
 case class WorldRenderer() {
+
   private var creatureRenderer: CreatureRenderer = _
   private var abilityRenderer: AbilityRenderer = _
+  private var simulationDebugRenderer: SimulationDebugRenderer = _
+  private var viewportManager: ViewportManager = _
 
-  def init(): Unit = {
+  def init(viewportManager: ViewportManager): Unit = {
+
+    this.viewportManager = viewportManager
+
     creatureRenderer = CreatureRenderer()
     creatureRenderer.init()
+
     abilityRenderer = AbilityRenderer()
     abilityRenderer.init()
+
+    simulationDebugRenderer = SimulationDebugRenderer()
+    simulationDebugRenderer.init(viewportManager)
   }
 
   def render(
@@ -22,9 +31,8 @@ case class WorldRenderer() {
       spriteBatchHolder: SpriteBatchHolder,
       skin: Skin,
       worldCameraPos: Vector2f
-  )(implicit
-      game: CoreGame
-  ): Unit = {
+  )(implicit game: CoreGame): Unit = {
+
     renderWorld(
       areaId,
       spriteBatchHolder.worldSpriteBatch,
@@ -35,6 +43,12 @@ case class WorldRenderer() {
       areaId,
       spriteBatchHolder.worldTextSpriteBatch,
       skin
+    )
+
+//    // Debug render using SAME projection as world
+    simulationDebugRenderer.render(
+      areaId,
+      game.gameplay.worldSimulation
     )
   }
 
@@ -91,11 +105,6 @@ case class WorldRenderer() {
       worldSpriteBatch
     )
 
-    creatureRenderer.renderHitboxes(
-      areaId,
-      worldSpriteBatch
-    )
-
     game.gameplay.tiledMapsManager
       .tiledMaps(areaId)
       .renderTopLayers(worldSpriteBatch, worldCameraPos)
@@ -108,6 +117,7 @@ case class WorldRenderer() {
       worldTextSpriteBatch: GameSpriteBatch,
       skin: Skin
   )(implicit game: CoreGame): Unit = {
+
     worldTextSpriteBatch.begin()
 
     creatureRenderer.renderPlayerNames(

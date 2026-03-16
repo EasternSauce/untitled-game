@@ -102,4 +102,6 @@ case class GameSpriteBatch() {
     texture.dispose()
   }
 
+  def getProjectionMatrix: Matrix4 =
+    underlyingSpriteBatch.getProjectionMatrix
 }

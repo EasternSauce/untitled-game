@@ -67,8 +67,6 @@ object Constants {
   val SmallObjectCollisionCellId = 4
   val WallCollisionCellId = 6
 
-  val EnableDebug = true
-
   val DefaultAreaId: AreaId = AreaId("area1")
 
   val MapFilesLocation: String = "assets/maps"

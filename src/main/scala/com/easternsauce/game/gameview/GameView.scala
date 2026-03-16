@@ -26,7 +26,7 @@ case class GameView() {
     viewportManager.init()
 
     worldRenderer = WorldRenderer()
-    worldRenderer.init()
+    worldRenderer.init(viewportManager)
 
     fpsCountRenderer = FpsCountRenderer()
     fpsCountRenderer.init()
@@ -55,10 +55,6 @@ case class GameView() {
       skin,
       viewportManager.getWorldCameraPos
     )
-
-    if (Constants.EnableDebug) {
-      viewportManager.renderDebug(game.gameplay.worldSimulation.areaWorlds(areaId))
-    }
 
     renderHud()
   }

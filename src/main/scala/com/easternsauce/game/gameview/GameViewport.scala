@@ -1,6 +1,7 @@
 package com.easternsauce.game.gameview
 
 import com.badlogic.gdx.graphics.OrthographicCamera
+import com.badlogic.gdx.math.Matrix4
 import com.badlogic.gdx.math.Vector3
 import com.badlogic.gdx.scenes.scene2d.Stage
 import com.badlogic.gdx.utils.viewport.FitViewport
@@ -75,4 +76,7 @@ case class GameViewport() {
   def unprojectCamera(screenCoords: Vector3): Unit = {
     camera.unproject(screenCoords)
   }
+
+  def getCombinedMatrix: Matrix4 =
+    camera.combined
 }
