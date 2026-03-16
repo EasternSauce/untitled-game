@@ -9,9 +9,9 @@ import com.easternsauce.game.gamestate.id.AreaId
 case class SimulationDebugRenderer() {
 
   private var shapeRenderer: ShapeRenderer = _
-  private var viewportManager: ViewportManager = _
+  private var viewportManager: CameraSystem = _
 
-  def init(viewportManager: ViewportManager): Unit = {
+  def init(viewportManager: CameraSystem): Unit = {
     this.viewportManager = viewportManager
     shapeRenderer = new ShapeRenderer()
   }
@@ -22,7 +22,7 @@ case class SimulationDebugRenderer() {
   )(implicit game: CoreGame): Unit = {
 
     shapeRenderer.setProjectionMatrix(
-      viewportManager.getB2DebugCameraCombined
+      viewportManager.getB2DebugCombinedMatrix
     )
 
     shapeRenderer.begin(ShapeRenderer.ShapeType.Line)

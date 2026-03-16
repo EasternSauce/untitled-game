@@ -9,7 +9,7 @@ import com.easternsauce.game.gamestate.id.AreaId
 
 case class GameView() {
 
-  private var viewportManager: ViewportManager = _
+  private var cameraSystem: CameraSystem = _
   private var worldRenderer: WorldRenderer = _
   private var fpsCountRenderer: FpsCountRenderer = _
 
@@ -22,11 +22,11 @@ case class GameView() {
     spriteBatchHolder = SpriteBatchHolder()
     spriteBatchHolder.init()
 
-    viewportManager = ViewportManager()
-    viewportManager.init()
+    cameraSystem = CameraSystem()
+    cameraSystem.init()
 
     worldRenderer = WorldRenderer()
-    worldRenderer.init(viewportManager)
+    worldRenderer.init(cameraSystem)
 
     fpsCountRenderer = FpsCountRenderer()
     fpsCountRenderer.init()
@@ -39,7 +39,7 @@ case class GameView() {
 
     val creatureId = game.clientCreatureId
 
-    viewportManager.updateCameras(creatureId)
+    cameraSystem.update(creatureId)
   }
 
   def render(areaId: AreaId, delta: Float)(implicit
@@ -47,13 +47,13 @@ case class GameView() {
   ): Unit = {
     ScreenUtils.clear(0, 0, 0, 1)
 
-    viewportManager.setProjectionMatrices(spriteBatchHolder)
+    cameraSystem.setProjectionMatrices(spriteBatchHolder)
 
     worldRenderer.render(
       areaId,
       spriteBatchHolder,
       skin,
-      viewportManager.getWorldCameraPos
+      cameraSystem.getWorldCameraPos
     )
 
     renderHud()
@@ -66,6 +66,6 @@ case class GameView() {
   }
 
   def resize(width: Int, height: Int): Unit = {
-    viewportManager.resize(width, height)
+    cameraSystem.resize(width, height)
   }
 }

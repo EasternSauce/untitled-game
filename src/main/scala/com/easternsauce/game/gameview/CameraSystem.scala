@@ -1,7 +1,6 @@
 package com.easternsauce.game.gameview
 
 import com.badlogic.gdx.math.Matrix4
-import com.badlogic.gdx.math.Vector3
 import com.badlogic.gdx.scenes.scene2d.Stage
 import com.easternsauce.game.Constants
 import com.easternsauce.game.core.CoreGame
@@ -10,7 +9,7 @@ import com.easternsauce.game.gamestate.id.GameEntityId
 import com.easternsauce.game.math.IsometricProjection
 import com.easternsauce.game.math.Vector2f
 
-case class ViewportManager() {
+case class CameraSystem() {
 
   private val worldViewport: GameViewport = GameViewport()
   private val b2DebugViewport: GameViewport = GameViewport()
@@ -18,12 +17,14 @@ case class ViewportManager() {
   private val hudViewport: GameViewport = GameViewport()
 
   def init(): Unit = {
+
     worldViewport.init(
       Constants.ViewportWorldWidth,
       Constants.ViewportWorldHeight,
-      1,
+      1f,
       pos => IsometricProjection.isoToScreenAdjusted(pos)
     )
+
     b2DebugViewport.init(
       Constants.ViewportWorldWidth,
       Constants.ViewportWorldHeight,
@@ -34,33 +35,25 @@ case class ViewportManager() {
     worldTextViewport.init(
       Constants.ViewportWorldWidth,
       Constants.ViewportWorldHeight,
-      1,
+      1f,
       pos => IsometricProjection.isoToScreenAdjusted(pos)
     )
 
     hudViewport.init(
       Constants.WindowWidth.toFloat,
       Constants.WindowHeight.toFloat,
-      1,
+      1f,
       Predef.identity
     )
   }
 
-  def setProjectionMatrices(spriteBatchHolder: SpriteBatchHolder): Unit = {
-    worldViewport.setProjectionMatrix(spriteBatchHolder.worldSpriteBatch)
-    worldTextViewport.setProjectionMatrix(
-      spriteBatchHolder.worldTextSpriteBatch
-    )
-    hudViewport.setProjectionMatrix(spriteBatchHolder.hudSpriteBatch)
-  }
-
-  def updateCameras(
+  def update(
       creatureId: Option[GameEntityId[Creature]]
   )(implicit game: CoreGame): Unit = {
+
     worldViewport.updateCamera(creatureId)
     b2DebugViewport.updateCamera(creatureId)
     worldTextViewport.updateCamera(creatureId)
-//    hudViewport.updateCamera(creatureId)
   }
 
   def resize(width: Int, height: Int): Unit = {
@@ -70,19 +63,25 @@ case class ViewportManager() {
     hudViewport.updateSize(width, height)
   }
 
-  def createHudStage(hudBatch: GameSpriteBatch): Stage = {
-    hudViewport.createStage(hudBatch)
+  def setProjectionMatrices(spriteBatchHolder: SpriteBatchHolder): Unit = {
+    worldViewport.setProjectionMatrix(
+      spriteBatchHolder.worldSpriteBatch
+    )
+    worldTextViewport.setProjectionMatrix(
+      spriteBatchHolder.worldTextSpriteBatch
+    )
+    hudViewport.setProjectionMatrix(spriteBatchHolder.hudSpriteBatch)
   }
 
-  def unprojectHudCamera(screenCoords: Vector3): Unit = {
-    hudViewport.unprojectCamera(screenCoords)
-  }
-
-  def getWorldCameraPos: Vector2f = worldViewport.getCameraPos
+  def createHudStage(batch: GameSpriteBatch): Stage =
+    hudViewport.createStage(batch)
 
   def getWorldCombinedMatrix: Matrix4 =
     worldViewport.getCombinedMatrix
 
-  def getB2DebugCameraCombined: Matrix4 =
+  def getB2DebugCombinedMatrix: Matrix4 =
     b2DebugViewport.getCombinedMatrix
+
+  def getWorldCameraPos: Vector2f =
+    worldViewport.getCameraPos
 }
