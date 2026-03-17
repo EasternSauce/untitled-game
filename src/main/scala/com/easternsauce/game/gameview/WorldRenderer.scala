@@ -10,7 +10,6 @@ case class WorldRenderer() {
 
   private var creatureRenderer: CreatureRenderer = _
   private var abilityRenderer: AbilityRenderer = _
-  private var simulationDebugRenderer: SimulationDebugRenderer = _
   private var viewportManager: CameraSystem = _
 
   def init(viewportManager: CameraSystem): Unit = {
@@ -22,9 +21,6 @@ case class WorldRenderer() {
 
     abilityRenderer = AbilityRenderer()
     abilityRenderer.init()
-
-    simulationDebugRenderer = SimulationDebugRenderer()
-    simulationDebugRenderer.init(viewportManager)
   }
 
   def render(
@@ -45,12 +41,6 @@ case class WorldRenderer() {
       spriteBatchHolder.worldTextSpriteBatch,
       skin
     )
-
-//    // Debug render using SAME projection as world
-    simulationDebugRenderer.render(
-      areaId,
-      game.gameplay.worldSimulation
-    )
   }
 
   private def renderWorld(
@@ -64,17 +54,14 @@ case class WorldRenderer() {
     val tiledMap =
       game.gameplay.tiledMapsManager.tiledMaps(areaId)
 
-    // Bottom terrain
     tiledMap.renderBottomLayers(worldSpriteBatch, worldCameraPos)
 
-    // Dead creatures
     creatureRenderer.renderDeadCreatures(
       areaId,
       worldSpriteBatch,
       worldCameraPos
     )
 
-    // Dynamic + alive sorting
     renderDynamicAndCreatures(
       areaId,
       tiledMap,
@@ -82,20 +69,17 @@ case class WorldRenderer() {
       worldCameraPos
     )
 
-    // Abilities
     abilityRenderer.renderAbilities(
       areaId,
       worldSpriteBatch,
       worldCameraPos
     )
 
-    // Life bars
     creatureRenderer.renderLifeBars(
       areaId,
       worldSpriteBatch
     )
 
-    // Top terrain
     tiledMap.renderTopLayers(worldSpriteBatch, worldCameraPos)
 
     worldSpriteBatch.end()

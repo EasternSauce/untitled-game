@@ -12,9 +12,12 @@ case class GameView() {
   private var cameraSystem: CameraSystem = _
   private var worldRenderer: WorldRenderer = _
   private var fpsCountRenderer: FpsCountRenderer = _
+  private var simulationDebugRenderer: SimulationDebugRenderer = _
 
   var skin: Skin = _
   var spriteBatchHolder: SpriteBatchHolder = _
+
+  var debugEnabled: Boolean = true
 
   def init(): Unit = {
     skin = new Skin(Gdx.files.internal(Constants.DefaultSkinPath))
@@ -28,6 +31,9 @@ case class GameView() {
     worldRenderer = WorldRenderer()
     worldRenderer.init(cameraSystem)
 
+    simulationDebugRenderer = SimulationDebugRenderer()
+    simulationDebugRenderer.init(cameraSystem)
+
     fpsCountRenderer = FpsCountRenderer()
     fpsCountRenderer.init()
   }
@@ -38,7 +44,6 @@ case class GameView() {
     worldRenderer.update(areaId)
 
     val creatureId = game.clientCreatureId
-
     cameraSystem.update(creatureId)
   }
 
@@ -55,6 +60,13 @@ case class GameView() {
       skin,
       cameraSystem.getWorldCameraPos
     )
+
+    if (debugEnabled) {
+      simulationDebugRenderer.render(
+        areaId,
+        game.gameplay.worldSimulation
+      )
+    }
 
     renderHud()
   }
