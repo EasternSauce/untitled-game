@@ -6,24 +6,24 @@ import com.easternsauce.game.gamemap.GameTiledMap
 import com.easternsauce.game.gamestate.id.AreaId
 import com.easternsauce.game.math.Vector2f
 
-case class WorldRenderFlow() {
+case class SceneView() {
 
   private var terrainRenderer: TerrainRenderer = _
-  private var creatureRenderer: CreatureRenderer = _
-  private var abilityRenderer: AbilityRenderer = _
-  private var viewportManager: CameraSystem = _
+  private var creatureRenderController: CreatureRenderController = _
+  private var abilityRenderController: AbilityRenderController = _
+  private var cameraSystem: CameraSystem = _
 
-  def init(viewportManager: CameraSystem): Unit = {
+  def init(cameraSystem: CameraSystem): Unit = {
 
-    this.viewportManager = viewportManager
+    this.cameraSystem = cameraSystem
 
     terrainRenderer = TerrainRenderer()
 
-    creatureRenderer = CreatureRenderer()
-    creatureRenderer.init()
+    creatureRenderController = CreatureRenderController()
+    creatureRenderController.init()
 
-    abilityRenderer = AbilityRenderer()
-    abilityRenderer.init()
+    abilityRenderController = AbilityRenderController()
+    abilityRenderController.init()
   }
 
   def render(
@@ -62,7 +62,7 @@ case class WorldRenderFlow() {
       worldCameraPos
     )
 
-    creatureRenderer.renderDeadCreatures(
+    creatureRenderController.renderDeadCreatures(
       areaId,
       worldSpriteBatch,
       worldCameraPos
@@ -75,13 +75,13 @@ case class WorldRenderFlow() {
       worldCameraPos
     )
 
-    abilityRenderer.renderAbilities(
+    abilityRenderController.renderAbilities(
       areaId,
       worldSpriteBatch,
       worldCameraPos
     )
 
-    creatureRenderer.renderLifeBars(
+    creatureRenderController.renderLifeBars(
       areaId,
       worldSpriteBatch
     )
@@ -107,7 +107,7 @@ case class WorldRenderFlow() {
       tiledMap.getDynamicLayerCells()
 
     val aliveCreatureRenderables =
-      creatureRenderer.getAliveCreatureRenderables(areaId)
+      creatureRenderController.getAliveCreatureRenderables(areaId)
 
     val width =
       tiledMap.layerWidth("fill")
@@ -131,7 +131,7 @@ case class WorldRenderFlow() {
   }
 
   def update(areaId: AreaId)(implicit game: CoreGame): Unit = {
-    creatureRenderer.synchronizeRenderables(areaId)
-    abilityRenderer.synchronizeRenderables(areaId)
+    creatureRenderController.synchronizeRenderables(areaId)
+    abilityRenderController.synchronizeRenderables(areaId)
   }
 }

@@ -9,7 +9,7 @@ import com.easternsauce.game.math.Vector2f
 import scala.collection.mutable
 
 //noinspection SpellCheckingInspection
-case class AbilityRenderer() {
+case class AbilityRenderController() {
   private var abilityRenderables: mutable.Map[GameEntityId[AbilityComponent], AbilityRenderable] = _
   private var abilityRenderableSynchronizer: AbilityRenderableRegistry =
     _

@@ -10,7 +10,7 @@ import com.easternsauce.game.math.Vector2f
 import scala.collection.mutable
 
 //noinspection SpellCheckingInspection
-case class CreatureRenderer() {
+case class CreatureRenderController() {
   private var creatureRenderables: mutable.Map[GameEntityId[Creature], CreatureRenderable] = _
   private var creatureRenderableSynchronizer: CreatureRenderableRegistry =
     _
