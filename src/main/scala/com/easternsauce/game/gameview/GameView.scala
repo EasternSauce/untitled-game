@@ -10,7 +10,7 @@ import com.easternsauce.game.gamestate.id.AreaId
 case class GameView() {
 
   private var cameraSystem: CameraSystem = _
-  private var worldRenderer: WorldRenderer = _
+  private var worldRenderFlow: WorldRenderFlow = _
   private var fpsCountRenderer: FpsCountRenderer = _
   private var simulationDebugRenderer: SimulationDebugRenderer = _
 
@@ -28,8 +28,8 @@ case class GameView() {
     cameraSystem = CameraSystem()
     cameraSystem.init()
 
-    worldRenderer = WorldRenderer()
-    worldRenderer.init(cameraSystem)
+    worldRenderFlow = WorldRenderFlow()
+    worldRenderFlow.init(cameraSystem)
 
     simulationDebugRenderer = SimulationDebugRenderer()
     simulationDebugRenderer.init(cameraSystem)
@@ -41,7 +41,7 @@ case class GameView() {
   def update(areaId: AreaId, delta: Float)(implicit
       game: CoreGame
   ): Unit = {
-    worldRenderer.update(areaId)
+    worldRenderFlow.update(areaId)
 
     val creatureId = game.clientCreatureId
     cameraSystem.update(creatureId)
@@ -54,7 +54,7 @@ case class GameView() {
 
     cameraSystem.setProjectionMatrices(spriteBatchHolder)
 
-    worldRenderer.render(
+    worldRenderFlow.render(
       areaId,
       spriteBatchHolder,
       skin,

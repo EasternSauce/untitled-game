@@ -6,8 +6,9 @@ import com.easternsauce.game.gamemap.GameTiledMap
 import com.easternsauce.game.gamestate.id.AreaId
 import com.easternsauce.game.math.Vector2f
 
-case class WorldRenderer() {
+case class WorldRenderFlow() {
 
+  private var terrainRenderer: TerrainRenderer = _
   private var creatureRenderer: CreatureRenderer = _
   private var abilityRenderer: AbilityRenderer = _
   private var viewportManager: CameraSystem = _
@@ -15,6 +16,8 @@ case class WorldRenderer() {
   def init(viewportManager: CameraSystem): Unit = {
 
     this.viewportManager = viewportManager
+
+    terrainRenderer = TerrainRenderer()
 
     creatureRenderer = CreatureRenderer()
     creatureRenderer.init()
@@ -30,31 +33,34 @@ case class WorldRenderer() {
       worldCameraPos: Vector2f
   )(implicit game: CoreGame): Unit = {
 
+    val tiledMap =
+      game.gameplay.tiledMapsManager.tiledMaps(areaId)
+
     renderWorld(
       areaId,
+      tiledMap,
       spriteBatchHolder.worldSpriteBatch,
-      worldCameraPos
-    )
-
-    renderWorldText(
-      areaId,
-      spriteBatchHolder.worldTextSpriteBatch,
+      worldCameraPos,
       skin
     )
   }
 
   private def renderWorld(
       areaId: AreaId,
+      tiledMap: GameTiledMap,
       worldSpriteBatch: GameSpriteBatch,
-      worldCameraPos: Vector2f
+      worldCameraPos: Vector2f,
+      skin: Skin
   )(implicit game: CoreGame): Unit = {
 
     worldSpriteBatch.begin()
 
-    val tiledMap =
-      game.gameplay.tiledMapsManager.tiledMaps(areaId)
-
-    tiledMap.renderBottomLayers(worldSpriteBatch, worldCameraPos)
+    terrainRenderer.renderBottomTerrainLayer(
+      areaId,
+      tiledMap,
+      worldSpriteBatch,
+      worldCameraPos
+    )
 
     creatureRenderer.renderDeadCreatures(
       areaId,
@@ -80,26 +86,14 @@ case class WorldRenderer() {
       worldSpriteBatch
     )
 
-    tiledMap.renderTopLayers(worldSpriteBatch, worldCameraPos)
-
-    worldSpriteBatch.end()
-  }
-
-  private def renderWorldText(
-      areaId: AreaId,
-      worldTextSpriteBatch: GameSpriteBatch,
-      skin: Skin
-  )(implicit game: CoreGame): Unit = {
-
-    worldTextSpriteBatch.begin()
-
-    creatureRenderer.renderPlayerNames(
+    terrainRenderer.renderTopTerrainLayer(
       areaId,
-      worldTextSpriteBatch,
-      skin
+      tiledMap,
+      worldSpriteBatch,
+      worldCameraPos
     )
 
-    worldTextSpriteBatch.end()
+    worldSpriteBatch.end()
   }
 
   private def renderDynamicAndCreatures(
@@ -122,7 +116,7 @@ case class WorldRenderer() {
 
     val sortedRenderables =
       (dynamicLayerRenderables ++ aliveCreatureRenderables)
-        .sortBy(_.pos())((v1: Vector2f, v2: Vector2f) => {
+        .sortBy(_.pos())((v1, v2) => {
           val d1 = v1.distance(topOfMap)
           val d2 = v2.distance(topOfMap)
 
@@ -137,7 +131,7 @@ case class WorldRenderer() {
   }
 
   def update(areaId: AreaId)(implicit game: CoreGame): Unit = {
-    abilityRenderer.synchronizeRenderables(areaId)
     creatureRenderer.synchronizeRenderables(areaId)
+    abilityRenderer.synchronizeRenderables(areaId)
   }
 }
