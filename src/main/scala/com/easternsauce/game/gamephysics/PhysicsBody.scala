@@ -7,7 +7,6 @@ import com.easternsauce.game.math.Vector2f
 abstract class PhysicsBody {
 
   protected var _pos: Vector2f = Vector2f(0f, 0f)
-  protected var _velocity: Vector2f = Vector2f(0f, 0f)
 
   protected var areaWorld: AreaWorld = _
 
@@ -24,19 +23,32 @@ abstract class PhysicsBody {
 
   def isStatic: Boolean = false
 
+  def isPushable(implicit game: CoreGame): Boolean = true
+
   def init(areaWorld: AreaWorld, pos: Vector2f): Unit = {
     this.areaWorld = areaWorld
     this._pos = pos
-
     areaWorld.registerBody(this)
   }
 
   def update(delta: Float)(implicit game: CoreGame): Unit = {
     velocity.foreach { v =>
-      _pos = Vector2f(
-        _pos.x + v.x * delta,
-        _pos.y + v.y * delta
-      )
+      // 🔑 number of substeps (prevents 1-frame overlap)
+      val speed = Math.sqrt(v.x * v.x + v.y * v.y).toFloat
+      val steps =
+        Math.max(1, Math.ceil((speed * delta) / radius).toInt)
+
+      val stepDelta = delta / steps
+
+      for (_ <- 0 until steps) {
+        _pos = Vector2f(
+          _pos.x + v.x * stepDelta,
+          _pos.y + v.y * stepDelta
+        )
+
+        // resolve immediately after each micro-move
+        areaWorld.resolveCollisionsForBody(this)
+      }
     }
   }
 

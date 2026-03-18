@@ -12,4 +12,7 @@ case class CreatureBody(creatureId: GameEntityId[Creature]) extends PhysicsBody 
 
   override def velocity(implicit game: CoreGame): Option[Vector2f] =
     game.gameState.creatures.get(creatureId).map(_.params.velocity)
+
+  override def isPushable(implicit game: CoreGame): Boolean =
+    !game.gameState.creatures(creatureId).params.isPlayer
 }

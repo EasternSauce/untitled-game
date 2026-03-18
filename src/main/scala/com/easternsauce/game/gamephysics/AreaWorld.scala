@@ -8,10 +8,8 @@ import scala.collection.mutable
 
 case class AreaWorld(areaId: AreaId) {
 
-  // ===== CONFIG =====
   private val chunkSize = 2f
 
-  // ===== STORAGE =====
   private val staticChunks =
     mutable.Map[(Int, Int), mutable.Set[PhysicsBody]]()
 
@@ -23,8 +21,6 @@ case class AreaWorld(areaId: AreaId) {
 
   private val dynamicBodies =
     mutable.Set[PhysicsBody]()
-
-  // ===== PUBLIC API =====
 
   def registerBody(body: PhysicsBody): Unit = {
     if (body.isStatic) staticBodies.add(body)
@@ -39,7 +35,6 @@ case class AreaWorld(areaId: AreaId) {
   def allBodies: Iterable[PhysicsBody] =
     staticBodies ++ dynamicBodies
 
-  // Call ONCE after static world initialization
   def buildStaticChunks(): Unit = {
     staticChunks.clear()
 
@@ -50,11 +45,9 @@ case class AreaWorld(areaId: AreaId) {
     }
   }
 
-  // ===== UPDATE =====
-
   def update()(implicit game: CoreGame): Unit = {
 
-    // Rebuild dynamic chunks every frame
+    // rebuild dynamic chunks AFTER movement
     dynamicChunks.clear()
 
     dynamicBodies.foreach { body =>
@@ -62,31 +55,34 @@ case class AreaWorld(areaId: AreaId) {
       val set = dynamicChunks.getOrElseUpdate(chunk, mutable.Set())
       set.add(body)
     }
-
-    // Collision check only within nearby chunks
-    dynamicBodies.foreach { body =>
-      val (cx, cy) = chunkOf(body.pos)
-
-      for {
-        x <- cx - 1 to cx + 1
-        y <- cy - 1 to cy + 1
-        neighbor <- staticChunks.getOrElse((x, y), Set.empty)
-      } {
-        resolveCollision(body, neighbor)
-      }
-
-      for {
-        x <- cx - 1 to cx + 1
-        y <- cy - 1 to cy + 1
-        neighbor <- dynamicChunks.getOrElse((x, y), Set.empty)
-        if neighbor != body
-      } {
-        resolveCollision(body, neighbor)
-      }
-    }
   }
 
-  // ===== CHUNK HELPERS =====
+  // =========================
+  // PER-BODY COLLISION (NEW)
+  // =========================
+
+  def resolveCollisionsForBody(body: PhysicsBody)(implicit game: CoreGame): Unit = {
+    val (cx, cy) = chunkOf(body.pos)
+
+    // circle vs rect (static)
+    for {
+      x <- cx - 1 to cx + 1
+      y <- cy - 1 to cy + 1
+      neighbor <- staticChunks.getOrElse((x, y), Set.empty)
+    } {
+      resolveCircleVsRect(body, neighbor)
+    }
+
+    // circle vs circle (dynamic)
+    for {
+      x <- cx - 1 to cx + 1
+      y <- cy - 1 to cy + 1
+      neighbor <- dynamicChunks.getOrElse((x, y), Set.empty)
+      if neighbor != body
+    } {
+      resolveCircleVsCircle(body, neighbor)
+    }
+  }
 
   private def chunkOf(pos: Vector2f): (Int, Int) = {
     val cx = Math.floor(pos.x / chunkSize).toInt
@@ -94,62 +90,111 @@ case class AreaWorld(areaId: AreaId) {
     (cx, cy)
   }
 
-  // ===== COLLISION =====
+  // =========================
+  // CIRCLE vs CIRCLE
+  // =========================
 
-  private def resolveCollision(a: PhysicsBody, b: PhysicsBody)(implicit game: CoreGame): Unit = {
+  private def resolveCircleVsCircle(a: PhysicsBody, b: PhysicsBody)(implicit
+      game: CoreGame
+  ): Unit = {
 
-    val ax = a.pos.x
-    val ay = a.pos.y
-    val bx = b.pos.x
-    val by = b.pos.y
-
-    val dx = bx - ax
-    val dy = by - ay
+    val dx = b.pos.x - a.pos.x
+    val dy = b.pos.y - a.pos.y
 
     val distSq = dx * dx + dy * dy
     val minDist = a.radius + b.radius
-    val minDistSq = minDist * minDist
 
-    if (distSq >= minDistSq || distSq == 0f) return
+    if (distSq >= minDist * minDist) return
 
     val dist = Math.sqrt(distSq).toFloat
+    val (nx, ny) =
+      if (dist == 0f) (1f, 0f)
+      else (dx / dist, dy / dist)
+
     val overlap = minDist - dist
+    if (!a.isPushable && !b.isPushable) {
+      // nothing moves (rare case)
+    } else if (!a.isPushable) {
+      // move only b
+      b.setPos(
+        Vector2f(
+          b.pos.x + nx * overlap,
+          b.pos.y + ny * overlap
+        )
+      )
+    } else if (!b.isPushable) {
+      // move only a
+      a.setPos(
+        Vector2f(
+          a.pos.x - nx * overlap,
+          a.pos.y - ny * overlap
+        )
+      )
+    } else {
+      // both push (original behavior)
+      val half = overlap * 0.5f
+
+      a.setPos(Vector2f(a.pos.x - nx * half, a.pos.y - ny * half))
+      b.setPos(Vector2f(b.pos.x + nx * half, b.pos.y + ny * half))
+    }
+  }
+
+  // =========================
+  // CIRCLE vs RECT
+  // =========================
+
+  private def resolveCircleVsRect(circle: PhysicsBody, rect: PhysicsBody)(implicit
+      game: CoreGame
+  ): Unit = {
+
+    val cx = circle.pos.x
+    val cy = circle.pos.y
+
+    val rx = rect.pos.x
+    val ry = rect.pos.y
+    val half = rect.radius
+
+    val closestX = clamp(cx, rx - half, rx + half)
+    val closestY = clamp(cy, ry - half, ry + half)
+
+    val dx = cx - closestX
+    val dy = cy - closestY
+
+    val distSq = dx * dx + dy * dy
+    val r = circle.radius
+
+    if (distSq >= r * r) return
+
+    val dist = Math.sqrt(distSq).toFloat
+
+    if (dist == 0f) {
+      val left = cx - (rx - half)
+      val right = (rx + half) - cx
+      val down = cy - (ry - half)
+      val up = (ry + half) - cy
+
+      val min = Math.min(Math.min(left, right), Math.min(down, up))
+
+      if (min == left)
+        circle.setPos(Vector2f(rx - half - r, cy))
+      else if (min == right)
+        circle.setPos(Vector2f(rx + half + r, cy))
+      else if (min == down)
+        circle.setPos(Vector2f(cx, ry - half - r))
+      else
+        circle.setPos(Vector2f(cx, ry + half + r))
+
+      return
+    }
 
     val nx = dx / dist
     val ny = dy / dist
 
-    if (a.isStatic && b.isStatic) return
+    val overlap = r - dist
 
-    if (a.isStatic) {
-      b.setPos(
-        Vector2f(
-          bx + nx * overlap,
-          by + ny * overlap
-        )
-      )
-    } else if (b.isStatic) {
-      a.setPos(
-        Vector2f(
-          ax - nx * overlap,
-          ay - ny * overlap
-        )
-      )
-    } else {
-      val half = overlap * 0.5f
-
-      a.setPos(
-        Vector2f(
-          ax - nx * half,
-          ay - ny * half
-        )
-      )
-
-      b.setPos(
-        Vector2f(
-          bx + nx * half,
-          by + ny * half
-        )
-      )
-    }
+    circle.setPos(Vector2f(cx + nx * overlap, cy + ny * overlap))
   }
+
+  private def clamp(v: Float, min: Float, max: Float): Float =
+    Math.max(min, Math.min(v, max))
 }

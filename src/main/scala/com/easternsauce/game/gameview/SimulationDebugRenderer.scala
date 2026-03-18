@@ -41,7 +41,8 @@ case class SimulationDebugRenderer() {
         shapeRenderer.circle(
           body.pos.x,
           body.pos.y,
-          body.radius
+          body.radius,
+          16
         )
       }
     }
