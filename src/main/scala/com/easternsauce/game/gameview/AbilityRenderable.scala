@@ -28,7 +28,7 @@ case class AbilityRenderable(abilityId: GameEntityId[AbilityComponent]) extends 
     ability.params.currentAreaId
   }
 
-  override def render(batch: GameSpriteBatch, worldCameraPos: Vector2f)(implicit
+  override def render(batch: RenderBatch, worldCameraPos: Vector2f)(implicit
       game: CoreGame
   ): Unit = {
     animation.render(batch)

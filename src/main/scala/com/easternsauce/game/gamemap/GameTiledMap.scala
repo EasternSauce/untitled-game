@@ -6,7 +6,7 @@ import com.badlogic.gdx.maps.tiled.TmxMapLoader
 import com.easternsauce.game.Constants
 import com.easternsauce.game.core.CoreGame
 import com.easternsauce.game.gamestate.id.AreaId
-import com.easternsauce.game.gameview.GameSpriteBatch
+import com.easternsauce.game.gameview.RenderBatch
 import com.easternsauce.game.math.Vector2f
 
 case class GameTiledMap(areaId: AreaId) {
@@ -57,7 +57,7 @@ case class GameTiledMap(areaId: AreaId) {
     .asInstanceOf[TiledMapTileLayer]
     .getHeight * Constants.TileSize.toFloat
 
-  def renderBottomLayers(batch: GameSpriteBatch, worldCameraPos: Vector2f)(implicit
+  def renderBottomLayers(batch: RenderBatch, worldCameraPos: Vector2f)(implicit
       game: CoreGame
   ): Unit = {
     for {
@@ -77,7 +77,7 @@ case class GameTiledMap(areaId: AreaId) {
     }
   }
 
-  def renderTopLayers(batch: GameSpriteBatch, worldCameraPos: Vector2f)(implicit
+  def renderTopLayers(batch: RenderBatch, worldCameraPos: Vector2f)(implicit
       game: CoreGame
   ): Unit = {
     for {

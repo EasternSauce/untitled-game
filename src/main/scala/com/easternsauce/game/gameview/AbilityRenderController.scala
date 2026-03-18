@@ -23,7 +23,7 @@ case class AbilityRenderController() {
 
   def renderAbilities(
       areaId: AreaId,
-      worldSpriteBatch: GameSpriteBatch,
+      worldSpriteBatch: RenderBatch,
       worldCameraPos: Vector2f
   )(implicit game: CoreGame): Unit = {
     abilityRenderablesInArea(areaId)

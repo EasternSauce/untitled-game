@@ -22,7 +22,7 @@ case class CameraSystem() {
       Constants.ViewportWorldWidth,
       Constants.ViewportWorldHeight,
       1f,
-      pos => IsometricProjection.isoToScreenAdjusted(pos)
+      pos => IsometricProjection.isoToScreenCompensated(pos)
     )
 
     b2DebugViewport.init(
@@ -36,7 +36,7 @@ case class CameraSystem() {
       Constants.ViewportWorldWidth,
       Constants.ViewportWorldHeight,
       1f,
-      pos => IsometricProjection.isoToScreenAdjusted(pos)
+      pos => IsometricProjection.isoToScreenCompensated(pos)
     )
 
     hudViewport.init(
@@ -63,17 +63,17 @@ case class CameraSystem() {
     hudViewport.updateSize(width, height)
   }
 
-  def setProjectionMatrices(spriteBatchHolder: SpriteBatchHolder): Unit = {
-    worldViewport.setProjectionMatrix(
-      spriteBatchHolder.worldSpriteBatch
-    )
-    worldTextViewport.setProjectionMatrix(
-      spriteBatchHolder.worldTextSpriteBatch
-    )
-    hudViewport.setProjectionMatrix(spriteBatchHolder.hudSpriteBatch)
+  def setProjectionMatrices(
+      worldBatch: RenderBatch,
+      worldTextBatch: RenderBatch,
+      hudBatch: RenderBatch
+  ): Unit = {
+    worldViewport.setProjectionMatrix(worldBatch)
+    worldTextViewport.setProjectionMatrix(worldTextBatch)
+    hudViewport.setProjectionMatrix(hudBatch)
   }
 
-  def createHudStage(batch: GameSpriteBatch): Stage =
+  def createHudStage(batch: RenderBatch): Stage =
     hudViewport.createStage(batch)
 
   def getWorldCombinedMatrix: Matrix4 =

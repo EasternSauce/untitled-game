@@ -41,7 +41,7 @@ object IsometricProjection {
     )
 
   // Converts world iso coordinates to screen coordinates with visual adjustment
-  def isoToScreenAdjusted(pos: Vector2f): Vector2f = {
+  def isoToScreenCompensated(pos: Vector2f): Vector2f = {
     val base = isoToScreen(pos)
     Vector2f(base.x * visualScaleX, base.y * visualScaleY)
   }

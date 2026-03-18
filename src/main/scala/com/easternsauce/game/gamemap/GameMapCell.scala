@@ -5,7 +5,7 @@ import com.easternsauce.game._
 import com.easternsauce.game.core.CoreGame
 import com.easternsauce.game.gamestate.GameState
 import com.easternsauce.game.gamestate.id.AreaId
-import com.easternsauce.game.gameview.GameSpriteBatch
+import com.easternsauce.game.gameview.RenderBatch
 import com.easternsauce.game.gameview.Renderable
 import com.easternsauce.game.math.IsometricProjection
 import com.easternsauce.game.math.Vector2f
@@ -17,7 +17,7 @@ case class GameMapCell(tiledCell: Cell, areaId: AreaId, pos: Vector2f) extends R
 
   override def hasRenderPriority(gameState: GameState): Boolean = false
 
-  override def render(batch: GameSpriteBatch, worldCameraPos: Vector2f)(implicit
+  override def render(batch: RenderBatch, worldCameraPos: Vector2f)(implicit
       game: CoreGame
   ): Unit = {
     val textureRegion = tiledCell.getTile.getTextureRegion
@@ -25,7 +25,7 @@ case class GameMapCell(tiledCell: Cell, areaId: AreaId, pos: Vector2f) extends R
     val textureHeight = textureRegion.getRegionHeight
 
     val screenPos =
-      IsometricProjection.isoToScreenAdjusted(
+      IsometricProjection.isoToScreenCompensated(
         Vector2f(pos.x + Constants.RenderShiftX, pos.y + Constants.RenderShiftY)
       )
 

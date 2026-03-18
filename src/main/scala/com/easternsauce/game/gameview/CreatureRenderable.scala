@@ -52,7 +52,7 @@ case class CreatureRenderable(creatureId: GameEntityId[Creature]) extends Render
     creature.params.currentAreaId
   }
 
-  override def render(batch: GameSpriteBatch, worldCameraPos: Vector2f)(implicit
+  override def render(batch: RenderBatch, worldCameraPos: Vector2f)(implicit
       game: CoreGame
   ): Unit = {
     val creature = game.gameState.creatures(creatureId)
@@ -72,7 +72,7 @@ case class CreatureRenderable(creatureId: GameEntityId[Creature]) extends Render
   }
 
   def renderLifeBar(
-      spriteBatch: GameSpriteBatch
+      spriteBatch: RenderBatch
   )(implicit game: CoreGame): Unit = {
     if (game.gameState.creatures.contains(creatureId)) {
       val creature = game.gameState.creatures(creatureId)
@@ -83,7 +83,7 @@ case class CreatureRenderable(creatureId: GameEntityId[Creature]) extends Render
           lifeBarWidth * creature.params.life / creature.params.maxLife
 
         val creatureScreenPos =
-          IsometricProjection.isoToScreenAdjusted(creature.pos)
+          IsometricProjection.isoToScreenCompensated(creature.pos)
 
         val barPos = Vector2f(
           creatureScreenPos.x - lifeBarWidth / 2f,
@@ -96,7 +96,7 @@ case class CreatureRenderable(creatureId: GameEntityId[Creature]) extends Render
     }
   }
 
-  def renderPlayerName(spriteBatch: GameSpriteBatch, font: BitmapFont)(implicit
+  def renderPlayerName(spriteBatch: RenderBatch, font: BitmapFont)(implicit
       game: CoreGame
   ): Unit = {
     if (
@@ -110,7 +110,7 @@ case class CreatureRenderable(creatureId: GameEntityId[Creature]) extends Render
 
       if (creature.isAlive) {
         val creatureScreenPos =
-          IsometricProjection.isoToScreenAdjusted(creature.pos)
+          IsometricProjection.isoToScreenCompensated(creature.pos)
 
         val namePos = Vector2f(
           creatureScreenPos.x - 25f,
@@ -123,7 +123,7 @@ case class CreatureRenderable(creatureId: GameEntityId[Creature]) extends Render
   }
 
   private def renderBar(
-      spriteBatch: GameSpriteBatch,
+      spriteBatch: RenderBatch,
       barPos: Vector2f,
       lifeBarWidth: Float,
       color: Color

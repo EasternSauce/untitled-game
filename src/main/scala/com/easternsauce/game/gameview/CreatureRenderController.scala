@@ -24,7 +24,7 @@ case class CreatureRenderController() {
 
   def renderLifeBars(
       areaId: AreaId,
-      worldSpriteBatch: GameSpriteBatch
+      worldSpriteBatch: RenderBatch
   )(implicit game: CoreGame): Unit = {
     aliveCreatureRenderables(areaId).foreach(
       _.renderLifeBar(worldSpriteBatch)
@@ -33,7 +33,7 @@ case class CreatureRenderController() {
 
   def renderPlayerNames(
       areaId: AreaId,
-      worldTextSpriteBatch: GameSpriteBatch,
+      worldTextSpriteBatch: RenderBatch,
       skin: Skin
   )(implicit game: CoreGame): Unit = {
     aliveCreatureRenderables(areaId).foreach(
@@ -49,7 +49,7 @@ case class CreatureRenderController() {
 
   def renderDeadCreatures(
       areaId: AreaId,
-      worldSpriteBatch: GameSpriteBatch,
+      worldSpriteBatch: RenderBatch,
       worldCameraPos: Vector2f
   )(implicit game: CoreGame): Unit = {
     deadCreatureRenderables(areaId)

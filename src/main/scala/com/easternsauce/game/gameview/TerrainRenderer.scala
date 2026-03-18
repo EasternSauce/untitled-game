@@ -10,7 +10,7 @@ case class TerrainRenderer() {
   def renderBottomTerrainLayer(
       areaId: AreaId,
       tiledMap: GameTiledMap,
-      batch: GameSpriteBatch,
+      batch: RenderBatch,
       worldCameraPos: Vector2f
   )(implicit game: CoreGame): Unit = {
 
@@ -20,7 +20,7 @@ case class TerrainRenderer() {
   def renderTopTerrainLayer(
       areaId: AreaId,
       tiledMap: GameTiledMap,
-      batch: GameSpriteBatch,
+      batch: RenderBatch,
       worldCameraPos: Vector2f
   )(implicit game: CoreGame): Unit = {
 

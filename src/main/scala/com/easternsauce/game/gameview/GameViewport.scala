@@ -36,7 +36,7 @@ case class GameViewport() {
     )
   }
 
-  def setProjectionMatrix(batch: GameSpriteBatch): Unit = {
+  def setProjectionMatrix(batch: RenderBatch): Unit = {
     batch.setProjectionMatrix(camera.combined)
   }
 
@@ -70,7 +70,7 @@ case class GameViewport() {
     Vector2f(camera.position.x, camera.position.y)
   }
 
-  def createStage(batch: GameSpriteBatch): Stage =
+  def createStage(batch: RenderBatch): Stage =
     new Stage(viewport, batch.underlyingSpriteBatch)
 
   def unprojectCamera(screenCoords: Vector3): Unit = {

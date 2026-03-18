@@ -1,29 +1,34 @@
 package com.easternsauce.game.gameview
 
 import com.badlogic.gdx.Gdx
+import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.badlogic.gdx.utils.ScreenUtils
 import com.easternsauce.game.Constants
 import com.easternsauce.game.core.CoreGame
 import com.easternsauce.game.gamestate.id.AreaId
+import com.easternsauce.game.math.Vector2f
 
 case class GameView() {
 
   private var cameraSystem: CameraSystem = _
   private var sceneView: SceneView = _
-  private var fpsCountRenderer: FpsCountRenderer = _
   private var simulationDebugRenderer: SimulationDebugRenderer = _
 
   var skin: Skin = _
-  var spriteBatchHolder: SpriteBatchHolder = _
+
+  var worldRenderBatch: RenderBatch = RenderBatch()
+  var worldTextRenderBatch: RenderBatch = RenderBatch()
+  var hudRenderBatch: RenderBatch = RenderBatch()
 
   var debugEnabled: Boolean = true
 
   def init(): Unit = {
-    skin = new Skin(Gdx.files.internal(Constants.DefaultSkinPath))
+    worldRenderBatch.init()
+    worldTextRenderBatch.init()
+    hudRenderBatch.init()
 
-    spriteBatchHolder = SpriteBatchHolder()
-    spriteBatchHolder.init()
+    skin = new Skin(Gdx.files.internal(Constants.DefaultSkinPath))
 
     cameraSystem = CameraSystem()
     cameraSystem.init()
@@ -33,9 +38,6 @@ case class GameView() {
 
     simulationDebugRenderer = SimulationDebugRenderer()
     simulationDebugRenderer.init(cameraSystem)
-
-    fpsCountRenderer = FpsCountRenderer()
-    fpsCountRenderer.init()
   }
 
   def update(areaId: AreaId, delta: Float)(implicit
@@ -52,11 +54,15 @@ case class GameView() {
   ): Unit = {
     ScreenUtils.clear(0, 0, 0, 1)
 
-    cameraSystem.setProjectionMatrices(spriteBatchHolder)
+    cameraSystem.setProjectionMatrices(
+      worldRenderBatch,
+      worldTextRenderBatch,
+      hudRenderBatch
+    )
 
     sceneView.render(
       areaId,
-      spriteBatchHolder,
+      worldRenderBatch,
       skin,
       cameraSystem.getWorldCameraPos
     )
@@ -72,9 +78,20 @@ case class GameView() {
   }
 
   private def renderHud(): Unit = {
-    spriteBatchHolder.hudSpriteBatch.begin()
-    fpsCountRenderer.render(spriteBatchHolder, skin)
-    spriteBatchHolder.hudSpriteBatch.end()
+    renderFpsCount()
+  }
+
+  private def renderFpsCount(): Unit = {
+    hudRenderBatch.begin()
+    val fps = Gdx.graphics.getFramesPerSecond
+    val font = skin.getFont("default-font")
+    hudRenderBatch.drawFont(
+      font,
+      fps.toString + " fps",
+      Vector2f(Constants.WindowWidth / 2f - 50f, Constants.WindowHeight / 2f),
+      Color.ORANGE
+    )
+    hudRenderBatch.end()
   }
 
   def resize(width: Int, height: Int): Unit = {

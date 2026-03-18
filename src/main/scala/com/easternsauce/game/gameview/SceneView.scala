@@ -28,7 +28,7 @@ case class SceneView() {
 
   def render(
       areaId: AreaId,
-      spriteBatchHolder: SpriteBatchHolder,
+      worldRenderBatch: RenderBatch,
       skin: Skin,
       worldCameraPos: Vector2f
   )(implicit game: CoreGame): Unit = {
@@ -39,7 +39,7 @@ case class SceneView() {
     renderWorld(
       areaId,
       tiledMap,
-      spriteBatchHolder.worldSpriteBatch,
+      worldRenderBatch,
       worldCameraPos,
       skin
     )
@@ -48,7 +48,7 @@ case class SceneView() {
   private def renderWorld(
       areaId: AreaId,
       tiledMap: GameTiledMap,
-      worldSpriteBatch: GameSpriteBatch,
+      worldSpriteBatch: RenderBatch,
       worldCameraPos: Vector2f,
       skin: Skin
   )(implicit game: CoreGame): Unit = {
@@ -99,7 +99,7 @@ case class SceneView() {
   private def renderDynamicAndCreatures(
       areaId: AreaId,
       tiledMap: GameTiledMap,
-      batch: GameSpriteBatch,
+      batch: RenderBatch,
       worldCameraPos: Vector2f
   )(implicit game: CoreGame): Unit = {
 

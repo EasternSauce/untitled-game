@@ -106,7 +106,7 @@ case class CreatureAnimation(
     }
   }
 
-  def render(batch: GameSpriteBatch)(implicit game: CoreGame): Unit = {
+  def render(batch: RenderBatch)(implicit game: CoreGame): Unit = {
     val creature = game.gameState.creatures(creatureId)
 
     val frame =
@@ -131,7 +131,7 @@ case class CreatureAnimation(
           .getKeyFrame(creature.params.animationTimer.time, true)
       }
 
-    val pos = IsometricProjection.isoToScreenAdjusted(
+    val pos = IsometricProjection.isoToScreenCompensated(
       Vector2f(creature.pos.x, creature.pos.y)
     )
 

@@ -12,7 +12,7 @@ import com.easternsauce.game.math.GameRectangle
 import com.easternsauce.game.math.Vector2f
 import space.earlygrey.shapedrawer.ShapeDrawer
 
-case class GameSpriteBatch() {
+case class RenderBatch() {
 
   private var spriteBatch: SpriteBatch = _
   private var shapeDrawer: ShapeDrawer = _
