@@ -1,8 +1,12 @@
 package com.easternsauce.game.gamephysics
 
 import com.easternsauce.game.core.CoreGame
+import com.easternsauce.game.gamestate.ability.AbilityComponent
+import com.easternsauce.game.gamestate.event.AbilityComponentHitsCreatureEvent
+import com.easternsauce.game.gamestate.event.AbilityComponentHitsTerrainEvent
 import com.easternsauce.game.gamestate.id.AreaId
 import com.easternsauce.game.math.Vector2f
+import com.softwaremill.quicklens.ModifyPimp
 
 import scala.collection.mutable
 
@@ -90,63 +94,71 @@ case class AreaWorld(areaId: AreaId) {
     (cx, cy)
   }
 
-  // =========================
-  // CIRCLE vs CIRCLE
-  // =========================
-
   private def resolveCircleVsCircle(a: PhysicsBody, b: PhysicsBody)(implicit
       game: CoreGame
   ): Unit = {
-
     val dx = b.pos.x - a.pos.x
     val dy = b.pos.y - a.pos.y
-
     val distSq = dx * dx + dy * dy
-    val minDist = a.radius + b.radius
 
+    // fetch radii from game state or ability component
+    val aRadius = a match {
+      case ac: AbilityComponent => ac.bodyRadius
+      case _ =>
+        game.gameState.creatures.values
+          .find(c => (c.pos - a.pos).len < 0.01f)
+          .map(_.params.bodyRadius)
+          .getOrElse(0f)
+    }
+
+    val bRadius = b match {
+      case ac: AbilityComponent => ac.bodyRadius
+      case _ =>
+        game.gameState.creatures.values
+          .find(c => (c.pos - b.pos).len < 0.01f)
+          .map(_.params.bodyRadius)
+          .getOrElse(0f)
+    }
+
+    val minDist = aRadius + bRadius
     if (distSq >= minDist * minDist) return
 
     val dist = Math.sqrt(distSq).toFloat
-    val (nx, ny) =
-      if (dist == 0f) (1f, 0f)
-      else (dx / dist, dy / dist)
-
+    val (nx, ny) = if (dist == 0f) (1f, 0f) else (dx / dist, dy / dist)
     val overlap = minDist - dist
-    if (!a.isPushable && !b.isPushable) {
-      // nothing moves (rare case)
-    } else if (!a.isPushable) {
-      // move only b
-      b.setPos(
-        Vector2f(
-          b.pos.x + nx * overlap,
-          b.pos.y + ny * overlap
-        )
-      )
-    } else if (!b.isPushable) {
-      // move only a
-      a.setPos(
-        Vector2f(
-          a.pos.x - nx * overlap,
-          a.pos.y - ny * overlap
-        )
-      )
-    } else {
-      // both push (original behavior)
-      val half = overlap * 0.5f
 
+    if (!a.isPushable && !b.isPushable) {} else if (!a.isPushable)
+      b.setPos(Vector2f(b.pos.x + nx * overlap, b.pos.y + ny * overlap))
+    else if (!b.isPushable) a.setPos(Vector2f(a.pos.x - nx * overlap, a.pos.y - ny * overlap))
+    else {
+      val half = overlap * 0.5f
       a.setPos(Vector2f(a.pos.x - nx * half, a.pos.y - ny * half))
       b.setPos(Vector2f(b.pos.x + nx * half, b.pos.y + ny * half))
     }
-  }
 
-  // =========================
-  // CIRCLE vs RECT
-  // =========================
+    // trigger ability hits
+    val abilityComponents = game.gameState.abilityComponents.values
+    val creatures = game.gameState.creatures.values.filter(_.isAlive)
+    for {
+      ac <- abilityComponents
+      c <- creatures
+      dist = (ac.pos - c.pos).len
+      combined = ac.bodyRadius + c.params.bodyRadius
+      if dist < combined
+    } {
+      game.queues.localEventQueue.enqueue(
+        AbilityComponentHitsCreatureEvent(c.id, ac.id, ac.currentAreaId)
+      )
+      if (ac.isDestroyedOnCreatureContact) {
+        val updatedAC = ac.modify(_.params.isScheduledToBeRemoved).setTo(true)
+        game.gameState.abilityComponents.updated(ac.id, updatedAC)
+      }
+    }
+  }
 
   private def resolveCircleVsRect(circle: PhysicsBody, rect: PhysicsBody)(implicit
       game: CoreGame
   ): Unit = {
-
     val cx = circle.pos.x
     val cy = circle.pos.y
 
@@ -159,40 +171,42 @@ case class AreaWorld(areaId: AreaId) {
 
     val dx = cx - closestX
     val dy = cy - closestY
-
     val distSq = dx * dx + dy * dy
-    val r = circle.radius
 
-    if (distSq >= r * r) return
+    val circleRadius = circle match {
+      case ac: AbilityComponent => ac.bodyRadius
+      case _                    => 0f
+    }
+
+    if (distSq >= circleRadius * circleRadius) return
 
     val dist = Math.sqrt(distSq).toFloat
-
     if (dist == 0f) {
       val left = cx - (rx - half)
       val right = (rx + half) - cx
       val down = cy - (ry - half)
       val up = (ry + half) - cy
-
       val min = Math.min(Math.min(left, right), Math.min(down, up))
 
-      if (min == left)
-        circle.setPos(Vector2f(rx - half - r, cy))
-      else if (min == right)
-        circle.setPos(Vector2f(rx + half + r, cy))
-      else if (min == down)
-        circle.setPos(Vector2f(cx, ry - half - r))
-      else
-        circle.setPos(Vector2f(cx, ry + half + r))
-
+      if (min == left) circle.setPos(Vector2f(rx - half - circleRadius, cy))
+      else if (min == right) circle.setPos(Vector2f(rx + half + circleRadius, cy))
+      else if (min == down) circle.setPos(Vector2f(cx, ry - half - circleRadius))
+      else circle.setPos(Vector2f(cx, ry + half + circleRadius))
       return
     }
 
     val nx = dx / dist
     val ny = dy / dist
-
-    val overlap = r - dist
-
+    val overlap = circleRadius - dist
     circle.setPos(Vector2f(cx + nx * overlap, cy + ny * overlap))
+
+    circle match {
+      case ac: AbilityComponent if ac.isDestroyedOnTerrainContact =>
+        game.queues.localEventQueue.enqueue(
+          AbilityComponentHitsTerrainEvent(ac.id, ac.currentAreaId)
+        )
+      case _ =>
+    }
   }
 
   private def clamp(v: Float, min: Float, max: Float): Float =
