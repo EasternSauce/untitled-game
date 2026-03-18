@@ -24,7 +24,7 @@ abstract class PhysicsBody {
 
   def isStatic: Boolean = false
 
-  def init(areaWorld: AreaWorld, pos: Vector2f)(implicit game: CoreGame): Unit = {
+  def init(areaWorld: AreaWorld, pos: Vector2f): Unit = {
     this.areaWorld = areaWorld
     this._pos = pos
 

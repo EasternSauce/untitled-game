@@ -14,39 +14,30 @@ case class WorldSimulation() {
 
   var areaWorlds: mutable.Map[AreaId, AreaWorld] = _
 
-  private var creatureSpawner: CreatureSpawner = _
-  private var creatureUpdater: CreatureUpdater = _
-  private var creatureRegistry: CreatureRegistry = _
+  private var creaturePhysics: CreaturePhysicsController = _
+  private var abilityPhysics: AbilityPhysicsController = _
 
-  private var abilitySpawner: AbilitySpawner = _
-  private var abilityUpdater: AbilityUpdater = _
-  private var abilityRegistry: AbilityRegistry = _
+  // -------------------------
+  // Init
+  // -------------------------
 
-  def init(tiledMaps: mutable.Map[AreaId, GameTiledMap])(implicit game: CoreGame): Unit = {
+  def init(tiledMaps: mutable.Map[AreaId, GameTiledMap])(implicit
+      game: CoreGame
+  ): Unit = {
 
     areaWorlds = mutable.Map() ++ tiledMaps.map { case (areaId, _) =>
       (areaId, AreaWorld(areaId))
     }
 
-    // Creatures
-    creatureSpawner = CreatureSpawner()
-    creatureSpawner.init(areaWorlds)
+    // Physics controllers
+    creaturePhysics = CreaturePhysicsController()
+    creaturePhysics.init(areaWorlds)
 
-    creatureUpdater = CreatureUpdater()
-    creatureUpdater.init(creatureSpawner.allBodies, areaWorlds)
-
-    creatureRegistry = CreatureRegistry()
-    creatureRegistry.init(creatureSpawner)
-
-    // Abilities
-    abilitySpawner = AbilitySpawner()
-    abilitySpawner.init(areaWorlds, game.gameState.abilityComponents.values)
-
-    abilityUpdater = AbilityUpdater()
-    abilityUpdater.init(abilitySpawner.allBodies, areaWorlds)
-
-    abilityRegistry = AbilityRegistry()
-    abilityRegistry.init(abilitySpawner)
+    abilityPhysics = AbilityPhysicsController()
+    abilityPhysics.init(
+      areaWorlds,
+      game.gameState.abilityComponents.values
+    )
 
     // Static bodies
     initStaticBodies(tiledMaps)
@@ -54,8 +45,7 @@ case class WorldSimulation() {
     areaWorlds.values.foreach(_.buildStaticChunks())
   }
 
-  /** Creates terrain and static object bodies for all areas. Kept separate from init() for clarity.
-    */
+  /** Creates terrain and static object bodies for all areas. */
   private def initStaticBodies(
       tiledMaps: mutable.Map[AreaId, GameTiledMap]
   )(implicit game: CoreGame): Unit = {
@@ -83,54 +73,70 @@ case class WorldSimulation() {
     }
   }
 
+  // -------------------------
+  // Update Loop
+  // -------------------------
+
   def update(areaId: AreaId)(implicit game: CoreGame): Unit = {
+
     val area = areaWorlds(areaId)
 
     area.update()
 
     handleEvents(areaId)
-    correctBodyPositions(areaId)
-    synchronize(areaId)
-    updateBodies(areaId)
+
+    // Sync game state ↔ physics
+    creaturePhysics.synchronize(areaId)
+    abilityPhysics.synchronize(areaId)
+
+    // Physics step
+    creaturePhysics.update(areaId)
+    abilityPhysics.update(areaId)
+
+    // Optional correction pass
+    creaturePhysics.correctPositions(areaId)
+    abilityPhysics.correctPositions(areaId)
   }
 
-  private def handleEvents(areaId: AreaId)(implicit game: CoreGame): Unit = {
+  // -------------------------
+  // Event Handling
+  // -------------------------
+
+  private def handleEvents(areaId: AreaId)(implicit
+      game: CoreGame
+  ): Unit = {
 
     val events =
       game.queues.physicsEventQueue.drain()
 
     events.foreach {
       case CreatureTeleportEvent(id, pos) =>
-        creatureUpdater.teleportIfInArea(id, pos, areaId, game)
+        creaturePhysics.teleportIfInArea(id, pos, areaId)
 
       case AbilityTeleportEvent(id, pos) =>
-        abilityUpdater.setBodyPosIfInArea(id, pos, areaId, game)
+        abilityPhysics.setBodyPosIfInArea(id, pos, areaId)
 
       case _ =>
     }
   }
 
-  private def updateBodies(areaId: AreaId)(implicit game: CoreGame): Unit = {
-    creatureUpdater.update(areaId)
-    abilityUpdater.update(areaId)
-  }
-
-  private def synchronize(areaId: AreaId)(implicit game: CoreGame): Unit = {
-    creatureUpdater.synchronize(areaId)
-    abilityUpdater.synchronize(areaId)
-  }
-
-  def correctBodyPositions(areaId: AreaId)(implicit game: CoreGame): Unit = {
-    creatureUpdater.correctPositions(areaId)
-    abilityUpdater.correctPositions(areaId)
-  }
+  // -------------------------
+  // External Queries
+  // -------------------------
 
   def creatureBodyPositions: Map[GameEntityId[Creature], Vector2f] =
-    creatureRegistry.positionsForAllAreas()
+    creaturePhysics.bodyPositionsForAllAreas
 
   def abilityBodyPositions: Map[GameEntityId[AbilityComponent], Vector2f] =
-    abilityRegistry.positionsForAllAreas()
+    abilityPhysics.bodyPositionsForAllAreas
 
   def creatureBodies: Map[GameEntityId[Creature], CreatureBody] =
-    creatureSpawner.allBodies.toMap
+    creaturePhysics.bodiesMap
+
+  def correctBodyPositions(areaId: AreaId)(implicit
+      game: CoreGame
+  ): Unit = {
+    creaturePhysics.correctPositions(areaId)
+    abilityPhysics.correctPositions(areaId)
+  }
 }
