@@ -9,81 +9,105 @@ import com.easternsauce.game.math.Vector2f
 
 import scala.collection.mutable
 
-//noinspection SpellCheckingInspection
 case class CreatureRenderController() {
-  private var creatureRenderables: mutable.Map[GameEntityId[Creature], CreatureRenderable] = _
-  private var creatureRenderableSynchronizer: CreatureRenderableRegistry =
-    _
 
-  def init(): Unit = {
-    creatureRenderables = mutable.Map()
+  private val creatureRenderables =
+    mutable.Map[GameEntityId[Creature], CreatureRenderable]()
 
-    creatureRenderableSynchronizer = CreatureRenderableRegistry()
-    creatureRenderableSynchronizer.init(creatureRenderables)
+  def init(): Unit =
+    creatureRenderables.clear()
+
+  // -----------------------
+  // Required by SceneView
+  // -----------------------
+
+  def getAliveCreatureRenderables(areaId: AreaId)(implicit
+      game: CoreGame
+  ): List[CreatureRenderable] =
+    aliveCreatureRenderables(areaId)
+
+  def synchronizeRenderables(areaId: AreaId)(implicit
+      game: CoreGame
+  ): Unit =
+    synchronize(areaId)
+
+  // -----------------------
+  // Synchronization
+  // -----------------------
+
+  def synchronize(areaId: AreaId)(implicit game: CoreGame): Unit = {
+
+    val currentIds =
+      game.gameState.creatures.values
+        .filter(_.currentAreaId == areaId)
+        .map(_.id)
+        .toSet
+
+    currentIds.foreach { id =>
+      if (!creatureRenderables.contains(id)) {
+        val r = CreatureRenderable(id)
+        r.init()
+        creatureRenderables(id) = r
+      }
+    }
+
+    creatureRenderables.keys
+      .filterNot(currentIds.contains)
+      .foreach(creatureRenderables.remove)
   }
+
+  // -----------------------
+  // Rendering
+  // -----------------------
 
   def renderLifeBars(
       areaId: AreaId,
-      worldSpriteBatch: RenderBatch
-  )(implicit game: CoreGame): Unit = {
-    aliveCreatureRenderables(areaId).foreach(
-      _.renderLifeBar(worldSpriteBatch)
-    )
-  }
+      worldBatch: RenderBatch
+  )(implicit game: CoreGame): Unit =
+    aliveCreatureRenderables(areaId)
+      .foreach(_.renderLifeBar(worldBatch))
 
   def renderPlayerNames(
       areaId: AreaId,
-      worldTextSpriteBatch: RenderBatch,
+      worldTextBatch: RenderBatch,
       skin: Skin
   )(implicit game: CoreGame): Unit = {
-    aliveCreatureRenderables(areaId).foreach(
-      _.renderPlayerName(worldTextSpriteBatch, skin.getFont("default-font"))
-    )
-  }
 
-  def getAliveCreatureRenderables(
-      areaId: AreaId
-  )(implicit game: CoreGame): List[CreatureRenderable] = {
+    val font = skin.getFont("default-font")
+
     aliveCreatureRenderables(areaId)
+      .foreach(_.renderPlayerName(worldTextBatch, font))
   }
 
   def renderDeadCreatures(
       areaId: AreaId,
-      worldSpriteBatch: RenderBatch,
+      worldBatch: RenderBatch,
       worldCameraPos: Vector2f
-  )(implicit game: CoreGame): Unit = {
+  )(implicit game: CoreGame): Unit =
     deadCreatureRenderables(areaId)
-      .foreach(_.render(worldSpriteBatch, worldCameraPos))
-  }
+      .foreach(_.render(worldBatch, worldCameraPos))
+
+  // -----------------------
+  // Helpers
+  // -----------------------
 
   private def aliveCreatureRenderables(areaId: AreaId)(implicit
       game: CoreGame
-  ): List[CreatureRenderable] = {
-    game.gameState.creatures
-      .filter { case (_, creature) =>
-        creature.isAlive && creature.currentAreaId == areaId && creatureRenderables
-          .contains(creature.id)
-      }
-      .keys
-      .toList
-      .map(creatureId => creatureRenderables(creatureId))
-  }
+  ): List[CreatureRenderable] =
+    creatureRenderables.collect {
+      case (id, renderable)
+          if game.gameState.creatures(id).isAlive &&
+            game.gameState.creatures(id).currentAreaId == areaId =>
+        renderable
+    }.toList
 
   private def deadCreatureRenderables(areaId: AreaId)(implicit
       game: CoreGame
-  ): List[CreatureRenderable] = {
-    game.gameState.creatures
-      .filter { case (_, creature) =>
-        !creature.isAlive && creature.currentAreaId == areaId && creatureRenderables
-          .contains(creature.id)
-      }
-      .keys
-      .toList
-      .map(creatureId => creatureRenderables(creatureId))
-  }
-
-  def synchronizeRenderables(areaId: AreaId)(implicit game: CoreGame): Unit = {
-    creatureRenderableSynchronizer.update(areaId)
-  }
-
+  ): List[CreatureRenderable] =
+    creatureRenderables.collect {
+      case (id, renderable)
+          if !game.gameState.creatures(id).isAlive &&
+            game.gameState.creatures(id).currentAreaId == areaId =>
+        renderable
+    }.toList
 }

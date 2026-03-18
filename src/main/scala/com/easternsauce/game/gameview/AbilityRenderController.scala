@@ -8,42 +8,49 @@ import com.easternsauce.game.math.Vector2f
 
 import scala.collection.mutable
 
-//noinspection SpellCheckingInspection
 case class AbilityRenderController() {
-  private var abilityRenderables: mutable.Map[GameEntityId[AbilityComponent], AbilityRenderable] = _
-  private var abilityRenderableSynchronizer: AbilityRenderableRegistry =
-    _
 
-  def init(): Unit = {
-    abilityRenderables = mutable.Map()
+  private val abilityRenderables =
+    mutable.Map[GameEntityId[AbilityComponent], AbilityRenderable]()
 
-    abilityRenderableSynchronizer = AbilityRenderableRegistry()
-    abilityRenderableSynchronizer.init(abilityRenderables)
+  def init(): Unit =
+    abilityRenderables.clear()
+
+  def synchronizeRenderables(areaId: AreaId)(implicit
+      game: CoreGame
+  ): Unit =
+    synchronize(areaId)
+
+  def synchronize(areaId: AreaId)(implicit game: CoreGame): Unit = {
+
+    val currentIds =
+      game.gameState.abilityComponents.values
+        .filter(_.currentAreaId == areaId)
+        .map(_.id)
+        .toSet
+
+    currentIds.foreach { id =>
+      if (!abilityRenderables.contains(id)) {
+        val r = AbilityRenderable(id)
+        r.init()
+        abilityRenderables(id) = r
+      }
+    }
+
+    abilityRenderables.keys
+      .filterNot(currentIds.contains)
+      .foreach(abilityRenderables.remove)
   }
 
   def renderAbilities(
       areaId: AreaId,
-      worldSpriteBatch: RenderBatch,
+      worldBatch: RenderBatch,
       worldCameraPos: Vector2f
-  )(implicit game: CoreGame): Unit = {
-    abilityRenderablesInArea(areaId)
-      .foreach(_.render(worldSpriteBatch, worldCameraPos))
-  }
-
-  private def abilityRenderablesInArea(areaId: AreaId)(implicit
-      game: CoreGame
-  ): List[AbilityRenderable] = {
-    game.gameState.abilityComponents
-      .filter { case (_, ability) =>
-        ability.currentAreaId == areaId && abilityRenderables
-          .contains(ability.id)
+  )(implicit game: CoreGame): Unit =
+    abilityRenderables
+      .collect {
+        case (id, renderable) if game.gameState.abilityComponents(id).currentAreaId == areaId =>
+          renderable
       }
-      .keys
-      .toList
-      .map(abilityId => abilityRenderables(abilityId))
-  }
-
-  def synchronizeRenderables(areaId: AreaId)(implicit game: CoreGame): Unit = {
-    abilityRenderableSynchronizer.update(areaId)
-  }
+      .foreach(_.render(worldBatch, worldCameraPos))
 }
