@@ -173,10 +173,7 @@ case class AreaWorld(areaId: AreaId) {
     val dy = cy - closestY
     val distSq = dx * dx + dy * dy
 
-    val circleRadius = circle match {
-      case ac: AbilityComponent => ac.bodyRadius
-      case _                    => 0f
-    }
+    val circleRadius = circle.radius
 
     if (distSq >= circleRadius * circleRadius) return
 
