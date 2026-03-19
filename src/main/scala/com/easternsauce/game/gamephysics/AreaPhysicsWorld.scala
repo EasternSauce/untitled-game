@@ -1,12 +1,10 @@
 package com.easternsauce.game.gamephysics
 
 import com.easternsauce.game.core.CoreGame
-import com.easternsauce.game.gamestate.ability.AbilityComponent
 import com.easternsauce.game.gamestate.event.AbilityComponentHitsCreatureEvent
 import com.easternsauce.game.gamestate.event.AbilityComponentHitsTerrainEvent
 import com.easternsauce.game.gamestate.id.AreaId
 import com.easternsauce.game.math.Vector2f
-import com.softwaremill.quicklens.ModifyPimp
 
 import scala.collection.mutable
 
@@ -95,7 +93,7 @@ case class AreaPhysicsWorld(areaId: AreaId) {
   }
 
   private def resolveCircleVsCircle(a: PhysicsBody, b: PhysicsBody)(implicit
-                                                                    game: CoreGame
+      game: CoreGame
   ): Unit = {
 
     val dx = b.pos.x - a.pos.x
@@ -109,8 +107,7 @@ case class AreaPhysicsWorld(areaId: AreaId) {
     val (nx, ny) = if (dist == 0f) (1f, 0f) else (dx / dist, dy / dist)
     val overlap = minDist - dist
 
-    if (!a.isPushable && !b.isPushable) {}
-    else if (!a.isPushable)
+    if (!a.isPushable && !b.isPushable) {} else if (!a.isPushable)
       b.setPos(Vector2f(b.pos.x + nx * overlap, b.pos.y + ny * overlap))
     else if (!b.isPushable)
       a.setPos(Vector2f(a.pos.x - nx * overlap, a.pos.y - ny * overlap))
