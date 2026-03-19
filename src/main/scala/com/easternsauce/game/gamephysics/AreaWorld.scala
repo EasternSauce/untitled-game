@@ -101,24 +101,8 @@ case class AreaWorld(areaId: AreaId) {
     val dy = b.pos.y - a.pos.y
     val distSq = dx * dx + dy * dy
 
-    // fetch radii from game state or ability component
-    val aRadius = a match {
-      case ac: AbilityComponent => ac.bodyRadius
-      case _ =>
-        game.gameState.creatures.values
-          .find(c => (c.pos - a.pos).len < 0.01f)
-          .map(_.params.bodyRadius)
-          .getOrElse(0f)
-    }
-
-    val bRadius = b match {
-      case ac: AbilityComponent => ac.bodyRadius
-      case _ =>
-        game.gameState.creatures.values
-          .find(c => (c.pos - b.pos).len < 0.01f)
-          .map(_.params.bodyRadius)
-          .getOrElse(0f)
-    }
+    val aRadius = a.radius
+    val bRadius = b.radius
 
     val minDist = aRadius + bRadius
     if (distSq >= minDist * minDist) return
