@@ -5,4 +5,6 @@ import com.easternsauce.game.gamestate.id.GameEntityId
 
 case class AbilityBody(
     abilityComponentId: GameEntityId[AbilityComponent]
-) extends PhysicsBody
+) extends PhysicsBody {
+  override def isSensor: Boolean = true
+}

@@ -103,21 +103,7 @@ case class AreaPhysicsWorld(areaId: AreaId) {
     val minDist = a.radius + b.radius
     if (distSq >= minDist * minDist) return
 
-    val dist = Math.sqrt(distSq).toFloat
-    val (nx, ny) = if (dist == 0f) (1f, 0f) else (dx / dist, dy / dist)
-    val overlap = minDist - dist
-
-    if (!a.isPushable && !b.isPushable) {} else if (!a.isPushable)
-      b.setPos(Vector2f(b.pos.x + nx * overlap, b.pos.y + ny * overlap))
-    else if (!b.isPushable)
-      a.setPos(Vector2f(a.pos.x - nx * overlap, a.pos.y - ny * overlap))
-    else {
-      val half = overlap * 0.5f
-      a.setPos(Vector2f(a.pos.x - nx * half, a.pos.y - ny * half))
-      b.setPos(Vector2f(b.pos.x + nx * half, b.pos.y + ny * half))
-    }
-
-    // ✅ THIS is the correct place for events
+    // ✅ FIRST: trigger events
     (a, b) match {
 
       case (ability: AbilityBody, creature: CreatureBody) =>
@@ -140,6 +126,24 @@ case class AreaPhysicsWorld(areaId: AreaId) {
 
       case _ =>
     }
+
+    // ❌ skip physical resolution if any is sensor
+    if (a.isSensor || b.isSensor) return
+
+    // ✅ ONLY solid bodies reach this point
+    val dist = Math.sqrt(distSq).toFloat
+    val (nx, ny) = if (dist == 0f) (1f, 0f) else (dx / dist, dy / dist)
+    val overlap = minDist - dist
+
+    if (!a.isPushable && !b.isPushable) {} else if (!a.isPushable)
+      b.setPos(Vector2f(b.pos.x + nx * overlap, b.pos.y + ny * overlap))
+    else if (!b.isPushable)
+      a.setPos(Vector2f(a.pos.x - nx * overlap, a.pos.y - ny * overlap))
+    else {
+      val half = overlap * 0.5f
+      a.setPos(Vector2f(a.pos.x - nx * half, a.pos.y - ny * half))
+      b.setPos(Vector2f(b.pos.x + nx * half, b.pos.y + ny * half))
+    }
   }
 
   private def resolveCircleVsRect(circle: PhysicsBody, rect: PhysicsBody)(implicit
@@ -158,12 +162,29 @@ case class AreaPhysicsWorld(areaId: AreaId) {
     val dx = cx - closestX
     val dy = cy - closestY
     val distSq = dx * dx + dy * dy
-
     val circleRadius = circle.radius
 
     if (distSq >= circleRadius * circleRadius) return
 
+    // ✅ FIRST: trigger event
+    circle match {
+      case ac: AbilityBody =>
+        game.queues.localEventQueue.enqueue(
+          AbilityComponentHitsTerrainEvent(
+            ac.abilityComponentId,
+            ac.areaId
+          )
+        )
+      case _ =>
+    }
+
+    // ✅ THEN: stop if sensor
+    if (circle.isSensor) return
+
+    // ⬇️ ONLY solids continue below
+
     val dist = Math.sqrt(distSq).toFloat
+
     if (dist == 0f) {
       val left = cx - (rx - half)
       val right = (rx + half) - cx
@@ -181,15 +202,13 @@ case class AreaPhysicsWorld(areaId: AreaId) {
     val nx = dx / dist
     val ny = dy / dist
     val overlap = circleRadius - dist
+
     circle.setPos(Vector2f(cx + nx * overlap, cy + ny * overlap))
 
     circle match {
       case ac: AbilityBody =>
         game.queues.localEventQueue.enqueue(
-          AbilityComponentHitsTerrainEvent(
-            ac.abilityComponentId,
-            ac.areaId
-          )
+          AbilityComponentHitsTerrainEvent(ac.abilityComponentId, ac.areaId)
         )
       case _ =>
     }

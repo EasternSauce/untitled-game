@@ -72,7 +72,7 @@ case class WorldSimulation() {
           world,
           pos,
           Vector2f(0f, 0f), // no movement
-          0.5f              // same as before
+          0.5f // same as before
         )
       }
     }

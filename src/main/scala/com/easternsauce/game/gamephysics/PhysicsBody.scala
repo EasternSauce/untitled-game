@@ -28,14 +28,15 @@ abstract class PhysicsBody {
     _radius = r
 
   def isStatic: Boolean = false
+  def isSensor: Boolean = false
   def isPushable(implicit game: CoreGame): Boolean = true
 
   def init(
-            areaPhysicsWorld: AreaPhysicsWorld,
-            pos: Vector2f,
-            velocity: Vector2f,
-            radius: Float
-          ): Unit = {
+      areaPhysicsWorld: AreaPhysicsWorld,
+      pos: Vector2f,
+      velocity: Vector2f,
+      radius: Float
+  ): Unit = {
     this.areaPhysicsWorld = areaPhysicsWorld
     this._pos = pos
     this._velocity = velocity
