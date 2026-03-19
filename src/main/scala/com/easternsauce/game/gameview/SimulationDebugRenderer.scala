@@ -27,7 +27,7 @@ case class SimulationDebugRenderer() {
 
     shapeRenderer.begin(ShapeRenderer.ShapeType.Line)
 
-    worldSimulation.areaWorlds(areaId).allBodies.foreach { body =>
+    worldSimulation.areaPhysicsWorlds(areaId).allBodies.foreach { body =>
       if (body.isStatic) {
         shapeRenderer.setColor(Color.YELLOW)
         shapeRenderer.rect(

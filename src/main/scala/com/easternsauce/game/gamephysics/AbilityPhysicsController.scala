@@ -13,14 +13,14 @@ case class AbilityPhysicsController() {
 
   private var bodies: mutable.Map[GameEntityId[AbilityComponent], AbilityBody] =
     _
-  private var areaWorlds: mutable.Map[AreaId, AreaWorld] = _
+  private var areaPhysicsWorlds: mutable.Map[AreaId, AreaPhysicsWorld] = _
 
   def init(
-      areaWorlds: mutable.Map[AreaId, AreaWorld],
+      areaPhysicsWorlds: mutable.Map[AreaId, AreaPhysicsWorld],
       existingAbilities: Iterable[AbilityComponent]
   ): Unit = {
     bodies = mutable.Map()
-    this.areaWorlds = areaWorlds
+    this.areaPhysicsWorlds = areaPhysicsWorlds
 
     existingAbilities.foreach(spawn)
   }
@@ -31,7 +31,7 @@ case class AbilityPhysicsController() {
 
   def spawn(ability: AbilityComponent): Unit = {
     val body = AbilityBody(ability.id)
-    body.init(areaWorlds(ability.currentAreaId), ability.pos)
+    body.init(areaPhysicsWorlds(ability.currentAreaId), ability.pos)
     bodies(ability.id) = body
   }
 

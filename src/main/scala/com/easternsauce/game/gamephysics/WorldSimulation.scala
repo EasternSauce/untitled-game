@@ -12,7 +12,7 @@ import scala.collection.mutable
 
 case class WorldSimulation() {
 
-  var areaWorlds: mutable.Map[AreaId, AreaWorld] = _
+  var areaPhysicsWorlds: mutable.Map[AreaId, AreaPhysicsWorld] = _
 
   private var creaturePhysics: CreaturePhysicsController = _
   private var abilityPhysics: AbilityPhysicsController = _
@@ -25,24 +25,24 @@ case class WorldSimulation() {
       game: CoreGame
   ): Unit = {
 
-    areaWorlds = mutable.Map() ++ tiledMaps.map { case (areaId, _) =>
-      (areaId, AreaWorld(areaId))
+    areaPhysicsWorlds = mutable.Map() ++ tiledMaps.map { case (areaId, _) =>
+      (areaId, AreaPhysicsWorld(areaId))
     }
 
     // Physics controllers
     creaturePhysics = CreaturePhysicsController()
-    creaturePhysics.init(areaWorlds)
+    creaturePhysics.init(areaPhysicsWorlds)
 
     abilityPhysics = AbilityPhysicsController()
     abilityPhysics.init(
-      areaWorlds,
+      areaPhysicsWorlds,
       game.gameState.abilityComponents.values
     )
 
     // Static bodies
     initStaticBodies(tiledMaps)
 
-    areaWorlds.values.foreach(_.buildStaticChunks())
+    areaPhysicsWorlds.values.foreach(_.buildStaticChunks())
   }
 
   /** Creates terrain and static object bodies for all areas. */
@@ -51,7 +51,7 @@ case class WorldSimulation() {
   )(implicit game: CoreGame): Unit = {
 
     tiledMaps.foreach { case (areaId, map) =>
-      val world = areaWorlds(areaId)
+      val world = areaPhysicsWorlds(areaId)
 
       val terrainCells =
         MapCellExtractor.terrainTiles(map)
@@ -79,7 +79,7 @@ case class WorldSimulation() {
 
   def update(areaId: AreaId)(implicit game: CoreGame): Unit = {
 
-    val area = areaWorlds(areaId)
+    val area = areaPhysicsWorlds(areaId)
 
     area.update()
 

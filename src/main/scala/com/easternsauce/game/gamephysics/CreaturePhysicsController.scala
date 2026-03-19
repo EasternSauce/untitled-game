@@ -12,11 +12,11 @@ import scala.collection.mutable
 case class CreaturePhysicsController() {
 
   private var bodies: mutable.Map[GameEntityId[Creature], CreatureBody] = _
-  private var areaWorlds: mutable.Map[AreaId, AreaWorld] = _
+  private var areaPhysicsWorlds: mutable.Map[AreaId, AreaPhysicsWorld] = _
 
-  def init(areaWorlds: mutable.Map[AreaId, AreaWorld]): Unit = {
+  def init(areaPhysicsWorlds: mutable.Map[AreaId, AreaPhysicsWorld]): Unit = {
     bodies = mutable.Map()
-    this.areaWorlds = areaWorlds
+    this.areaPhysicsWorlds = areaPhysicsWorlds
   }
 
   // -------------------------
@@ -25,7 +25,7 @@ case class CreaturePhysicsController() {
 
   def spawn(creature: Creature): Unit = {
     val body = CreatureBody(creature.id)
-    body.init(areaWorlds(creature.currentAreaId), creature.pos)
+    body.init(areaPhysicsWorlds(creature.currentAreaId), creature.pos)
     bodies(creature.id) = body
   }
 

@@ -8,11 +8,11 @@ abstract class PhysicsBody {
 
   protected var _pos: Vector2f = Vector2f(0f, 0f)
 
-  protected var areaWorld: AreaWorld = _
+  protected var areaPhysicsWorld: AreaPhysicsWorld = _
 
   def pos: Vector2f = _pos
 
-  def areaId: AreaId = areaWorld.areaId
+  def areaId: AreaId = areaPhysicsWorld.areaId
 
   def setPos(pos: Vector2f): Unit =
     _pos = pos
@@ -25,10 +25,10 @@ abstract class PhysicsBody {
 
   def isPushable(implicit game: CoreGame): Boolean = true
 
-  def init(areaWorld: AreaWorld, pos: Vector2f): Unit = {
-    this.areaWorld = areaWorld
+  def init(areaPhysicsWorld: AreaPhysicsWorld, pos: Vector2f): Unit = {
+    this.areaPhysicsWorld = areaPhysicsWorld
     this._pos = pos
-    areaWorld.registerBody(this)
+    areaPhysicsWorld.registerBody(this)
   }
 
   def update(delta: Float)(implicit game: CoreGame): Unit = {
@@ -47,12 +47,12 @@ abstract class PhysicsBody {
         )
 
         // resolve immediately after each micro-move
-        areaWorld.resolveCollisionsForBody(this)
+        areaPhysicsWorld.resolveCollisionsForBody(this)
       }
     }
   }
 
   def onRemove(): Unit = {
-    areaWorld.removeBody(this)
+    areaPhysicsWorld.removeBody(this)
   }
 }

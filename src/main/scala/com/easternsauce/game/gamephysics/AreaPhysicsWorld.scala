@@ -10,7 +10,7 @@ import com.softwaremill.quicklens.ModifyPimp
 
 import scala.collection.mutable
 
-case class AreaWorld(areaId: AreaId) {
+case class AreaPhysicsWorld(areaId: AreaId) {
 
   private val chunkSize = 2f
 
