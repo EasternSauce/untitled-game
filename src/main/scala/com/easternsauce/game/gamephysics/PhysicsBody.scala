@@ -7,36 +7,52 @@ import com.easternsauce.game.math.Vector2f
 abstract class PhysicsBody {
 
   protected var _pos: Vector2f = Vector2f(0f, 0f)
+  protected var _velocity: Vector2f = Vector2f(0f, 0f)
+  protected var _radius: Float = 0f
 
   protected var areaPhysicsWorld: AreaPhysicsWorld = _
 
   def pos: Vector2f = _pos
+  def velocity: Vector2f = _velocity
+  def radius: Float = _radius
 
   def areaId: AreaId = areaPhysicsWorld.areaId
 
   def setPos(pos: Vector2f): Unit =
     _pos = pos
 
-  def radius(implicit game: CoreGame): Float
+  def setVelocity(v: Vector2f): Unit =
+    _velocity = v
 
-  def velocity(implicit game: CoreGame): Option[Vector2f]
+  def setRadius(r: Float): Unit =
+    _radius = r
 
   def isStatic: Boolean = false
-
   def isPushable(implicit game: CoreGame): Boolean = true
 
-  def init(areaPhysicsWorld: AreaPhysicsWorld, pos: Vector2f): Unit = {
+  def init(
+            areaPhysicsWorld: AreaPhysicsWorld,
+            pos: Vector2f,
+            velocity: Vector2f,
+            radius: Float
+          ): Unit = {
     this.areaPhysicsWorld = areaPhysicsWorld
     this._pos = pos
+    this._velocity = velocity
+    this._radius = radius
+
     areaPhysicsWorld.registerBody(this)
   }
 
   def update(delta: Float)(implicit game: CoreGame): Unit = {
-    velocity.foreach { v =>
-      // 🔑 number of substeps (prevents 1-frame overlap)
+    val v = _velocity
+
+    if (v.x != 0f || v.y != 0f) {
+
       val speed = Math.sqrt(v.x * v.x + v.y * v.y).toFloat
+
       val steps =
-        Math.max(1, Math.ceil((speed * delta) / radius).toInt)
+        Math.max(1, Math.ceil((speed * delta) / _radius).toInt)
 
       val stepDelta = delta / steps
 
@@ -46,7 +62,6 @@ abstract class PhysicsBody {
           _pos.y + v.y * stepDelta
         )
 
-        // resolve immediately after each micro-move
         areaPhysicsWorld.resolveCollisionsForBody(this)
       }
     }

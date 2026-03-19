@@ -24,8 +24,18 @@ case class CreaturePhysicsController() {
   // -------------------------
 
   def spawn(creature: Creature): Unit = {
-    val body = CreatureBody(creature.id)
-    body.init(areaPhysicsWorlds(creature.currentAreaId), creature.pos)
+    val body = CreatureBody(
+      creature.id,
+      creature.params.isPlayer
+    )
+
+    body.init(
+      areaPhysicsWorlds(creature.currentAreaId),
+      creature.pos,
+      creature.params.velocity,
+      creature.params.bodyRadius
+    )
+
     bodies(creature.id) = body
   }
 
@@ -57,7 +67,14 @@ case class CreaturePhysicsController() {
     val toDestroy =
       bodies.values.filter(b => !entities.contains(b.creatureId) || b.areaId != areaId)
 
+    val toUpdate =
+      entities.values.filter(c => bodies.contains(c.id))
+
     toCreate.foreach(spawn)
+
+    toUpdate.foreach { c =>
+      bodies(c.id).setVelocity(c.params.velocity)
+    }
 
     toDestroy.foreach { body =>
       body.onRemove()

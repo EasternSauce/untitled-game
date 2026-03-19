@@ -31,7 +31,14 @@ case class AbilityPhysicsController() {
 
   def spawn(ability: AbilityComponent): Unit = {
     val body = AbilityBody(ability.id)
-    body.init(areaPhysicsWorlds(ability.currentAreaId), ability.pos)
+
+    body.init(
+      areaPhysicsWorlds(ability.currentAreaId),
+      ability.pos,
+      ability.velocity,
+      ability.bodyRadius
+    )
+
     bodies(ability.id) = body
   }
 
@@ -68,6 +75,13 @@ case class AbilityPhysicsController() {
     toDestroy.foreach { body =>
       body.onRemove()
       bodies.remove(body.abilityComponentId)
+    }
+
+    val toUpdate =
+      entities.values.filter(a => bodies.contains(a.id))
+
+    toUpdate.foreach { a =>
+      bodies(a.id).setVelocity(a.velocity)
     }
   }
 

@@ -6,15 +6,5 @@ import com.easternsauce.game.gamestate.id.GameEntityId
 import com.easternsauce.game.math.Vector2f
 
 case class AbilityBody(
-    abilityComponentId: GameEntityId[AbilityComponent]
-) extends PhysicsBody {
-
-  override def radius(implicit game: CoreGame): Float =
-    game.gameState.abilityComponents(abilityComponentId).bodyRadius
-
-  override def velocity(implicit game: CoreGame): Option[Vector2f] =
-    game.gameState.abilityComponents
-      .get(abilityComponentId)
-      .map(_.velocity)
-
-}
+                        abilityComponentId: GameEntityId[AbilityComponent]
+                      ) extends PhysicsBody

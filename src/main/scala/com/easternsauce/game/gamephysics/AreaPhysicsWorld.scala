@@ -95,48 +95,53 @@ case class AreaPhysicsWorld(areaId: AreaId) {
   }
 
   private def resolveCircleVsCircle(a: PhysicsBody, b: PhysicsBody)(implicit
-      game: CoreGame
+                                                                    game: CoreGame
   ): Unit = {
+
     val dx = b.pos.x - a.pos.x
     val dy = b.pos.y - a.pos.y
     val distSq = dx * dx + dy * dy
 
-    val aRadius = a.radius
-    val bRadius = b.radius
-
-    val minDist = aRadius + bRadius
+    val minDist = a.radius + b.radius
     if (distSq >= minDist * minDist) return
 
     val dist = Math.sqrt(distSq).toFloat
     val (nx, ny) = if (dist == 0f) (1f, 0f) else (dx / dist, dy / dist)
     val overlap = minDist - dist
 
-    if (!a.isPushable && !b.isPushable) {} else if (!a.isPushable)
+    if (!a.isPushable && !b.isPushable) {}
+    else if (!a.isPushable)
       b.setPos(Vector2f(b.pos.x + nx * overlap, b.pos.y + ny * overlap))
-    else if (!b.isPushable) a.setPos(Vector2f(a.pos.x - nx * overlap, a.pos.y - ny * overlap))
+    else if (!b.isPushable)
+      a.setPos(Vector2f(a.pos.x - nx * overlap, a.pos.y - ny * overlap))
     else {
       val half = overlap * 0.5f
       a.setPos(Vector2f(a.pos.x - nx * half, a.pos.y - ny * half))
       b.setPos(Vector2f(b.pos.x + nx * half, b.pos.y + ny * half))
     }
 
-    // trigger ability hits
-    val abilityComponents = game.gameState.abilityComponents.values
-    val creatures = game.gameState.creatures.values.filter(_.isAlive)
-    for {
-      ac <- abilityComponents
-      c <- creatures
-      dist = (ac.pos - c.pos).len
-      combined = ac.bodyRadius + c.params.bodyRadius
-      if dist < combined
-    } {
-      game.queues.localEventQueue.enqueue(
-        AbilityComponentHitsCreatureEvent(c.id, ac.id, ac.currentAreaId)
-      )
-      if (ac.isDestroyedOnCreatureContact) {
-        val updatedAC = ac.modify(_.params.isScheduledToBeRemoved).setTo(true)
-        game.gameState.abilityComponents.updated(ac.id, updatedAC)
-      }
+    // ✅ THIS is the correct place for events
+    (a, b) match {
+
+      case (ability: AbilityBody, creature: CreatureBody) =>
+        game.queues.localEventQueue.enqueue(
+          AbilityComponentHitsCreatureEvent(
+            creature.creatureId,
+            ability.abilityComponentId,
+            ability.areaId
+          )
+        )
+
+      case (creature: CreatureBody, ability: AbilityBody) =>
+        game.queues.localEventQueue.enqueue(
+          AbilityComponentHitsCreatureEvent(
+            creature.creatureId,
+            ability.abilityComponentId,
+            ability.areaId
+          )
+        )
+
+      case _ =>
     }
   }
 
@@ -182,9 +187,12 @@ case class AreaPhysicsWorld(areaId: AreaId) {
     circle.setPos(Vector2f(cx + nx * overlap, cy + ny * overlap))
 
     circle match {
-      case ac: AbilityComponent if ac.isDestroyedOnTerrainContact =>
+      case ac: AbilityBody =>
         game.queues.localEventQueue.enqueue(
-          AbilityComponentHitsTerrainEvent(ac.id, ac.currentAreaId)
+          AbilityComponentHitsTerrainEvent(
+            ac.abilityComponentId,
+            ac.areaId
+          )
         )
       case _ =>
     }
