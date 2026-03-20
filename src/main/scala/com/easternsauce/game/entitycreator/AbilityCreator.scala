@@ -36,6 +36,7 @@ trait AbilityCreator {
         val ability = abilityToCreate.abilityType match {
           case AbilityType.Arrow       => Arrow(params)
           case AbilityType.MeleeAttack => MeleeAttack(params)
+          case AbilityType.ArrowVolley => ArrowVolley(params)
           case other =>
             throw new RuntimeException(s"Incorrect ability type: $other")
         }

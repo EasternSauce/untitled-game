@@ -82,7 +82,7 @@ abstract class CoreGameClientBase extends CoreGame {
       .filter(gameState.creatures.contains)
       .map(gameState.creatures(_))
 
-    val currentAbilityType = AbilityType.Arrow
+    val currentAbilityType = AbilityType.ArrowVolley
 
     clientCreature.foreach { creature =>
       if (

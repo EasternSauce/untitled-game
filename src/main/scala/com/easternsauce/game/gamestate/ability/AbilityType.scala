@@ -16,5 +16,5 @@ object AbilityType extends Enumeration {
 
   val Arrow: Value = AbilityTypeDetails(0, "Arrow", 1f)
   val MeleeAttack: Value = AbilityTypeDetails(1, "MeleeAttack", 0.5f)
-
+  val ArrowVolley: Value = AbilityTypeDetails(2, "ArrowVolley", 1.2f)
 }
