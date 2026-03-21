@@ -5,7 +5,7 @@ import com.easternsauce.game.gamestate.ability.scenario.step.AbilityScenarioStep
 import com.easternsauce.game.gamestate.ability.scenario.step.GenericScenarioStep
 import com.easternsauce.game.gamestate.ability.scenario.step.ProjectileScenarioStep
 
-case class Arrow(params: AbilityParams) extends Ability {
+case class ExplosiveArrow(params: AbilityParams) extends Ability {
 
   override def onActiveStart()(implicit game: CoreGame): Ability = {
 
@@ -16,7 +16,7 @@ case class Arrow(params: AbilityParams) extends Ability {
 
   override def finishWhenComponentsDestroyed: Boolean = true
 
-  override def copy(params: AbilityParams): Ability = Arrow(params)
+  override def copy(params: AbilityParams): Ability = ExplosiveArrow(params)
 
   override def scenarioSteps: List[AbilityScenarioStep] = List(
     ProjectileScenarioStep(

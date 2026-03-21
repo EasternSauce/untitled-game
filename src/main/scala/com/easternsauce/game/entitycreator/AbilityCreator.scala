@@ -34,7 +34,7 @@ trait AbilityCreator {
         )
 
         val ability = abilityToCreate.abilityType match {
-          case AbilityType.Arrow       => Arrow(params)
+          case AbilityType.Arrow       => ExplosiveArrow(params)
           case AbilityType.MeleeAttack => MeleeAttack(params)
           case AbilityType.ArrowVolley => ArrowVolley(params)
           case other =>
