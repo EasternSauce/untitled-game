@@ -1,0 +1,5 @@
+package com.easternsauce.game.entitycreator
+
+sealed trait ProjectileComponentType
+case object BasicProjectile extends ProjectileComponentType
+case object ChainedProjectile extends ProjectileComponentType
