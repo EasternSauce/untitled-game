@@ -68,6 +68,5 @@ case class AbilityComponentHitsTerrainEvent(
           .isContinueScenario
       )
       .setToIf(component.isDestroyedOnTerrainContact)(false)
-      .markAbilityAsFinishedIfNoComponentsExist(component.abilityId)
   }
 }

@@ -5,6 +5,8 @@ import com.easternsauce.game.gamestate.GameState
 import com.easternsauce.game.gamestate.ability.scenario.AbilityComponentScenarioRunStepEvent
 import com.easternsauce.game.gamestate.ability.scenario.AbilityComponentScenarioStepParams
 import com.easternsauce.game.gamestate.id.AreaId
+import com.easternsauce.game.gamestate.id.GameEntityId
+import com.easternsauce.game.gamestate.ability.Ability
 import com.easternsauce.game.gameview.GameView
 
 case class Gameplay()(implicit game: CoreGame) {
@@ -42,39 +44,55 @@ case class Gameplay()(implicit game: CoreGame) {
 
   def update(areaId: AreaId, delta: Float): Unit = {
     gameStateHolder.updateGameState(areaId, delta)
+
+    // Log ability components count every frame
+    println(s"[DEBUG] Frame update: ${gameStateHolder.gameState.abilityComponents.size} ability components in game state, " +
+      s"${gameStateHolder.gameState.abilities.size} abilities")
     updateAbilityScenarios()
     worldSimulation.update(areaId)
     view.update(areaId, delta)
   }
 
   private def updateAbilityScenarios(): Unit = {
-    // drain() returns all items and clears the queue atomically
     val events = game.queues.abilityScenarioEventQueue.drain()
 
     events.foreach {
       case event: AbilityComponentScenarioRunStepEvent =>
+        println(
+          s"[DEBUG] Running scenario step for ability ${event.scenarioStepParams.abilityId}, step ${event.scenarioStepParams.scenarioStepNo}"
+        )
         scheduleNextScenarioStepComponents(event.scenarioStepParams)
-      case _ => // ignore other events if any
+      case other =>
+        println(s"[DEBUG] Ignored non-step event: $other")
     }
   }
 
   private def scheduleNextScenarioStepComponents(
-      scenarioStepParams: AbilityComponentScenarioStepParams
-  )(implicit game: CoreGame): Unit = {
-    if (game.gameState.abilities.contains(scenarioStepParams.abilityId)) {
-      val ability = game.gameState.abilities(scenarioStepParams.abilityId)
+                                                  scenarioStepParams: AbilityComponentScenarioStepParams
+                                                )(implicit game: CoreGame): Unit = {
 
-      if (scenarioStepParams.scenarioStepNo < ability.scenarioSteps.length) {
-        val scenarioStep =
-          ability.scenarioSteps(scenarioStepParams.scenarioStepNo)
-
-        scenarioStep.scheduleComponents(scenarioStepParams)
-      }
+    if (!game.gameState.abilities.contains(scenarioStepParams.abilityId)) {
+      println(s"[DEBUG] Ability ${scenarioStepParams.abilityId} not found, skipping scenario step")
+      return
     }
+
+    val ability: Ability = game.gameState.abilities(scenarioStepParams.abilityId)
+
+    if (scenarioStepParams.scenarioStepNo >= ability.scenarioSteps.length) {
+      println(
+        s"[DEBUG] Scenario step number ${scenarioStepParams.scenarioStepNo} exceeds steps for ability ${scenarioStepParams.abilityId}"
+      )
+      return
+    }
+
+    val scenarioStep = ability.scenarioSteps(scenarioStepParams.scenarioStepNo)
+    println(
+      s"[DEBUG] Scheduling components for ability ${scenarioStepParams.abilityId}, step ${scenarioStepParams.scenarioStepNo}"
+    )
+    scenarioStep.scheduleComponents(scenarioStepParams)
   }
 
   def render(areaId: AreaId, delta: Float): Unit = {
     view.render(areaId, delta)
   }
-
 }

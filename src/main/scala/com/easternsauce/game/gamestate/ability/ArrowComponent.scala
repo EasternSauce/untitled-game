@@ -7,33 +7,28 @@ import com.softwaremill.quicklens.ModifyPimp
 
 case class ArrowComponent(params: AbilityComponentParams) extends AbilityComponent {
 
-  // --- Constant max range ---
-  val maxRange: Float = 30f // tweak this value as needed
-
+  val maxRange: Float = 30f
   override val textureFileName: String = "arrow"
   override val textureSize: Int = 64
   override val bodyRadius: Float = 0.3f
-
-  override val framesDefinition: FramesDefinition =
-    FramesDefinition(start = 0, count = 1, frameDuration = 0.1f)
-
+  override val framesDefinition: FramesDefinition = FramesDefinition(0, 1, 0.1f)
   override val speed: Float = 12f
-
   override def init(): ArrowComponent = this
-
   override def isDestroyedOnCreatureContact: Boolean = true
   override def isDestroyedOnTerrainContact: Boolean = true
 
   override def update(
-      delta: Float,
-      newPos: Option[Vector2f]
-  )(implicit game: CoreGame): AbilityComponent = {
+                       delta: Float,
+                       newPos: Option[Vector2f]
+                     )(implicit game: CoreGame): AbilityComponent = {
 
     val updated = super.update(delta, newPos)
-
     val distanceFromSpawn = updated.params.pos.distance(updated.params.spawnPos)
 
     if (distanceFromSpawn > maxRange && !updated.params.isScheduledToBeRemoved) {
+      println(
+        s"[DEBUG] Arrow ${params.id} exceeded max range, marking for removal, isContinueScenario will be false"
+      )
       updated
         .modify(_.params.isScheduledToBeRemoved)
         .setTo(true)
@@ -44,5 +39,4 @@ case class ArrowComponent(params: AbilityComponentParams) extends AbilityCompone
 
   override def copy(params: AbilityComponentParams): AbilityComponent =
     ArrowComponent(params)
-
 }

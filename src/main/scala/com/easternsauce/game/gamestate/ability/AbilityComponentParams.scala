@@ -19,8 +19,6 @@ case class AbilityComponentParams(
     isScheduledToBeRemoved: Boolean = false,
     isContinueScenario: Boolean = true,
     expirationTime: Option[Float],
-
-    // ✅ REQUIRED FOR RETURNING ARROW
     spawnPos: Vector2f,
     hasLeftInitialSurface: Boolean = false
 )

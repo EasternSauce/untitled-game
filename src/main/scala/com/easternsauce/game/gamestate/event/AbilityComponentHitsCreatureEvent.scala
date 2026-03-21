@@ -65,7 +65,6 @@ case class AbilityComponentHitsCreatureEvent(
           .setToIf(
             creature.isAlive && abilityComponent.isDestroyedOnCreatureContact
           )(true)
-          .markAbilityAsFinishedIfNoComponentsExist(abilityComponent.abilityId)
       }
     }
   }
