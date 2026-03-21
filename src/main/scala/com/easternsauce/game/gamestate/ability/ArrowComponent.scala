@@ -18,9 +18,9 @@ case class ArrowComponent(params: AbilityComponentParams) extends AbilityCompone
   override def isDestroyedOnTerrainContact: Boolean = true
 
   override def update(
-                       delta: Float,
-                       newPos: Option[Vector2f]
-                     )(implicit game: CoreGame): AbilityComponent = {
+      delta: Float,
+      newPos: Option[Vector2f]
+  )(implicit game: CoreGame): AbilityComponent = {
 
     val updated = super.update(delta, newPos)
     val distanceFromSpawn = updated.params.pos.distance(updated.params.spawnPos)

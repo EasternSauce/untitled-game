@@ -2,11 +2,10 @@ package com.easternsauce.game.core
 
 import com.easternsauce.game.gamephysics.WorldSimulation
 import com.easternsauce.game.gamestate.GameState
+import com.easternsauce.game.gamestate.ability.Ability
 import com.easternsauce.game.gamestate.ability.scenario.AbilityComponentScenarioRunStepEvent
 import com.easternsauce.game.gamestate.ability.scenario.AbilityComponentScenarioStepParams
 import com.easternsauce.game.gamestate.id.AreaId
-import com.easternsauce.game.gamestate.id.GameEntityId
-import com.easternsauce.game.gamestate.ability.Ability
 import com.easternsauce.game.gameview.GameView
 
 case class Gameplay()(implicit game: CoreGame) {
@@ -46,8 +45,10 @@ case class Gameplay()(implicit game: CoreGame) {
     gameStateHolder.updateGameState(areaId, delta)
 
     // Log ability components count every frame
-    println(s"[DEBUG] Frame update: ${gameStateHolder.gameState.abilityComponents.size} ability components in game state, " +
-      s"${gameStateHolder.gameState.abilities.size} abilities")
+    println(
+      s"[DEBUG] Frame update: ${gameStateHolder.gameState.abilityComponents.size} ability components in game state, " +
+        s"${gameStateHolder.gameState.abilities.size} abilities"
+    )
     updateAbilityScenarios()
     worldSimulation.update(areaId)
     view.update(areaId, delta)
@@ -68,8 +69,8 @@ case class Gameplay()(implicit game: CoreGame) {
   }
 
   private def scheduleNextScenarioStepComponents(
-                                                  scenarioStepParams: AbilityComponentScenarioStepParams
-                                                )(implicit game: CoreGame): Unit = {
+      scenarioStepParams: AbilityComponentScenarioStepParams
+  )(implicit game: CoreGame): Unit = {
 
     if (!game.gameState.abilities.contains(scenarioStepParams.abilityId)) {
       println(s"[DEBUG] Ability ${scenarioStepParams.abilityId} not found, skipping scenario step")
