@@ -7,9 +7,7 @@ import com.easternsauce.game.gamestate.ability.scenario.step.ProjectileScenarioS
 
 case class ArrowVolley(params: AbilityParams) extends Ability {
 
-  override def onActiveStart()(implicit game: CoreGame): Ability = {
-    this
-  }
+  override def onActiveStart()(implicit game: CoreGame): Ability = this
 
   override def channelTime: Float = 0.4f
 
@@ -19,12 +17,12 @@ case class ArrowVolley(params: AbilityParams) extends Ability {
 
   override def scenarioSteps: List[AbilityScenarioStep] = List(
     ProjectileScenarioStep(
-      abilityComponentType = Some(AbilityComponentType.ArrowComponent),
-      nextStepCondition = NextStepCondition.NullCondition,
-      expirationTime = None,
-      startingAngle = -30f,
-      angleBetweenProjectiles = 10f,
-      numOfProjectiles = 7
+      Some(AbilityComponentType.ArrowComponent),
+      NextStepCondition.NullCondition,
+      None,
+      -30f,
+      10f,
+      7
     )
   )
 }

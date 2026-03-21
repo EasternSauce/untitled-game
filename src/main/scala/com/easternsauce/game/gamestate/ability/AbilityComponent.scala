@@ -1,5 +1,6 @@
 package com.easternsauce.game.gamestate.ability
 
+import com.easternsauce.game.core.CoreGame
 import com.easternsauce.game.gamestate.GameEntity
 import com.easternsauce.game.gamestate.WorldDirection
 import com.easternsauce.game.gamestate.WorldDirection.WorldDirection
@@ -35,7 +36,7 @@ trait AbilityComponent extends GameEntity with TransformIf {
   def update(
       delta: Float,
       newPos: Option[Vector2f]
-  ): AbilityComponent = {
+  )(implicit game: CoreGame): AbilityComponent = {
     updateTimers(delta)
       .updateMovement(newPos)
       .updateFacingVector()

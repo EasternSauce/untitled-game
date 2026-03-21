@@ -33,15 +33,18 @@ trait AbilityComponentCreator {
           facingVector = abilityComponentToCreate.facingVector,
           damage = abilityComponentToCreate.damage,
           scenarioStepNo = abilityComponentToCreate.scenarioStepNo,
-          expirationTime = abilityComponentToCreate.expirationTime
+          expirationTime = abilityComponentToCreate.expirationTime,
+          spawnPos = abilityComponentToCreate.pos // NEW
         )
 
         val abilityComponent =
           abilityComponentToCreate.componentType match {
-            case AbilityComponentType.ArrowComponent      => ArrowComponent(params)
-            case AbilityComponentType.GhostArrowComponent => GhostArrowComponent(params)
-            case AbilityComponentType.ExplosionComponent  => ExplosionComponent(params)
-            case other => throw new RuntimeException(s"Incorrect ability component type: $other")
+            case AbilityComponentType.ArrowComponent          => ArrowComponent(params)
+            case AbilityComponentType.GhostArrowComponent     => GhostArrowComponent(params)
+            case AbilityComponentType.ExplosionComponent      => ExplosionComponent(params)
+            case AbilityComponentType.ReturningArrowComponent => ReturningArrowComponent(params)
+            case other =>
+              throw new RuntimeException(s"Incorrect ability component type: $other")
           }
 
         gameState
