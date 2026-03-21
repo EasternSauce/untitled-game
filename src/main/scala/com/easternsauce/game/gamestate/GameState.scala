@@ -61,9 +61,9 @@ case class GameState(
   }
 
   private def updateCreatures(
-                               areaId: AreaId,
-                               delta: Float
-                             )(implicit game: CoreGame): GameState = {
+      areaId: AreaId,
+      delta: Float
+  )(implicit game: CoreGame): GameState = {
 
     val abilitiesToRemove = abilities.values
       .filter(ability =>
@@ -78,7 +78,9 @@ case class GameState(
       .toList
 
     if (abilityComponentsToRemove.nonEmpty) {
-      println(s"[DEBUG] Preparing to remove ${abilityComponentsToRemove.size} components this frame")
+      println(
+        s"[DEBUG] Preparing to remove ${abilityComponentsToRemove.size} components this frame"
+      )
     }
 
     abilityComponentsToRemove.foreach { component =>
@@ -127,11 +129,12 @@ case class GameState(
   }
 
   def markAbilityAsFinishedIfNoComponentsExist(
-                                                abilityId: GameEntityId[Ability]
-                                              ): GameState = {
-    println(s"[DEBUG] Checking if ability $abilityId should be finished. Components remaining: " +
-      s"${abilityComponents.values.count(_.params.abilityId == abilityId)}, finishWhenComponentsDestroyed: " +
-      s"${abilities.get(abilityId).map(_.finishWhenComponentsDestroyed).getOrElse(false)}"
+      abilityId: GameEntityId[Ability]
+  ): GameState = {
+    println(
+      s"[DEBUG] Checking if ability $abilityId should be finished. Components remaining: " +
+        s"${abilityComponents.values.count(_.params.abilityId == abilityId)}, finishWhenComponentsDestroyed: " +
+        s"${abilities.get(abilityId).map(_.finishWhenComponentsDestroyed).getOrElse(false)}"
     )
 
     this.transformIf(
@@ -142,7 +145,8 @@ case class GameState(
           .exists(_.params.abilityId == abilityId)
     ) {
       println(s"[DEBUG] Ability $abilityId has no remaining components and is now FINISHED")
-      this.modify(_.abilities.at(abilityId))
+      this
+        .modify(_.abilities.at(abilityId))
         .using(_.modify(_.params.state).setTo(AbilityState.Finished))
     }
   }
