@@ -5,25 +5,25 @@ import com.badlogic.gdx.graphics.g2d.Animation
 import com.badlogic.gdx.graphics.g2d.TextureRegion
 import com.easternsauce.game.Assets
 import com.easternsauce.game.core.CoreGame
-import com.easternsauce.game.gamestate.ability.AbilityComponent
 import com.easternsauce.game.gamestate.creature.FramesDefinition
 import com.easternsauce.game.gamestate.id.GameEntityId
+import com.easternsauce.game.gamestate.projectile.ProjectileComponent
 import com.easternsauce.game.math.IsometricProjection
 import com.easternsauce.game.math.Vector2f
 
-case class AbilityAnimation(abilityId: GameEntityId[AbilityComponent]) {
+case class ProjectileAnimation(projectileComponentId: GameEntityId[ProjectileComponent]) {
   private var animation: Animation[TextureRegion] = _
   private var texture: Texture = _
 
   def init()(implicit game: CoreGame): Unit = {
-    val ability: AbilityComponent = game.gameState.abilityComponents(abilityId)
+    val projectile: ProjectileComponent = game.gameState.projectileComponents(projectileComponentId)
 
-    texture = Assets.texture("ability/" + ability.textureFileName)
+    texture = Assets.texture("ability/" + projectile.textureFileName)
 
     animation = loadAnimation(
-      ability.textureSize,
-      ability.textureSize,
-      ability.framesDefinition
+      projectile.textureSize,
+      projectile.textureSize,
+      projectile.framesDefinition
     )
 
   }
@@ -53,7 +53,7 @@ case class AbilityAnimation(abilityId: GameEntityId[AbilityComponent]) {
   }
 
   def render(batch: RenderBatch)(implicit game: CoreGame): Unit = {
-    val component = game.gameState.abilityComponents(abilityId)
+    val component = game.gameState.projectileComponents(projectileComponentId)
 
     val frame = animation.getKeyFrame(component.params.generalTimer.time, false)
 

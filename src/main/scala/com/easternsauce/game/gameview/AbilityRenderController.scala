@@ -1,9 +1,9 @@
 package com.easternsauce.game.gameview
 
 import com.easternsauce.game.core.CoreGame
-import com.easternsauce.game.gamestate.ability.AbilityComponent
 import com.easternsauce.game.gamestate.id.AreaId
 import com.easternsauce.game.gamestate.id.GameEntityId
+import com.easternsauce.game.gamestate.projectile.ProjectileComponent
 import com.easternsauce.game.math.Vector2f
 
 import scala.collection.mutable
@@ -11,7 +11,7 @@ import scala.collection.mutable
 case class AbilityRenderController() {
 
   private val abilityRenderables =
-    mutable.Map[GameEntityId[AbilityComponent], AbilityRenderable]()
+    mutable.Map[GameEntityId[ProjectileComponent], AbilityRenderable]()
 
   def init(): Unit =
     abilityRenderables.clear()
@@ -24,7 +24,7 @@ case class AbilityRenderController() {
   def synchronize(areaId: AreaId)(implicit game: CoreGame): Unit = {
 
     val currentIds =
-      game.gameState.abilityComponents.values
+      game.gameState.projectileComponents.values
         .filter(_.currentAreaId == areaId)
         .map(_.id)
         .toSet
@@ -49,7 +49,7 @@ case class AbilityRenderController() {
   )(implicit game: CoreGame): Unit =
     abilityRenderables
       .collect {
-        case (id, renderable) if game.gameState.abilityComponents(id).currentAreaId == areaId =>
+        case (id, renderable) if game.gameState.projectileComponents(id).currentAreaId == areaId =>
           renderable
       }
       .foreach(_.render(worldBatch, worldCameraPos))
