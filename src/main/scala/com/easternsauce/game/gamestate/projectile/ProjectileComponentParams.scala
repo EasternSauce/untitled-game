@@ -1,12 +1,25 @@
 package com.easternsauce.game.gamestate.projectile
 
+import com.easternsauce.game.gamestate.SimpleTimer
+import com.easternsauce.game.gamestate.ability.Ability
 import com.easternsauce.game.gamestate.creature.Creature
+import com.easternsauce.game.gamestate.id.AreaId
 import com.easternsauce.game.gamestate.id.GameEntityId
+import com.easternsauce.game.math.Vector2f
 
 case class ProjectileComponentParams(
+    id: GameEntityId[ProjectileComponent],
+    abilityId: GameEntityId[Ability],
+    currentAreaId: AreaId,
     creatureId: GameEntityId[Creature],
-    pos: (Float, Float),
-    velocity: (Float, Float),
+    pos: Vector2f,
+    facingVector: Vector2f = Vector2f(0, 1),
     damage: Float,
-    isScheduledToBeRemoved: Boolean = false
+    generalTimer: SimpleTimer = SimpleTimer(isRunning = true),
+    scenarioStepNo: Int,
+    isScheduledToBeRemoved: Boolean = false,
+    isContinueScenario: Boolean = true,
+    expirationTime: Option[Float],
+    spawnPos: Vector2f,
+    hasLeftInitialSurface: Boolean = false
 )
