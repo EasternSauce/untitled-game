@@ -9,9 +9,11 @@ import com.easternsauce.game.gamestate.ability.AbilityState
 import com.easternsauce.game.gamestate.ability.scenario.AbilityComponentScenarioRunStepEvent
 import com.easternsauce.game.gamestate.ability.scenario.AbilityComponentScenarioStepParams
 import com.easternsauce.game.gamestate.creature.Creature
+import com.easternsauce.game.gamestate.effect.EffectComponent
 import com.easternsauce.game.gamestate.event.GameStateEvent
 import com.easternsauce.game.gamestate.id.AreaId
 import com.easternsauce.game.gamestate.id.GameEntityId
+import com.easternsauce.game.gamestate.projectile.ProjectileComponent
 import com.easternsauce.game.spawnpoint.SpawnPoint
 import com.easternsauce.game.spawnpoint.SpawnPointUpdater
 import com.easternsauce.game.util.TransformIf
@@ -22,6 +24,8 @@ case class GameState(
     creatures: Map[GameEntityId[Creature], Creature] = Map(),
     abilities: Map[GameEntityId[Ability], Ability] = Map(),
     abilityComponents: Map[GameEntityId[AbilityComponent], AbilityComponent] = Map(),
+    projectileComponents: Map[GameEntityId[ProjectileComponent], ProjectileComponent] = Map(),
+    effectComponents: Map[GameEntityId[EffectComponent], EffectComponent] = Map(),
     activePlayerIds: Set[GameEntityId[Creature]] = Set(),
     spawnPoints: Map[String, SpawnPoint] = Map(),
     mainTimer: SimpleTimer = SimpleTimer(isRunning = true)

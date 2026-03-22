@@ -1,5 +1,0 @@
-package com.easternsauce.game.entitycreator
-
-sealed trait EffectComponentType
-case object BuffEffect extends EffectComponentType
-case object DamageOverTimeEffect extends EffectComponentType
