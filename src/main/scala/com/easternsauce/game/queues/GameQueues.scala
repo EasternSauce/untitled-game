@@ -1,6 +1,5 @@
 package com.easternsauce.game.queues
 
-import com.easternsauce.game.entitycreator.AbilityComponentToCreate
 import com.easternsauce.game.entitycreator.AbilityToCreate
 import com.easternsauce.game.entitycreator.EffectComponentToCreate
 import com.easternsauce.game.entitycreator.EnemyToCreate
@@ -29,7 +28,6 @@ case class GameQueues(
     playerQueue: Queue[PlayerToCreate] = Queue(),
     enemyQueue: Queue[EnemyToCreate] = Queue(),
     abilityQueue: Queue[AbilityToCreate] = Queue(),
-    abilityComponentQueue: Queue[AbilityComponentToCreate] = Queue(),
     projectileComponentQueue: Queue[ProjectileComponentToCreate] = Queue(),
     effectComponentQueue: Queue[EffectComponentToCreate] = Queue(),
     broadcastEventQueue: Queue[GameStateEvent] = Queue(),

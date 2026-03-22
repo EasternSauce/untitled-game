@@ -7,13 +7,12 @@ trait GameEntityCreators
     extends PlayerCreator
     with EnemyCreator
     with AbilityCreator
-    with AbilityComponentCreator
     with ProjectileComponentCreator
     with EffectComponentCreator {
   this: GameState =>
   def createEntities()(implicit
       game: CoreGame
   ): GameState = {
-    createPlayers.createEnemies.createAbilities.createAbilityComponents.createProjectileComponents.createEffectComponents
+    createPlayers.createEnemies.createAbilities.createProjectileComponents.createEffectComponents
   }
 }

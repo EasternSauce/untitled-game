@@ -4,7 +4,6 @@ import com.easternsauce.game.Constants
 import com.easternsauce.game.core.CoreGame
 import com.easternsauce.game.entitycreator.GameEntityCreators
 import com.easternsauce.game.gamestate.ability.Ability
-import com.easternsauce.game.gamestate.ability.AbilityComponent
 import com.easternsauce.game.gamestate.ability.AbilityState
 import com.easternsauce.game.gamestate.ability.scenario.ProjectileComponentScenarioRunStepEvent
 import com.easternsauce.game.gamestate.ability.scenario.ProjectileComponentScenarioStepParams
@@ -23,7 +22,6 @@ import com.softwaremill.quicklens.QuicklensMapAt
 case class GameState(
     creatures: Map[GameEntityId[Creature], Creature] = Map(),
     abilities: Map[GameEntityId[Ability], Ability] = Map(),
-    abilityComponents: Map[GameEntityId[AbilityComponent], AbilityComponent] = Map(),
     projectileComponents: Map[GameEntityId[ProjectileComponent], ProjectileComponent] = Map(),
     effectComponents: Map[GameEntityId[EffectComponent], EffectComponent] = Map(),
     activePlayerIds: Set[GameEntityId[Creature]] = Set(),
