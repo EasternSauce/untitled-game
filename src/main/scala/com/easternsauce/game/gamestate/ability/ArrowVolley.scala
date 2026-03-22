@@ -4,6 +4,7 @@ import com.easternsauce.game.core.CoreGame
 import com.easternsauce.game.gamestate.ability.scenario.NextStepCondition
 import com.easternsauce.game.gamestate.ability.scenario.step.AbilityScenarioStep
 import com.easternsauce.game.gamestate.ability.scenario.step.ProjectileScenarioStep
+import com.easternsauce.game.gamestate.projectile.ProjectileComponentType
 
 case class ArrowVolley(params: AbilityParams) extends Ability {
 
@@ -17,7 +18,7 @@ case class ArrowVolley(params: AbilityParams) extends Ability {
 
   override def scenarioSteps: List[AbilityScenarioStep] = List(
     ProjectileScenarioStep(
-      Some(AbilityComponentType.ArrowComponent),
+      Some(ProjectileComponentType.ArrowComponent),
       NextStepCondition.NullCondition,
       None,
       -30f,

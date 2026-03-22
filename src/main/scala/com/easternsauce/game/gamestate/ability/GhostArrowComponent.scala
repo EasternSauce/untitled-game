@@ -1,8 +1,10 @@
 package com.easternsauce.game.gamestate.ability
 
 import com.easternsauce.game.gamestate.creature.FramesDefinition
+import com.easternsauce.game.gamestate.projectile.ProjectileComponent
+import com.easternsauce.game.gamestate.projectile.ProjectileComponentParams
 
-case class GhostArrowComponent(params: AbilityComponentParams) extends AbilityComponent {
+case class GhostArrowComponent(params: ProjectileComponentParams) extends ProjectileComponent {
   override val textureFileName: String = "arrow"
 
   override val textureSize: Int = 64
@@ -21,7 +23,7 @@ case class GhostArrowComponent(params: AbilityComponentParams) extends AbilityCo
 
   override def isDestroyedOnTerrainContact: Boolean = true
 
-  override def copy(params: AbilityComponentParams): AbilityComponent = {
+  override def copy(params: ProjectileComponentParams): ProjectileComponent = {
     GhostArrowComponent(params)
   }
 

@@ -1,8 +1,8 @@
 package com.easternsauce.game.gamephysics
 
 import com.easternsauce.game.core.CoreGame
-import com.easternsauce.game.gamestate.event.AbilityComponentHitsCreatureEvent
-import com.easternsauce.game.gamestate.event.AbilityComponentHitsTerrainEvent
+import com.easternsauce.game.gamestate.event.ProjectileComponentHitsCreatureEvent
+import com.easternsauce.game.gamestate.event.ProjectileComponentHitsTerrainEvent
 import com.easternsauce.game.gamestate.id.AreaId
 import com.easternsauce.game.math.Vector2f
 
@@ -108,18 +108,18 @@ case class AreaPhysicsWorld(areaId: AreaId) {
 
       case (ability: AbilityBody, creature: CreatureBody) =>
         game.queues.localEventQueue.enqueue(
-          AbilityComponentHitsCreatureEvent(
+          ProjectileComponentHitsCreatureEvent(
             creature.creatureId,
-            ability.abilityComponentId,
+            ability.projectileComponentId,
             ability.areaId
           )
         )
 
       case (creature: CreatureBody, ability: AbilityBody) =>
         game.queues.localEventQueue.enqueue(
-          AbilityComponentHitsCreatureEvent(
+          ProjectileComponentHitsCreatureEvent(
             creature.creatureId,
-            ability.abilityComponentId,
+            ability.projectileComponentId,
             ability.areaId
           )
         )
@@ -170,8 +170,8 @@ case class AreaPhysicsWorld(areaId: AreaId) {
     circle match {
       case ac: AbilityBody =>
         game.queues.localEventQueue.enqueue(
-          AbilityComponentHitsTerrainEvent(
-            ac.abilityComponentId,
+          ProjectileComponentHitsTerrainEvent(
+            ac.projectileComponentId,
             ac.areaId
           )
         )
@@ -208,7 +208,7 @@ case class AreaPhysicsWorld(areaId: AreaId) {
     circle match {
       case ac: AbilityBody =>
         game.queues.localEventQueue.enqueue(
-          AbilityComponentHitsTerrainEvent(ac.abilityComponentId, ac.areaId)
+          ProjectileComponentHitsTerrainEvent(ac.projectileComponentId, ac.areaId)
         )
       case _ =>
     }

@@ -2,10 +2,12 @@ package com.easternsauce.game.gamestate.ability
 
 import com.easternsauce.game.core.CoreGame
 import com.easternsauce.game.gamestate.creature.FramesDefinition
+import com.easternsauce.game.gamestate.projectile.ProjectileComponent
+import com.easternsauce.game.gamestate.projectile.ProjectileComponentParams
 import com.easternsauce.game.math.Vector2f
 import com.softwaremill.quicklens.ModifyPimp
 
-case class ReturningArrowComponent(params: AbilityComponentParams) extends AbilityComponent {
+case class ReturningArrowComponent(params: ProjectileComponentParams) extends ProjectileComponent {
 
   override val textureFileName: String = "arrow"
   override val textureSize: Int = 64
@@ -26,7 +28,7 @@ case class ReturningArrowComponent(params: AbilityComponentParams) extends Abili
   override def update(
       delta: Float,
       newPos: Option[Vector2f]
-  )(implicit game: CoreGame): AbilityComponent = {
+  )(implicit game: CoreGame): ProjectileComponent = {
 
     val afterBase = super.update(delta, newPos)
 
@@ -57,6 +59,6 @@ case class ReturningArrowComponent(params: AbilityComponentParams) extends Abili
     result
   }
 
-  override def copy(params: AbilityComponentParams): AbilityComponent =
+  override def copy(params: ProjectileComponentParams): ProjectileComponent =
     ReturningArrowComponent(params)
 }

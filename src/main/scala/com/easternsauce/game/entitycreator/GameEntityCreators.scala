@@ -14,6 +14,6 @@ trait GameEntityCreators
   def createEntities()(implicit
       game: CoreGame
   ): GameState = {
-    createPlayers.createEnemies.createAbilities.createAbilityComponents
+    createPlayers.createEnemies.createAbilities.createAbilityComponents.createProjectileComponents.createEffectComponents
   }
 }

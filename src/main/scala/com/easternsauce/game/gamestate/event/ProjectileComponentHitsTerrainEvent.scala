@@ -1,18 +1,18 @@
 package com.easternsauce.game.gamestate.event
 import com.easternsauce.game.core.CoreGame
-import com.easternsauce.game.entitycreator.AbilityComponentToCreate
+import com.easternsauce.game.entitycreator.ProjectileComponentToCreate
 import com.easternsauce.game.gamestate.GameState
-import com.easternsauce.game.gamestate.ability.AbilityComponent
-import com.easternsauce.game.gamestate.ability.AbilityComponentType
 import com.easternsauce.game.gamestate.ability.AbilityState
 import com.easternsauce.game.gamestate.ability.ArrowComponent
 import com.easternsauce.game.gamestate.id.AreaId
 import com.easternsauce.game.gamestate.id.GameEntityId
+import com.easternsauce.game.gamestate.projectile.ProjectileComponent
+import com.easternsauce.game.gamestate.projectile.ProjectileComponentType
 import com.softwaremill.quicklens.ModifyPimp
 import com.softwaremill.quicklens.QuicklensMapAt
 
-case class AbilityComponentHitsTerrainEvent(
-    abilityComponentId: GameEntityId[AbilityComponent],
+case class ProjectileComponentHitsTerrainEvent(
+    projectileComponentId: GameEntityId[ProjectileComponent],
     areaId: AreaId
 ) extends AreaGameStateEvent {
 
@@ -20,11 +20,11 @@ case class AbilityComponentHitsTerrainEvent(
       gameState: GameState
   )(implicit game: CoreGame): GameState = {
 
-    if (!gameState.abilityComponents.contains(abilityComponentId)) {
+    if (!gameState.projectileComponents.contains(projectileComponentId)) {
       return gameState
     }
 
-    val component = gameState.abilityComponents(abilityComponentId)
+    val component = gameState.projectileComponents(projectileComponentId)
 
     if (!gameState.abilities.contains(component.abilityId)) {
       return gameState
@@ -36,12 +36,12 @@ case class AbilityComponentHitsTerrainEvent(
       return gameState
     }
 
-    // 🔥 NEW: spawn returning arrow ONLY for ArrowComponent
+    // TODO: REFACTOR to remove isINstanceOf
     if (component.isInstanceOf[ArrowComponent]) {
-      game.queues.abilityComponentQueue.enqueue(
-        AbilityComponentToCreate(
+      game.queues.projectileComponentQueue.enqueue(
+        ProjectileComponentToCreate(
           abilityId = component.abilityId,
-          componentType = AbilityComponentType.ReturningArrowComponent,
+          componentType = ProjectileComponentType.ReturningArrowComponent,
           currentAreaId = component.currentAreaId,
           creatureId = component.params.creatureId,
           pos = component.pos,
@@ -55,14 +55,14 @@ case class AbilityComponentHitsTerrainEvent(
 
     gameState
       .modify(
-        _.abilityComponents
+        _.projectileComponents
           .at(component.id)
           .params
           .isScheduledToBeRemoved
       )
       .setToIf(component.isDestroyedOnTerrainContact)(true)
       .modify(
-        _.abilityComponents
+        _.projectileComponents
           .at(component.id)
           .params
           .isContinueScenario

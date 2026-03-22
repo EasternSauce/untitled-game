@@ -1,8 +1,10 @@
 package com.easternsauce.game.gamestate.ability
 
 import com.easternsauce.game.gamestate.creature.FramesDefinition
+import com.easternsauce.game.gamestate.projectile.ProjectileComponent
+import com.easternsauce.game.gamestate.projectile.ProjectileComponentParams
 
-case class ExplosionComponent(params: AbilityComponentParams) extends AbilityComponent {
+case class ExplosionComponent(params: ProjectileComponentParams) extends ProjectileComponent {
   override val textureFileName: String = "explosion"
 
   override val textureSize: Int = 64
@@ -21,7 +23,7 @@ case class ExplosionComponent(params: AbilityComponentParams) extends AbilityCom
 
   override def isDestroyedOnTerrainContact: Boolean = false
 
-  override def copy(params: AbilityComponentParams): AbilityComponent = {
+  override def copy(params: ProjectileComponentParams): ProjectileComponent = {
     ExplosionComponent(params)
   }
 

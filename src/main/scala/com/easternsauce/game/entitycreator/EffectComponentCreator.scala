@@ -21,7 +21,7 @@ trait EffectComponentCreator {
       case (gameState, effectComponentToCreate: EffectComponentToCreate) =>
         val effectComponentId =
           GameEntityId[EffectComponent](
-            "component" + (Math.random() * 1000000).toInt
+            "effect" + (Math.random() * 1000000).toInt
           )
 
         val ability = gameState.abilities(effectComponentToCreate.abilityId)

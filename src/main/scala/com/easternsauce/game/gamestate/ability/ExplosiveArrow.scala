@@ -4,6 +4,7 @@ import com.easternsauce.game.gamestate.ability.scenario.NextStepCondition
 import com.easternsauce.game.gamestate.ability.scenario.step.AbilityScenarioStep
 import com.easternsauce.game.gamestate.ability.scenario.step.GenericScenarioStep
 import com.easternsauce.game.gamestate.ability.scenario.step.ProjectileScenarioStep
+import com.easternsauce.game.gamestate.projectile.ProjectileComponentType
 
 case class ExplosiveArrow(params: AbilityParams) extends Ability {
 
@@ -20,7 +21,7 @@ case class ExplosiveArrow(params: AbilityParams) extends Ability {
 
   override def scenarioSteps: List[AbilityScenarioStep] = List(
     ProjectileScenarioStep(
-      Some(AbilityComponentType.ArrowComponent),
+      Some(ProjectileComponentType.ArrowComponent),
       NextStepCondition.ChainCondition,
       None,
       0f,
@@ -28,7 +29,7 @@ case class ExplosiveArrow(params: AbilityParams) extends Ability {
       1
     ),
     ProjectileScenarioStep(
-      Some(AbilityComponentType.GhostArrowComponent),
+      Some(ProjectileComponentType.GhostArrowComponent),
       NextStepCondition.ChainCondition,
       Some(0.4f),
       -60f,
@@ -36,12 +37,12 @@ case class ExplosiveArrow(params: AbilityParams) extends Ability {
       9
     ),
     GenericScenarioStep(
-      Some(AbilityComponentType.ExplosionComponent),
+      Some(ProjectileComponentType.ExplosionComponent),
       NextStepCondition.ChainCondition,
       Some(0.6f)
     ),
     ProjectileScenarioStep(
-      Some(AbilityComponentType.GhostArrowComponent),
+      Some(ProjectileComponentType.GhostArrowComponent),
       NextStepCondition.ChainCondition,
       Some(0.6f),
       -180f,
@@ -49,7 +50,7 @@ case class ExplosiveArrow(params: AbilityParams) extends Ability {
       1
     ),
     GenericScenarioStep(
-      Some(AbilityComponentType.ExplosionComponent),
+      Some(ProjectileComponentType.ExplosionComponent),
       NextStepCondition.ChainCondition,
       Some(0.6f)
     )

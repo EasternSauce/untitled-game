@@ -6,8 +6,8 @@ import com.easternsauce.game.entitycreator.GameEntityCreators
 import com.easternsauce.game.gamestate.ability.Ability
 import com.easternsauce.game.gamestate.ability.AbilityComponent
 import com.easternsauce.game.gamestate.ability.AbilityState
-import com.easternsauce.game.gamestate.ability.scenario.AbilityComponentScenarioRunStepEvent
-import com.easternsauce.game.gamestate.ability.scenario.AbilityComponentScenarioStepParams
+import com.easternsauce.game.gamestate.ability.scenario.ProjectileComponentScenarioRunStepEvent
+import com.easternsauce.game.gamestate.ability.scenario.ProjectileComponentScenarioStepParams
 import com.easternsauce.game.gamestate.creature.Creature
 import com.easternsauce.game.gamestate.effect.EffectComponent
 import com.easternsauce.game.gamestate.event.GameStateEvent
@@ -75,31 +75,31 @@ case class GameState(
       )
       .toList
 
-    val abilityComponentsToRemove = abilityComponents.values
+    val projectileComponentsToRemove = projectileComponents.values
       .filter(component =>
         abilitiesToRemove.contains(component.abilityId) || component.params.isScheduledToBeRemoved
       )
       .toList
 
-    if (abilityComponentsToRemove.nonEmpty) {
+    if (projectileComponentsToRemove.nonEmpty) {
       println(
-        s"[DEBUG] Preparing to remove ${abilityComponentsToRemove.size} components this frame"
+        s"[DEBUG] Preparing to remove ${projectileComponentsToRemove.size} components this frame"
       )
     }
 
-    abilityComponentsToRemove.foreach { component =>
+    projectileComponentsToRemove.foreach { component =>
       println(
         s"[DEBUG] Removing component ${component.id} of ability ${component.params.abilityId}, isContinueScenario=${component.params.isContinueScenario}"
       )
     }
 
-    abilityComponentsToRemove
+    projectileComponentsToRemove
       .filter(_.params.isContinueScenario)
       .foreach { component =>
         println(s"[DEBUG] Enqueuing next scenario step for component ${component.id}")
         game.queues.abilityScenarioEventQueue.enqueue(
-          AbilityComponentScenarioRunStepEvent(
-            AbilityComponentScenarioStepParams(
+          ProjectileComponentScenarioRunStepEvent(
+            ProjectileComponentScenarioStepParams(
               component.abilityId,
               component.currentAreaId,
               component.params.creatureId,
@@ -116,15 +116,15 @@ case class GameState(
       this
         .updateCreatures(delta, areaId)
         .updateAbilities(delta, areaId)
-        .updateAbilityComponents(delta, areaId)
+        .updateProjectileComponents(delta, areaId)
         .modify(_.abilities)
         .using(_.removedAll(abilitiesToRemove.map(_.id)))
-        .modify(_.abilityComponents)
-        .using(_.removedAll(abilityComponentsToRemove.map(_.id)))
+        .modify(_.projectileComponents)
+        .using(_.removedAll(projectileComponentsToRemove.map(_.id)))
 
     // ✅ NEW: always check finish after removals
     val affectedAbilities =
-      abilityComponentsToRemove.map(_.abilityId).toSet
+      projectileComponentsToRemove.map(_.abilityId).toSet
 
     affectedAbilities.foldLeft(updatedState) { (state, abilityId) =>
       println(s"[DEBUG] Post-removal check for ability $abilityId")
@@ -137,7 +137,7 @@ case class GameState(
   ): GameState = {
     println(
       s"[DEBUG] Checking if ability $abilityId should be finished. Components remaining: " +
-        s"${abilityComponents.values.count(_.params.abilityId == abilityId)}, finishWhenComponentsDestroyed: " +
+        s"${projectileComponents.values.count(_.params.abilityId == abilityId)}, finishWhenComponentsDestroyed: " +
         s"${abilities.get(abilityId).map(_.finishWhenComponentsDestroyed).getOrElse(false)}"
     )
 
@@ -145,7 +145,7 @@ case class GameState(
       abilities.contains(abilityId) && abilities(
         abilityId
       ).finishWhenComponentsDestroyed &&
-        !abilityComponents.values
+        !projectileComponents.values
           .exists(_.params.abilityId == abilityId)
     ) {
       println(s"[DEBUG] Ability $abilityId has no remaining components and is now FINISHED")
@@ -184,16 +184,16 @@ case class GameState(
       )
   }
 
-  private def updateAbilityComponents(delta: Float, areaId: AreaId)(implicit
+  private def updateProjectileComponents(delta: Float, areaId: AreaId)(implicit
       game: CoreGame
   ): GameState = {
     this
-      .modify(_.abilityComponents.each)
-      .using(abilityComponent =>
-        abilityComponent.transformIf(abilityComponent.currentAreaId == areaId) {
-          abilityComponent.update(
+      .modify(_.projectileComponents.each)
+      .using(projectileComponent =>
+        projectileComponent.transformIf(projectileComponent.currentAreaId == areaId) {
+          projectileComponent.update(
             delta,
-            game.gameplay.worldSimulation.abilityBodyPositions.get(abilityComponent.id)
+            game.gameplay.worldSimulation.abilityBodyPositions.get(projectileComponent.id)
           )
         }
       )

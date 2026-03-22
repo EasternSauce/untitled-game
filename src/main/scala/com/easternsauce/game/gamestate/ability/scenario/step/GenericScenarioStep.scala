@@ -1,25 +1,25 @@
 package com.easternsauce.game.gamestate.ability.scenario.step
 
 import com.easternsauce.game.core.CoreGame
-import com.easternsauce.game.entitycreator.AbilityComponentToCreate
-import com.easternsauce.game.gamestate.ability.AbilityComponentType.AbilityComponentType
-import com.easternsauce.game.gamestate.ability.scenario.AbilityComponentScenarioStepParams
+import com.easternsauce.game.entitycreator.ProjectileComponentToCreate
 import com.easternsauce.game.gamestate.ability.scenario.NextStepCondition.NextStepCondition
+import com.easternsauce.game.gamestate.ability.scenario.ProjectileComponentScenarioStepParams
+import com.easternsauce.game.gamestate.projectile.ProjectileComponentType.ProjectileComponentType
 
 case class GenericScenarioStep(
-    abilityComponentType: Option[AbilityComponentType],
+    projectileComponentType: Option[ProjectileComponentType],
     nextStepCondition: NextStepCondition,
     expirationTime: Option[Float]
 ) extends AbilityScenarioStep {
 
   override def scheduleComponents(
-      scenarioStepParams: AbilityComponentScenarioStepParams
+      scenarioStepParams: ProjectileComponentScenarioStepParams
   )(implicit game: CoreGame): Unit = {
-    abilityComponentType.foreach { abilityComponentType =>
-      game.queues.abilityComponentQueue.enqueue(
-        AbilityComponentToCreate(
+    projectileComponentType.foreach { projectileComponentType =>
+      game.queues.projectileComponentQueue.enqueue(
+        ProjectileComponentToCreate(
           abilityId = scenarioStepParams.abilityId,
-          componentType = abilityComponentType,
+          componentType = projectileComponentType,
           currentAreaId = scenarioStepParams.currentAreaId,
           creatureId = scenarioStepParams.creatureId,
           pos = scenarioStepParams.pos,

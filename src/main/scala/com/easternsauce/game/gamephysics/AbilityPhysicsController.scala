@@ -2,22 +2,22 @@ package com.easternsauce.game.gamephysics
 
 import com.easternsauce.game.Constants
 import com.easternsauce.game.core.CoreGame
-import com.easternsauce.game.gamestate.ability.AbilityComponent
 import com.easternsauce.game.gamestate.id.AreaId
 import com.easternsauce.game.gamestate.id.GameEntityId
+import com.easternsauce.game.gamestate.projectile.ProjectileComponent
 import com.easternsauce.game.math.Vector2f
 
 import scala.collection.mutable
 
 case class AbilityPhysicsController() {
 
-  private var bodies: mutable.Map[GameEntityId[AbilityComponent], AbilityBody] =
+  private var bodies: mutable.Map[GameEntityId[ProjectileComponent], AbilityBody] =
     _
   private var areaPhysicsWorlds: mutable.Map[AreaId, AreaPhysicsWorld] = _
 
   def init(
       areaPhysicsWorlds: mutable.Map[AreaId, AreaPhysicsWorld],
-      existingAbilities: Iterable[AbilityComponent]
+      existingAbilities: Iterable[ProjectileComponent]
   ): Unit = {
     bodies = mutable.Map()
     this.areaPhysicsWorlds = areaPhysicsWorlds
@@ -29,20 +29,20 @@ case class AbilityPhysicsController() {
   // Lifecycle
   // -------------------------
 
-  def spawn(ability: AbilityComponent): Unit = {
-    val body = AbilityBody(ability.id)
+  def spawn(projectile: ProjectileComponent): Unit = {
+    val body = AbilityBody(projectile.id)
 
     body.init(
-      areaPhysicsWorlds(ability.currentAreaId),
-      ability.pos,
-      ability.velocity,
-      ability.bodyRadius
+      areaPhysicsWorlds(projectile.currentAreaId),
+      projectile.pos,
+      projectile.velocity,
+      projectile.bodyRadius
     )
 
-    bodies(ability.id) = body
+    bodies(projectile.id) = body
   }
 
-  def remove(id: GameEntityId[AbilityComponent]): Unit = {
+  def remove(id: GameEntityId[ProjectileComponent]): Unit = {
     bodies.remove(id).foreach(_.onRemove())
   }
 
@@ -62,19 +62,19 @@ case class AbilityPhysicsController() {
 
   def synchronize(areaId: AreaId)(implicit game: CoreGame): Unit = {
 
-    val entities = game.gameState.abilityComponents
+    val entities = game.gameState.projectileComponents
 
     val toCreate =
       entities.values.filter(e => e.params.currentAreaId == areaId && !bodies.contains(e.id))
 
     val toDestroy =
-      bodies.values.filter(b => !entities.contains(b.abilityComponentId) || b.areaId != areaId)
+      bodies.values.filter(b => !entities.contains(b.projectileComponentId) || b.areaId != areaId)
 
     toCreate.foreach(spawn)
 
     toDestroy.foreach { body =>
       body.onRemove()
-      bodies.remove(body.abilityComponentId)
+      bodies.remove(body.projectileComponentId)
     }
 
     val toUpdate =
@@ -86,7 +86,7 @@ case class AbilityPhysicsController() {
   }
 
   def correctPositions(areaId: AreaId)(implicit game: CoreGame): Unit = {
-    game.gameState.abilityComponents.values.foreach { ability =>
+    game.gameState.projectileComponents.values.foreach { ability =>
       if (
         ability.params.currentAreaId == areaId &&
         bodies.contains(ability.id)
@@ -103,12 +103,12 @@ case class AbilityPhysicsController() {
   }
 
   def setBodyPosIfInArea(
-      id: GameEntityId[AbilityComponent],
+      id: GameEntityId[ProjectileComponent],
       pos: Vector2f,
       areaId: AreaId
   )(implicit game: CoreGame): Unit = {
     if (
-      game.gameState.abilityComponents
+      game.gameState.projectileComponents
         .get(id)
         .exists(_.params.currentAreaId == areaId)
     ) {
@@ -120,9 +120,9 @@ case class AbilityPhysicsController() {
   // Queries
   // -------------------------
 
-  def bodyPositionsForAllAreas: Map[GameEntityId[AbilityComponent], Vector2f] =
+  def bodyPositionsForAllAreas: Map[GameEntityId[ProjectileComponent], Vector2f] =
     bodies.view.mapValues(_.pos).toMap
 
-  def bodiesMap: Map[GameEntityId[AbilityComponent], AbilityBody] =
+  def bodiesMap: Map[GameEntityId[ProjectileComponent], AbilityBody] =
     bodies.toMap
 }

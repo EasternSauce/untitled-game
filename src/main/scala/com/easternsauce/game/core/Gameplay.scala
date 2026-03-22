@@ -3,8 +3,8 @@ package com.easternsauce.game.core
 import com.easternsauce.game.gamephysics.WorldSimulation
 import com.easternsauce.game.gamestate.GameState
 import com.easternsauce.game.gamestate.ability.Ability
-import com.easternsauce.game.gamestate.ability.scenario.AbilityComponentScenarioRunStepEvent
-import com.easternsauce.game.gamestate.ability.scenario.AbilityComponentScenarioStepParams
+import com.easternsauce.game.gamestate.ability.scenario.ProjectileComponentScenarioRunStepEvent
+import com.easternsauce.game.gamestate.ability.scenario.ProjectileComponentScenarioStepParams
 import com.easternsauce.game.gamestate.id.AreaId
 import com.easternsauce.game.gameview.GameView
 
@@ -46,7 +46,7 @@ case class Gameplay()(implicit game: CoreGame) {
 
     // Log ability components count every frame
     println(
-      s"[DEBUG] Frame update: ${gameStateHolder.gameState.abilityComponents.size} ability components in game state, " +
+      s"[DEBUG] Frame update: ${gameStateHolder.gameState.projectileComponents.size} ability components in game state, " +
         s"${gameStateHolder.gameState.abilities.size} abilities"
     )
     updateAbilityScenarios()
@@ -58,7 +58,7 @@ case class Gameplay()(implicit game: CoreGame) {
     val events = game.queues.abilityScenarioEventQueue.drain()
 
     events.foreach {
-      case event: AbilityComponentScenarioRunStepEvent =>
+      case event: ProjectileComponentScenarioRunStepEvent =>
         println(
           s"[DEBUG] Running scenario step for ability ${event.scenarioStepParams.abilityId}, step ${event.scenarioStepParams.scenarioStepNo}"
         )
@@ -69,7 +69,7 @@ case class Gameplay()(implicit game: CoreGame) {
   }
 
   private def scheduleNextScenarioStepComponents(
-      scenarioStepParams: AbilityComponentScenarioStepParams
+      scenarioStepParams: ProjectileComponentScenarioStepParams
   )(implicit game: CoreGame): Unit = {
 
     if (!game.gameState.abilities.contains(scenarioStepParams.abilityId)) {

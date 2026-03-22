@@ -37,12 +37,13 @@ trait AbilityComponentCreator {
           spawnPos = abilityComponentToCreate.pos // NEW
         )
 
-        val abilityComponent =
+        val abilityComponent: AbilityComponent =
           abilityComponentToCreate.componentType match {
-            case AbilityComponentType.ArrowComponent          => ArrowComponent(params)
-            case AbilityComponentType.GhostArrowComponent     => GhostArrowComponent(params)
-            case AbilityComponentType.ExplosionComponent      => ExplosionComponent(params)
-            case AbilityComponentType.ReturningArrowComponent => ReturningArrowComponent(params)
+            case AbilityComponentType.ArrowComponent      => ??? // ArrowComponent(params)
+            case AbilityComponentType.GhostArrowComponent => ??? // GhostArrowComponent(params)
+            case AbilityComponentType.ExplosionComponent  => ??? // ExplosionComponent(params)
+            case AbilityComponentType.ReturningArrowComponent =>
+              ??? // ReturningArrowComponent(params)
             case other =>
               throw new RuntimeException(s"Incorrect ability component type: $other")
           }

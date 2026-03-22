@@ -2,16 +2,16 @@ package com.easternsauce.game.gamestate.event
 import com.easternsauce.game.Constants
 import com.easternsauce.game.core.CoreGame
 import com.easternsauce.game.gamestate.GameState
-import com.easternsauce.game.gamestate.ability.AbilityComponent
 import com.easternsauce.game.gamestate.creature.Creature
 import com.easternsauce.game.gamestate.id.AreaId
 import com.easternsauce.game.gamestate.id.GameEntityId
+import com.easternsauce.game.gamestate.projectile.ProjectileComponent
 import com.softwaremill.quicklens.ModifyPimp
 import com.softwaremill.quicklens.QuicklensMapAt
 
-case class AbilityComponentHitsCreatureEvent(
+case class ProjectileComponentHitsCreatureEvent(
     creatureId: GameEntityId[Creature],
-    abilityComponentId: GameEntityId[AbilityComponent],
+    projectileComponentId: GameEntityId[ProjectileComponent],
     areaId: AreaId
 ) extends AreaGameStateEvent {
 
@@ -19,11 +19,11 @@ case class AbilityComponentHitsCreatureEvent(
       gameState: GameState
   )(implicit game: CoreGame): GameState = {
     gameState.transformIf(
-      gameState.abilityComponents.contains(abilityComponentId) &&
+      gameState.projectileComponents.contains(projectileComponentId) &&
         gameState.creatures.contains(creatureId)
     ) {
-      val abilityComponent = gameState.abilityComponents(abilityComponentId)
-      val ability = gameState.abilities(abilityComponent.params.abilityId)
+      val projectileComponent = gameState.projectileComponents(projectileComponentId)
+      val ability = gameState.abilities(projectileComponent.params.abilityId)
       val creature = gameState.creatures(creatureId)
 
       val isHitAllowed =
@@ -33,10 +33,10 @@ case class AbilityComponentHitsCreatureEvent(
 
       gameState.transformIf(isHitAllowed) {
         val lifeAfterHit =
-          if (creature.params.life - abilityComponent.params.damage <= 0) {
+          if (creature.params.life - projectileComponent.params.damage <= 0) {
             0
           } else {
-            creature.params.life - abilityComponent.params.damage
+            creature.params.life - projectileComponent.params.damage
           }
 
         val isHitFatal = lifeAfterHit <= 0
@@ -57,13 +57,13 @@ case class AbilityComponentHitsCreatureEvent(
               .usingIf(isHitFatal)(_.restart())
           )
           .modify(
-            _.abilityComponents
-              .at(abilityComponentId)
+            _.projectileComponents
+              .at(projectileComponentId)
               .params
               .isScheduledToBeRemoved
           )
           .setToIf(
-            creature.isAlive && abilityComponent.isDestroyedOnCreatureContact
+            creature.isAlive && projectileComponent.isDestroyedOnCreatureContact
           )(true)
       }
     }

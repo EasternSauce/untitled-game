@@ -2,10 +2,10 @@ package com.easternsauce.game.gamephysics
 
 import com.easternsauce.game.core.CoreGame
 import com.easternsauce.game.gamemap.GameTiledMap
-import com.easternsauce.game.gamestate.ability.AbilityComponent
 import com.easternsauce.game.gamestate.creature.Creature
 import com.easternsauce.game.gamestate.id.AreaId
 import com.easternsauce.game.gamestate.id.GameEntityId
+import com.easternsauce.game.gamestate.projectile.ProjectileComponent
 import com.easternsauce.game.math.Vector2f
 
 import scala.collection.mutable
@@ -36,7 +36,7 @@ case class WorldSimulation() {
     abilityPhysics = AbilityPhysicsController()
     abilityPhysics.init(
       areaPhysicsWorlds,
-      game.gameState.abilityComponents.values
+      game.gameState.projectileComponents.values
     )
 
     // Static bodies
@@ -118,7 +118,7 @@ case class WorldSimulation() {
       case CreatureTeleportEvent(id, pos) =>
         creaturePhysics.teleportIfInArea(id, pos, areaId)
 
-      case AbilityTeleportEvent(id, pos) =>
+      case ProjectileTeleportEvent(id, pos) =>
         abilityPhysics.setBodyPosIfInArea(id, pos, areaId)
 
       case _ =>
@@ -132,7 +132,7 @@ case class WorldSimulation() {
   def creatureBodyPositions: Map[GameEntityId[Creature], Vector2f] =
     creaturePhysics.bodyPositionsForAllAreas
 
-  def abilityBodyPositions: Map[GameEntityId[AbilityComponent], Vector2f] =
+  def abilityBodyPositions: Map[GameEntityId[ProjectileComponent], Vector2f] =
     abilityPhysics.bodyPositionsForAllAreas
 
   def creatureBodies: Map[GameEntityId[Creature], CreatureBody] =

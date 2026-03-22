@@ -2,10 +2,12 @@ package com.easternsauce.game.gamestate.ability
 
 import com.easternsauce.game.core.CoreGame
 import com.easternsauce.game.gamestate.creature.FramesDefinition
+import com.easternsauce.game.gamestate.projectile.ProjectileComponent
+import com.easternsauce.game.gamestate.projectile.ProjectileComponentParams
 import com.easternsauce.game.math.Vector2f
 import com.softwaremill.quicklens.ModifyPimp
 
-case class ArrowComponent(params: AbilityComponentParams) extends AbilityComponent {
+case class ArrowComponent(params: ProjectileComponentParams) extends ProjectileComponent {
 
   val maxRange: Float = 30f
   override val textureFileName: String = "arrow"
@@ -20,7 +22,7 @@ case class ArrowComponent(params: AbilityComponentParams) extends AbilityCompone
   override def update(
       delta: Float,
       newPos: Option[Vector2f]
-  )(implicit game: CoreGame): AbilityComponent = {
+  )(implicit game: CoreGame): ProjectileComponent = {
 
     val updated = super.update(delta, newPos)
     val distanceFromSpawn = updated.params.pos.distance(updated.params.spawnPos)
@@ -37,6 +39,6 @@ case class ArrowComponent(params: AbilityComponentParams) extends AbilityCompone
     } else updated
   }
 
-  override def copy(params: AbilityComponentParams): AbilityComponent =
+  override def copy(params: ProjectileComponentParams): ProjectileComponent =
     ArrowComponent(params)
 }

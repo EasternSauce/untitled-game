@@ -2,6 +2,10 @@ package com.easternsauce.game.entitycreator
 
 import com.easternsauce.game.core.CoreGame
 import com.easternsauce.game.gamestate.GameState
+import com.easternsauce.game.gamestate.ability.ArrowComponent
+import com.easternsauce.game.gamestate.ability.ExplosionComponent
+import com.easternsauce.game.gamestate.ability.GhostArrowComponent
+import com.easternsauce.game.gamestate.ability.ReturningArrowComponent
 import com.easternsauce.game.gamestate.id.GameEntityId
 import com.easternsauce.game.gamestate.projectile.ProjectileComponent
 import com.easternsauce.game.gamestate.projectile.ProjectileComponentParams
@@ -21,7 +25,7 @@ trait ProjectileComponentCreator {
       case (gameState, projectileComponentToCreate: ProjectileComponentToCreate) =>
         val projectileComponentId =
           GameEntityId[ProjectileComponent](
-            "component" + (Math.random() * 1000000).toInt
+            "projectile" + (Math.random() * 1000000).toInt
           )
 
         val ability = gameState.abilities(projectileComponentToCreate.abilityId)
@@ -41,11 +45,10 @@ trait ProjectileComponentCreator {
 
         val projectileComponent: ProjectileComponent =
           projectileComponentToCreate.componentType match {
-            case ProjectileComponentType.ArrowComponent      => ??? // ArrowComponent(params)
-            case ProjectileComponentType.GhostArrowComponent => ??? // GhostArrowComponent(params)
-            case ProjectileComponentType.ExplosionComponent  => ??? // ExplosionComponent(params)
-            case ProjectileComponentType.ReturningArrowComponent =>
-              ??? // ReturningArrowComponent(params)
+            case ProjectileComponentType.ArrowComponent          => ArrowComponent(params)
+            case ProjectileComponentType.GhostArrowComponent     => GhostArrowComponent(params)
+            case ProjectileComponentType.ExplosionComponent      => ExplosionComponent(params)
+            case ProjectileComponentType.ReturningArrowComponent => ReturningArrowComponent(params)
             case other =>
               throw new RuntimeException(s"Incorrect ability component type: $other")
           }

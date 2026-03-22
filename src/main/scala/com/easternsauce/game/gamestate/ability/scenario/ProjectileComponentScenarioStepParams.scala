@@ -6,7 +6,7 @@ import com.easternsauce.game.gamestate.id.AreaId
 import com.easternsauce.game.gamestate.id.GameEntityId
 import com.easternsauce.game.math.Vector2f
 
-case class AbilityComponentScenarioStepParams(
+case class ProjectileComponentScenarioStepParams(
     abilityId: GameEntityId[Ability],
     currentAreaId: AreaId,
     creatureId: GameEntityId[Creature],
