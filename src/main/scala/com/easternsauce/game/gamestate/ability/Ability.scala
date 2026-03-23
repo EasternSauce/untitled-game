@@ -1,12 +1,15 @@
 package com.easternsauce.game.gamestate.ability
 
 import com.easternsauce.game.core.CoreGame
+import com.easternsauce.game.entitycreator.EffectComponentToCreate
+import com.easternsauce.game.entitycreator.ProjectileComponentToCreate
 import com.easternsauce.game.gamestate.GameEntity
 import com.easternsauce.game.gamestate.ability.AbilityState.AbilityState
-import com.easternsauce.game.gamestate.ability.scenario.ProjectileComponentScenarioStepParams
-import com.easternsauce.game.gamestate.ability.scenario.step.AbilityScenarioStep
+import com.easternsauce.game.gamestate.effect.EffectComponentType.EffectComponentType
 import com.easternsauce.game.gamestate.id.AreaId
 import com.easternsauce.game.gamestate.id.GameEntityId
+import com.easternsauce.game.gamestate.projectile.ProjectileComponentType.ProjectileComponentType
+import com.easternsauce.game.math.Vector2f
 import com.softwaremill.quicklens.ModifyPimp
 
 trait Ability extends GameEntity {
@@ -44,20 +47,6 @@ trait Ability extends GameEntity {
     this.transformIf(
       currentState == AbilityState.Channelling && currentStateTime > channelTime
     ) {
-      val scenarioStep = scenarioSteps.head
-
-      scenarioStep.scheduleComponents(
-        ProjectileComponentScenarioStepParams(
-          abilityId = id,
-          params.currentAreaId,
-          params.creatureId,
-          params.pos,
-          params.facingVector,
-          params.damage,
-          scenarioStepNo = 0
-        )
-      )
-
       this
         .modify(_.params.state)
         .setTo(AbilityState.Active)
@@ -67,7 +56,51 @@ trait Ability extends GameEntity {
     }
   }
 
-  def scenarioSteps: List[AbilityScenarioStep]
+  def spawnProjectile(
+      componentType: ProjectileComponentType,
+      pos: Vector2f,
+      facing: Vector2f,
+      damage: Float,
+      expirationTime: Option[Float] = None
+  )(implicit game: CoreGame): Unit = {
+
+    game.queues.projectileComponentQueue.enqueue(
+      ProjectileComponentToCreate(
+        abilityId = id,
+        componentType = componentType,
+        currentAreaId = currentAreaId,
+        creatureId = params.creatureId,
+        pos = pos,
+        facingVector = facing,
+        damage = damage,
+        scenarioStepNo = 0, // you can remove later
+        expirationTime = expirationTime
+      )
+    )
+  }
+
+  def spawnEffect(
+      componentType: EffectComponentType,
+      pos: Vector2f,
+      facing: Vector2f,
+      damage: Float,
+      expirationTime: Option[Float] = None
+  )(implicit game: CoreGame): Unit = {
+
+    game.queues.effectComponentQueue.enqueue(
+      EffectComponentToCreate(
+        abilityId = id,
+        componentType = componentType,
+        currentAreaId = currentAreaId,
+        creatureId = params.creatureId,
+        pos = pos,
+        facingVector = facing,
+        damage = damage,
+        scenarioStepNo = 0,
+        expirationTime = expirationTime
+      )
+    )
+  }
 
   def copy(params: AbilityParams): Ability
 

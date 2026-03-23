@@ -84,6 +84,9 @@ trait EffectComponent extends GameEntity with TransformIf {
 
   def isDestroyedOnTerrainContact: Boolean
 
+  def withAbility(f: Ability => Unit)(implicit game: CoreGame): Unit =
+    game.gameState.abilities.get(params.abilityId).foreach(f)
+
   def copy(params: EffectComponentParams): EffectComponent
 
 }
