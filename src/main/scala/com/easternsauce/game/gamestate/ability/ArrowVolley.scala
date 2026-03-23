@@ -16,7 +16,8 @@ case class ArrowVolley(params: AbilityParams) extends Ability {
         ProjectileComponentType.ArrowComponent,
         pos = params.pos,
         facing = params.facingVector.setAngleDeg(angle),
-        damage = params.damage
+        damage = params.damage,
+        expirationTime = None
       )
     }
 

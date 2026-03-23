@@ -36,8 +36,9 @@ case class ProjectileComponentHitsTerrainEvent(
       return gameState
     }
 
-    // TODO: REFACTOR to remove isINstanceOf
+    // ✅ Arrow: destroy + spawn returning
     if (component.isInstanceOf[ArrowComponent]) {
+
       game.queues.projectileComponentQueue.enqueue(
         ProjectileComponentToCreate(
           abilityId = component.abilityId,
@@ -45,12 +46,18 @@ case class ProjectileComponentHitsTerrainEvent(
           currentAreaId = component.currentAreaId,
           creatureId = component.params.creatureId,
           pos = component.pos,
-          facingVector = component.params.facingVector,
+          facingVector = component.params.facingVector.multiply(-1f),
           damage = component.params.damage,
           scenarioStepNo = component.params.scenarioStepNo,
           expirationTime = None
         )
       )
+
+      return gameState
+        .modify(_.projectileComponents.at(component.id).params.isScheduledToBeRemoved)
+        .setTo(true)
+        .modify(_.projectileComponents.at(component.id).params.isContinueScenario)
+        .setTo(false)
     }
 
     gameState

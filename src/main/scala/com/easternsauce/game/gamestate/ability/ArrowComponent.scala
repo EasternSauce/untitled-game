@@ -1,10 +1,13 @@
 package com.easternsauce.game.gamestate.ability
 
 import com.easternsauce.game.core.CoreGame
+import com.easternsauce.game.entitycreator.ProjectileComponentToCreate
 import com.easternsauce.game.gamestate.creature.FramesDefinition
 import com.easternsauce.game.gamestate.projectile.ProjectileComponent
 import com.easternsauce.game.gamestate.projectile.ProjectileComponentParams
+import com.easternsauce.game.gamestate.projectile.ProjectileComponentType
 import com.easternsauce.game.math.Vector2f
+import com.softwaremill.quicklens.ModifyPimp
 
 case class ArrowComponent(params: ProjectileComponentParams) extends ProjectileComponent {
 
@@ -17,6 +20,7 @@ case class ArrowComponent(params: ProjectileComponentParams) extends ProjectileC
   override def isDestroyedOnTerrainContact: Boolean = true
 
   val maxRange: Float = 30f
+  val maxPierce: Int = 2
 
   override def update(
       delta: Float,
@@ -26,12 +30,28 @@ case class ArrowComponent(params: ProjectileComponentParams) extends ProjectileC
     val updated = super.update(delta, newPos)
     val distance = updated.params.pos.distance(updated.params.spawnPos)
 
-    if (distance > maxRange && !updated.params.isScheduledToBeRemoved) {
-      updated.copy(
-        params = updated.params.copy(
-          isScheduledToBeRemoved = true
+    val shouldReturn =
+      distance > maxRange &&
+        !updated.params.isScheduledToBeRemoved
+
+    if (shouldReturn) {
+
+      game.queues.projectileComponentQueue.enqueue(
+        ProjectileComponentToCreate(
+          abilityId = updated.abilityId,
+          componentType = ProjectileComponentType.ReturningArrowComponent,
+          currentAreaId = updated.currentAreaId,
+          creatureId = updated.params.creatureId,
+          pos = updated.pos,
+          facingVector = updated.params.facingVector.multiply(-1f),
+          damage = updated.params.damage,
+          scenarioStepNo = updated.params.scenarioStepNo,
+          expirationTime = None
         )
       )
+
+      updated.modify(_.params.isScheduledToBeRemoved).setTo(true)
+
     } else updated
   }
 

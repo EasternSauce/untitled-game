@@ -21,5 +21,6 @@ case class ProjectileComponentParams(
     isContinueScenario: Boolean = true,
     expirationTime: Option[Float],
     spawnPos: Vector2f,
-    hasLeftInitialSurface: Boolean = false
+    hasLeftInitialSurface: Boolean = false,
+    piercedTargets: Int = 0
 )

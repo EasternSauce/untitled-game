@@ -1,11 +1,14 @@
 package com.easternsauce.game.gamestate.event
 import com.easternsauce.game.Constants
 import com.easternsauce.game.core.CoreGame
+import com.easternsauce.game.entitycreator.ProjectileComponentToCreate
 import com.easternsauce.game.gamestate.GameState
+import com.easternsauce.game.gamestate.ability.ArrowComponent
 import com.easternsauce.game.gamestate.creature.Creature
 import com.easternsauce.game.gamestate.id.AreaId
 import com.easternsauce.game.gamestate.id.GameEntityId
 import com.easternsauce.game.gamestate.projectile.ProjectileComponent
+import com.easternsauce.game.gamestate.projectile.ProjectileComponentType
 import com.softwaremill.quicklens.ModifyPimp
 import com.softwaremill.quicklens.QuicklensMapAt
 
@@ -26,7 +29,6 @@ case class ProjectileComponentHitsCreatureEvent(
 
       val projectileComponent = gameState.projectileComponents(projectileComponentId)
 
-      // ✅ SAFE ACCESS
       val abilityOpt = gameState.abilities.get(projectileComponent.params.abilityId)
       if (abilityOpt.isEmpty) {
         return gameState
@@ -47,6 +49,32 @@ case class ProjectileComponentHitsCreatureEvent(
 
         val isHitFatal = lifeAfterHit <= 0
 
+        val newPierceCount = projectileComponent.params.piercedTargets + 1
+
+        val reachedPierceLimit =
+          projectileComponent match {
+            case arrow: ArrowComponent =>
+              newPierceCount >= arrow.maxPierce
+            case _ => false
+          }
+
+        // ✅ spawn returning arrow if limit reached
+        if (reachedPierceLimit) {
+          game.queues.projectileComponentQueue.enqueue(
+            ProjectileComponentToCreate(
+              abilityId = projectileComponent.abilityId,
+              componentType = ProjectileComponentType.ReturningArrowComponent,
+              currentAreaId = projectileComponent.currentAreaId,
+              creatureId = projectileComponent.params.creatureId,
+              pos = projectileComponent.pos,
+              facingVector = projectileComponent.params.facingVector.multiply(-1f),
+              damage = projectileComponent.params.damage,
+              scenarioStepNo = projectileComponent.params.scenarioStepNo,
+              expirationTime = None
+            )
+          )
+        }
+
         gameState
           .modify(_.creatures.at(creatureId))
           .using(creature =>
@@ -58,15 +86,18 @@ case class ProjectileComponentHitsCreatureEvent(
               .modify(_.params.deathAnimationTimer)
               .usingIf(isHitFatal)(_.restart())
           )
-          .modify(
-            _.projectileComponents
-              .at(projectileComponentId)
-              .params
-              .isScheduledToBeRemoved
-          )
-          .setToIf(
-            creature.isAlive && projectileComponent.isDestroyedOnCreatureContact
-          )(true)
+          .modify(_.projectileComponents.at(projectileComponentId))
+          .using { component =>
+            if (reachedPierceLimit) {
+              component
+                .modify(_.params.isScheduledToBeRemoved)
+                .setTo(true)
+            } else {
+              component
+                .modify(_.params.piercedTargets)
+                .setTo(newPierceCount)
+            }
+          }
       }
     }
   }
