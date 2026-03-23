@@ -18,12 +18,21 @@ case class ProjectileComponentHitsCreatureEvent(
   override def applyToGameState(
       gameState: GameState
   )(implicit game: CoreGame): GameState = {
+
     gameState.transformIf(
       gameState.projectileComponents.contains(projectileComponentId) &&
         gameState.creatures.contains(creatureId)
     ) {
+
       val projectileComponent = gameState.projectileComponents(projectileComponentId)
-      val ability = gameState.abilities(projectileComponent.params.abilityId)
+
+      // ✅ SAFE ACCESS
+      val abilityOpt = gameState.abilities.get(projectileComponent.params.abilityId)
+      if (abilityOpt.isEmpty) {
+        return gameState
+      }
+      val ability = abilityOpt.get
+
       val creature = gameState.creatures(creatureId)
 
       val isHitAllowed =
@@ -32,18 +41,11 @@ case class ProjectileComponentHitsCreatureEvent(
             creature.params.recentlyHitTimer.time > Constants.InvulnerabilityFramesTime)
 
       gameState.transformIf(isHitAllowed) {
+
         val lifeAfterHit =
-          if (creature.params.life - projectileComponent.params.damage <= 0) {
-            0
-          } else {
-            creature.params.life - projectileComponent.params.damage
-          }
+          Math.max(0, creature.params.life - projectileComponent.params.damage)
 
         val isHitFatal = lifeAfterHit <= 0
-
-        if (isHitFatal) {
-          // remove creature collision hitbox (at least until revived)
-        }
 
         gameState
           .modify(_.creatures.at(creatureId))

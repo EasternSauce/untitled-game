@@ -6,7 +6,6 @@ import com.easternsauce.game.entitycreator.EnemyToCreate
 import com.easternsauce.game.entitycreator.PlayerToCreate
 import com.easternsauce.game.entitycreator.ProjectileComponentToCreate
 import com.easternsauce.game.gamephysics.PhysicsEvent
-import com.easternsauce.game.gamestate.ability.scenario.AbilityScenarioEvent
 import com.easternsauce.game.gamestate.event.GameStateEvent
 
 case class Queue[T](buffer: ConcurrentListBuffer[T] = ConcurrentListBuffer()) {
@@ -32,6 +31,5 @@ case class GameQueues(
     effectComponentQueue: Queue[EffectComponentToCreate] = Queue(),
     broadcastEventQueue: Queue[GameStateEvent] = Queue(),
     localEventQueue: Queue[GameStateEvent] = Queue(),
-    physicsEventQueue: Queue[PhysicsEvent] = Queue(),
-    abilityScenarioEventQueue: Queue[AbilityScenarioEvent] = Queue()
+    physicsEventQueue: Queue[PhysicsEvent] = Queue()
 )
