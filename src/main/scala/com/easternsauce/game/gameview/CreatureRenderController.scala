@@ -11,103 +11,96 @@ import scala.collection.mutable
 
 case class CreatureRenderController() {
 
-  private val creatureRenderables =
+  private val renderables =
     mutable.Map[GameEntityId[Creature], CreatureRenderable]()
 
   def init(): Unit =
-    creatureRenderables.clear()
+    renderables.clear()
 
   // -----------------------
-  // Required by SceneView
+  // SceneView API
   // -----------------------
 
   def getAliveCreatureRenderables(areaId: AreaId)(implicit
       game: CoreGame
   ): List[CreatureRenderable] =
-    aliveCreatureRenderables(areaId)
+    getRenderables(areaId, _.isAlive)
 
-  def synchronizeRenderables(areaId: AreaId)(implicit
-      game: CoreGame
-  ): Unit =
+  def synchronizeRenderables(areaId: AreaId)(implicit game: CoreGame): Unit =
     synchronize(areaId)
 
   // -----------------------
   // Synchronization
   // -----------------------
 
-  def synchronize(areaId: AreaId)(implicit game: CoreGame): Unit = {
+  private def synchronize(areaId: AreaId)(implicit game: CoreGame): Unit = {
+    val creaturesInArea = creaturesByArea(areaId)
+    val currentIds = creaturesInArea.keySet
 
-    val currentIds =
-      game.gameState.creatures.values
-        .filter(_.currentAreaId == areaId)
-        .map(_.id)
-        .toSet
-
+    // Add missing renderables
     currentIds.foreach { id =>
-      if (!creatureRenderables.contains(id)) {
-        val r = CreatureRenderable(id)
-        r.init()
-        creatureRenderables(id) = r
-      }
+      renderables.getOrElseUpdate(
+        id, {
+          val r = CreatureRenderable(id)
+          r.init()
+          r
+        }
+      )
     }
 
-    creatureRenderables.keys
+    // Remove stale renderables
+    renderables.keys
       .filterNot(currentIds.contains)
-      .foreach(creatureRenderables.remove)
+      .foreach(renderables.remove)
   }
 
   // -----------------------
   // Rendering
   // -----------------------
 
-  def renderLifeBars(
-      areaId: AreaId,
-      worldBatch: RenderBatch
-  )(implicit game: CoreGame): Unit =
-    aliveCreatureRenderables(areaId)
-      .foreach(_.renderLifeBar(worldBatch))
+  def renderLifeBars(areaId: AreaId, batch: RenderBatch)(implicit game: CoreGame): Unit =
+    getRenderables(areaId, _.isAlive)
+      .foreach(_.renderLifeBar(batch))
 
   def renderPlayerNames(
       areaId: AreaId,
-      worldTextBatch: RenderBatch,
+      textBatch: RenderBatch,
       skin: Skin
   )(implicit game: CoreGame): Unit = {
 
     val font = skin.getFont("default-font")
 
-    aliveCreatureRenderables(areaId)
-      .foreach(_.renderPlayerName(worldTextBatch, font))
+    getRenderables(areaId, _.isAlive)
+      .foreach(_.renderPlayerName(textBatch, font))
   }
 
   def renderDeadCreatures(
       areaId: AreaId,
-      worldBatch: RenderBatch,
-      worldCameraPos: Vector2f
+      batch: RenderBatch,
+      cameraPos: Vector2f
   )(implicit game: CoreGame): Unit =
-    deadCreatureRenderables(areaId)
-      .foreach(_.render(worldBatch, worldCameraPos))
+    getRenderables(areaId, c => !c.isAlive)
+      .foreach(_.render(batch, cameraPos))
 
   // -----------------------
   // Helpers
   // -----------------------
 
-  private def aliveCreatureRenderables(areaId: AreaId)(implicit
+  private def creaturesByArea(areaId: AreaId)(implicit
       game: CoreGame
-  ): List[CreatureRenderable] =
-    creatureRenderables.collect {
-      case (id, renderable)
-          if game.gameState.creatures(id).isAlive &&
-            game.gameState.creatures(id).currentAreaId == areaId =>
-        renderable
-    }.toList
+  ): Map[GameEntityId[Creature], Creature] =
+    game.gameState.creatures.filter { case (_, c) => c.currentAreaId == areaId }.toMap
 
-  private def deadCreatureRenderables(areaId: AreaId)(implicit
-      game: CoreGame
-  ): List[CreatureRenderable] =
-    creatureRenderables.collect {
-      case (id, renderable)
-          if !game.gameState.creatures(id).isAlive &&
-            game.gameState.creatures(id).currentAreaId == areaId =>
+  private def getRenderables(
+      areaId: AreaId,
+      predicate: Creature => Boolean
+  )(implicit game: CoreGame): List[CreatureRenderable] = {
+
+    val creatures = creaturesByArea(areaId)
+
+    renderables.collect {
+      case (id, renderable) if creatures.get(id).exists(predicate) =>
         renderable
     }.toList
+  }
 }
