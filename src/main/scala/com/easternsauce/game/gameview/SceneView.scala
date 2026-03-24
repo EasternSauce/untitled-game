@@ -9,94 +9,94 @@ import com.easternsauce.game.math.Vector2f
 case class SceneView() {
 
   private var terrainRenderer: TerrainRenderer = _
-  private var creatureRenderController: CreatureRenderController = _
-  private var abilityRenderController: AbilityRenderController = _
+  private var creatureRenderer: CreatureRenderController = _
+  private var abilityRenderer: AbilityRenderController = _
   private var cameraSystem: CameraSystem = _
 
   def init(cameraSystem: CameraSystem): Unit = {
-
     this.cameraSystem = cameraSystem
 
     terrainRenderer = TerrainRenderer()
 
-    creatureRenderController = CreatureRenderController()
-    creatureRenderController.init()
+    creatureRenderer = CreatureRenderController()
+    creatureRenderer.init()
 
-    abilityRenderController = AbilityRenderController()
-    abilityRenderController.init()
+    abilityRenderer = AbilityRenderController()
+    abilityRenderer.init()
   }
 
   def render(
       areaId: AreaId,
-      worldRenderBatch: RenderBatch,
+      batch: RenderBatch,
       skin: Skin,
-      worldCameraPos: Vector2f
+      cameraPos: Vector2f
   )(implicit game: CoreGame): Unit = {
 
-    val tiledMap =
-      game.gameplay.tiledMapsManager.tiledMaps(areaId)
+    val tiledMap = game.gameplay.tiledMapsManager.tiledMaps(areaId)
 
-    renderWorld(
-      areaId,
-      tiledMap,
-      worldRenderBatch,
-      worldCameraPos,
-      skin
-    )
+    renderWorld(areaId, tiledMap, batch, cameraPos)
   }
 
   private def renderWorld(
       areaId: AreaId,
       tiledMap: GameTiledMap,
-      worldSpriteBatch: RenderBatch,
-      worldCameraPos: Vector2f,
-      skin: Skin
+      batch: RenderBatch,
+      cameraPos: Vector2f
   )(implicit game: CoreGame): Unit = {
 
-    worldSpriteBatch.begin()
+    batch.begin()
 
-    terrainRenderer.renderBottomTerrainLayer(
-      areaId,
-      tiledMap,
-      worldSpriteBatch,
-      worldCameraPos
-    )
+    renderTerrainBottom(areaId, tiledMap, batch, cameraPos)
+    renderDeadCreatures(areaId, batch, cameraPos)
+    renderDynamicAndAlive(areaId, tiledMap, batch, cameraPos)
+    renderAbilities(areaId, batch, cameraPos)
+    renderLifeBars(areaId, batch)
+    renderTerrainTop(areaId, tiledMap, batch, cameraPos)
 
-    creatureRenderController.renderDeadCreatures(
-      areaId,
-      worldSpriteBatch,
-      worldCameraPos
-    )
-
-    renderDynamicAndCreatures(
-      areaId,
-      tiledMap,
-      worldSpriteBatch,
-      worldCameraPos
-    )
-
-    abilityRenderController.renderAbilities(
-      areaId,
-      worldSpriteBatch,
-      worldCameraPos
-    )
-
-    creatureRenderController.renderLifeBars(
-      areaId,
-      worldSpriteBatch
-    )
-
-    terrainRenderer.renderTopTerrainLayer(
-      areaId,
-      tiledMap,
-      worldSpriteBatch,
-      worldCameraPos
-    )
-
-    worldSpriteBatch.end()
+    batch.end()
   }
 
-  private def renderDynamicAndCreatures(
+  // --- Rendering steps ---
+
+  private def renderTerrainBottom(
+      areaId: AreaId,
+      tiledMap: GameTiledMap,
+      batch: RenderBatch,
+      cameraPos: Vector2f
+  )(implicit game: CoreGame): Unit =
+    terrainRenderer.renderBottomTerrainLayer(areaId, tiledMap, batch, cameraPos)
+
+  private def renderTerrainTop(
+      areaId: AreaId,
+      tiledMap: GameTiledMap,
+      batch: RenderBatch,
+      cameraPos: Vector2f
+  )(implicit game: CoreGame): Unit =
+    terrainRenderer.renderTopTerrainLayer(areaId, tiledMap, batch, cameraPos)
+
+  private def renderDeadCreatures(
+      areaId: AreaId,
+      batch: RenderBatch,
+      cameraPos: Vector2f
+  )(implicit game: CoreGame): Unit =
+    creatureRenderer.renderDeadCreatures(areaId, batch, cameraPos)
+
+  private def renderAbilities(
+      areaId: AreaId,
+      batch: RenderBatch,
+      cameraPos: Vector2f
+  )(implicit game: CoreGame): Unit =
+    abilityRenderer.renderAbilities(areaId, batch, cameraPos)
+
+  private def renderLifeBars(
+      areaId: AreaId,
+      batch: RenderBatch
+  )(implicit game: CoreGame): Unit =
+    creatureRenderer.renderLifeBars(areaId, batch)
+
+  // --- Dynamic + creatures (sorted) ---
+
+  private def renderDynamicAndAlive(
       areaId: AreaId,
       tiledMap: GameTiledMap,
       batch: RenderBatch,
@@ -107,12 +107,13 @@ case class SceneView() {
       tiledMap.getDynamicLayerCells()
 
     val aliveCreatureRenderables =
-      creatureRenderController.getAliveCreatureRenderables(areaId)
+      creatureRenderer.getAliveCreatureRenderables(areaId)
 
     val width =
       tiledMap.layerWidth("fill")
 
-    val topOfMap = Vector2f(0, width)
+    val topOfMap =
+      Vector2f(0, width)
 
     val sortedRenderables =
       (dynamicLayerRenderables ++ aliveCreatureRenderables)
@@ -130,8 +131,33 @@ case class SceneView() {
     )
   }
 
+  private def collectRenderables(
+      areaId: AreaId,
+      tiledMap: GameTiledMap
+  )(implicit game: CoreGame): Seq[Renderable] = {
+
+    val dynamic = tiledMap.getDynamicLayerCells()
+    val creatures = creatureRenderer.getAliveCreatureRenderables(areaId)
+
+    dynamic ++ creatures
+  }
+
+  private def sortByDepth(
+      renderables: Seq[Renderable],
+      tiledMap: GameTiledMap
+  )(implicit game: CoreGame): Seq[Renderable] = {
+
+    val mapTop = Vector2f(0, tiledMap.layerWidth("fill"))
+
+    renderables.sortBy { r =>
+      -r.pos().distance(mapTop)
+    }
+  }
+
+  // --- Update ---
+
   def update(areaId: AreaId)(implicit game: CoreGame): Unit = {
-    creatureRenderController.synchronizeRenderables(areaId)
-    abilityRenderController.synchronizeRenderables(areaId)
+    creatureRenderer.synchronizeRenderables(areaId)
+    abilityRenderer.synchronizeRenderables(areaId)
   }
 }
