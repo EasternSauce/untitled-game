@@ -131,29 +131,6 @@ case class SceneView() {
     )
   }
 
-  private def collectRenderables(
-      areaId: AreaId,
-      tiledMap: GameTiledMap
-  )(implicit game: CoreGame): Seq[Renderable] = {
-
-    val dynamic = tiledMap.getDynamicLayerCells()
-    val creatures = creatureRenderer.getAliveCreatureRenderables(areaId)
-
-    dynamic ++ creatures
-  }
-
-  private def sortByDepth(
-      renderables: Seq[Renderable],
-      tiledMap: GameTiledMap
-  )(implicit game: CoreGame): Seq[Renderable] = {
-
-    val mapTop = Vector2f(0, tiledMap.layerWidth("fill"))
-
-    renderables.sortBy { r =>
-      -r.pos().distance(mapTop)
-    }
-  }
-
   // --- Update ---
 
   def update(areaId: AreaId)(implicit game: CoreGame): Unit = {
