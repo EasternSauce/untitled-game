@@ -41,11 +41,6 @@ case class Gameplay()(implicit game: CoreGame) {
   def update(areaId: AreaId, delta: Float): Unit = {
     gameStateHolder.updateGameState(areaId, delta)
 
-    // Log ability components count every frame
-    println(
-      s"[DEBUG] Frame update: ${gameStateHolder.gameState.projectileComponents.size} projectile components in game state, " +
-        s"${gameStateHolder.gameState.abilities.size} abilities"
-    )
     worldSimulation.update(areaId)
     view.update(areaId, delta)
   }
