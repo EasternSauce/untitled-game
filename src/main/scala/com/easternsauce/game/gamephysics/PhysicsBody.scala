@@ -8,13 +8,13 @@ abstract class PhysicsBody {
 
   protected var _pos: Vector2f = Vector2f(0f, 0f)
   protected var _velocity: Vector2f = Vector2f(0f, 0f)
-  protected var _radius: Float = 0f
+  protected var _shape: PhysicsShape = CircleShape(0f)
 
   protected var areaPhysicsWorld: AreaPhysicsWorld = _
 
   def pos: Vector2f = _pos
   def velocity: Vector2f = _velocity
-  def radius: Float = _radius
+  def shape: PhysicsShape = _shape
 
   def areaId: AreaId = areaPhysicsWorld.areaId
 
@@ -24,9 +24,6 @@ abstract class PhysicsBody {
   def setVelocity(v: Vector2f): Unit =
     _velocity = v
 
-  def setRadius(r: Float): Unit =
-    _radius = r
-
   def isStatic: Boolean = false
   def isSensor: Boolean = false
   def isPushable(implicit game: CoreGame): Boolean = true
@@ -35,12 +32,12 @@ abstract class PhysicsBody {
       areaPhysicsWorld: AreaPhysicsWorld,
       pos: Vector2f,
       velocity: Vector2f,
-      radius: Float
+      shape: PhysicsShape
   ): Unit = {
     this.areaPhysicsWorld = areaPhysicsWorld
     this._pos = pos
     this._velocity = velocity
-    this._radius = radius
+    this._shape = shape
 
     areaPhysicsWorld.registerBody(this)
   }
@@ -52,8 +49,13 @@ abstract class PhysicsBody {
 
       val speed = Math.sqrt(v.x * v.x + v.y * v.y).toFloat
 
+      val size = _shape match {
+        case CircleShape(r)  => r
+        case RectShape(w, h) => Math.min(w, h) * 0.5f
+      }
+
       val steps =
-        Math.max(1, Math.ceil((speed * delta) / _radius).toInt)
+        Math.max(1, Math.ceil((speed * delta) / size).toInt)
 
       val stepDelta = delta / steps
 

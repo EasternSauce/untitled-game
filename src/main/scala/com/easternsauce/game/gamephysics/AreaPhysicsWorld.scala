@@ -66,23 +66,36 @@ case class AreaPhysicsWorld(areaId: AreaId) {
   def resolveCollisionsForBody(body: PhysicsBody)(implicit game: CoreGame): Unit = {
     val (cx, cy) = chunkOf(body.pos)
 
-    // circle vs rect (static)
     for {
       x <- cx - 1 to cx + 1
       y <- cy - 1 to cy + 1
       neighbor <- staticChunks.getOrElse((x, y), Set.empty)
     } {
-      resolveCircleVsRect(body, neighbor)
+      resolveCollision(body, neighbor)
     }
 
-    // circle vs circle (dynamic)
     for {
       x <- cx - 1 to cx + 1
       y <- cy - 1 to cy + 1
       neighbor <- dynamicChunks.getOrElse((x, y), Set.empty)
       if neighbor != body
     } {
-      resolveCircleVsCircle(body, neighbor)
+      resolveCollision(body, neighbor)
+    }
+  }
+
+  private def resolveCollision(a: PhysicsBody, b: PhysicsBody)(implicit game: CoreGame): Unit = {
+    (a.shape, b.shape) match {
+      case (CircleShape(_), CircleShape(_)) =>
+        resolveCircleVsCircle(a, b)
+
+      case (CircleShape(_), RectShape(_, _)) =>
+        resolveCircleVsRect(a, b)
+
+      case (RectShape(_, _), CircleShape(_)) =>
+        resolveCircleVsRect(b, a)
+
+      case _ =>
     }
   }
 
@@ -96,16 +109,18 @@ case class AreaPhysicsWorld(areaId: AreaId) {
       game: CoreGame
   ): Unit = {
 
+    val CircleShape(ar) = a.shape
+    val CircleShape(br) = b.shape
+
     val dx = b.pos.x - a.pos.x
     val dy = b.pos.y - a.pos.y
     val distSq = dx * dx + dy * dy
 
-    val minDist = a.radius + b.radius
+    val minDist = ar + br
     if (distSq >= minDist * minDist) return
 
-    // ✅ FIRST: trigger events
+    // events
     (a, b) match {
-
       case (ability: AbilityBody, creature: CreatureBody) =>
         game.queues.localEventQueue.enqueue(
           ProjectileComponentHitsCreatureEvent(
@@ -127,10 +142,8 @@ case class AreaPhysicsWorld(areaId: AreaId) {
       case _ =>
     }
 
-    // ❌ skip physical resolution if any is sensor
     if (a.isSensor || b.isSensor) return
 
-    // ✅ ONLY solid bodies reach this point
     val dist = Math.sqrt(distSq).toFloat
     val (nx, ny) = if (dist == 0f) (1f, 0f) else (dx / dist, dy / dist)
     val overlap = minDist - dist
@@ -149,24 +162,29 @@ case class AreaPhysicsWorld(areaId: AreaId) {
   private def resolveCircleVsRect(circle: PhysicsBody, rect: PhysicsBody)(implicit
       game: CoreGame
   ): Unit = {
+
+    val CircleShape(radius) = circle.shape
+    val RectShape(w, h) = rect.shape
+
+    val hw = w * 0.5f
+    val hh = h * 0.5f
+
     val cx = circle.pos.x
     val cy = circle.pos.y
 
     val rx = rect.pos.x
     val ry = rect.pos.y
-    val half = rect.radius
 
-    val closestX = clamp(cx, rx - half, rx + half)
-    val closestY = clamp(cy, ry - half, ry + half)
+    val closestX = clamp(cx, rx - hw, rx + hw)
+    val closestY = clamp(cy, ry - hh, ry + hh)
 
     val dx = cx - closestX
     val dy = cy - closestY
     val distSq = dx * dx + dy * dy
-    val circleRadius = circle.radius
 
-    if (distSq >= circleRadius * circleRadius) return
+    if (distSq >= radius * radius) return
 
-    // ✅ FIRST: trigger event
+    // event
     circle match {
       case ac: AbilityBody =>
         game.queues.localEventQueue.enqueue(
@@ -178,40 +196,29 @@ case class AreaPhysicsWorld(areaId: AreaId) {
       case _ =>
     }
 
-    // ✅ THEN: stop if sensor
     if (circle.isSensor) return
-
-    // ⬇️ ONLY solids continue below
 
     val dist = Math.sqrt(distSq).toFloat
 
     if (dist == 0f) {
-      val left = cx - (rx - half)
-      val right = (rx + half) - cx
-      val down = cy - (ry - half)
-      val up = (ry + half) - cy
+      val left = cx - (rx - hw)
+      val right = (rx + hw) - cx
+      val down = cy - (ry - hh)
+      val up = (ry + hh) - cy
       val min = Math.min(Math.min(left, right), Math.min(down, up))
 
-      if (min == left) circle.setPos(Vector2f(rx - half - circleRadius, cy))
-      else if (min == right) circle.setPos(Vector2f(rx + half + circleRadius, cy))
-      else if (min == down) circle.setPos(Vector2f(cx, ry - half - circleRadius))
-      else circle.setPos(Vector2f(cx, ry + half + circleRadius))
+      if (min == left) circle.setPos(Vector2f(rx - hw - radius, cy))
+      else if (min == right) circle.setPos(Vector2f(rx + hw + radius, cy))
+      else if (min == down) circle.setPos(Vector2f(cx, ry - hh - radius))
+      else circle.setPos(Vector2f(cx, ry + hh + radius))
       return
     }
 
     val nx = dx / dist
     val ny = dy / dist
-    val overlap = circleRadius - dist
+    val overlap = radius - dist
 
     circle.setPos(Vector2f(cx + nx * overlap, cy + ny * overlap))
-
-    circle match {
-      case ac: AbilityBody =>
-        game.queues.localEventQueue.enqueue(
-          ProjectileComponentHitsTerrainEvent(ac.projectileComponentId, ac.areaId)
-        )
-      case _ =>
-    }
   }
 
   private def clamp(v: Float, min: Float, max: Float): Float =

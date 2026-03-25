@@ -68,11 +68,13 @@ case class WorldSimulation() {
         val body =
           StaticBody(s"static_${areaId}_${pos.x}_${pos.y}")
 
+        val velocity = Vector2f(0f, 0f)
+
         body.init(
           world,
           pos,
-          Vector2f(0f, 0f), // no movement
-          0.5f // same as before
+          velocity,
+          RectShape(1f, 1f)
         )
       }
     }

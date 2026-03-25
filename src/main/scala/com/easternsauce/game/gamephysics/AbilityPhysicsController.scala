@@ -32,11 +32,17 @@ case class AbilityPhysicsController() {
   def spawn(projectile: ProjectileComponent): Unit = {
     val body = AbilityBody(projectile.id)
 
+    val areaPhysicsWorld =
+      areaPhysicsWorlds(projectile.params.currentAreaId)
+
+    val pos = projectile.pos
+    val velocity = projectile.velocity
+
     body.init(
-      areaPhysicsWorlds(projectile.currentAreaId),
-      projectile.pos,
-      projectile.velocity,
-      projectile.bodyRadius
+      areaPhysicsWorld,
+      pos,
+      velocity,
+      CircleShape(projectile.bodyRadius)
     )
 
     bodies(projectile.id) = body

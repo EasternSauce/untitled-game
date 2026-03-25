@@ -29,11 +29,17 @@ case class CreaturePhysicsController() {
       creature.params.isPlayer
     )
 
+    val areaPhysicsWorld =
+      areaPhysicsWorlds(creature.params.currentAreaId)
+
+    val pos = creature.pos
+    val velocity = creature.params.velocity
+
     body.init(
-      areaPhysicsWorlds(creature.currentAreaId),
-      creature.pos,
-      creature.params.velocity,
-      creature.params.bodyRadius
+      areaPhysicsWorld,
+      pos,
+      velocity,
+      CircleShape(creature.params.bodyRadius)
     )
 
     bodies(creature.id) = body
