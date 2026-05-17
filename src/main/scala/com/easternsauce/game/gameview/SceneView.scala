@@ -2,6 +2,7 @@ package com.easternsauce.game.gameview
 
 import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.easternsauce.game.core.CoreGame
+import com.easternsauce.game.gamemap.GameMapCell
 import com.easternsauce.game.gamemap.GameTiledMap
 import com.easternsauce.game.gamestate.id.AreaId
 import com.easternsauce.game.math.Vector2f
@@ -94,7 +95,7 @@ case class SceneView() {
   )(implicit game: CoreGame): Unit =
     creatureRenderer.renderLifeBars(areaId, batch)
 
-  // --- Dynamic + creatures (sorted) ---
+  // --- Dynamic creatures (sorted) ---
 
   private def renderDynamicAndAlive(
       areaId: AreaId,
@@ -109,23 +110,12 @@ case class SceneView() {
     val aliveCreatureRenderables =
       creatureRenderer.getAliveCreatureRenderables(areaId)
 
-    val width =
-      tiledMap.layerWidth("fill")
-
-    val topOfMap =
-      Vector2f(0, width)
-
     val sortedRenderables =
       (dynamicLayerRenderables ++ aliveCreatureRenderables)
-        .sortBy(_.pos())((v1, v2) => {
-          val d1 = v1.distance(topOfMap)
-          val d2 = v2.distance(topOfMap)
-
-          if (d2 - d1 > 0f) -1
-          else if (d2 - d1 < 0f) 1
-          else 0
-        })
-
+        .sortBy { r =>
+          val bias = if (r.isInstanceOf[GameMapCell]) 0f else 0.5f
+          -(r.pos().y - r.pos().x) + bias
+        }
     sortedRenderables.foreach(
       _.render(batch, worldCameraPos)
     )

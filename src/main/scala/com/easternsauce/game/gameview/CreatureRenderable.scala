@@ -56,6 +56,10 @@ case class CreatureRenderable(creatureId: GameEntityId[Creature]) extends Render
       game: CoreGame
   ): Unit = {
     val creature = game.gameState.creatures(creatureId)
+//
+//    if (creature.params.isPlayer) {
+//      println(creature.params.pos)
+//    }
 
     if (creature.isInvisible) {
       animations(CreatureAnimationType.Body).render(batch)
@@ -133,12 +137,6 @@ case class CreatureRenderable(creatureId: GameEntityId[Creature]) extends Render
       GameRectangle(barPos.x, barPos.y, lifeBarWidth, lifeBarHeight),
       color
     )
-  }
-
-  override def hasRenderPriority(gameState: GameState): Boolean = {
-    val creature = gameState.creatures(creatureId)
-
-    creature.isAlive
   }
 
 }

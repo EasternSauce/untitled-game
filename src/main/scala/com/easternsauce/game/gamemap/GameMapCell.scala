@@ -15,8 +15,6 @@ case class GameMapCell(tiledCell: Cell, areaId: AreaId, pos: Vector2f) extends R
 
   override def areaId(gameState: GameState): AreaId = areaId
 
-  override def hasRenderPriority(gameState: GameState): Boolean = false
-
   override def render(batch: RenderBatch, worldCameraPos: Vector2f)(implicit
       game: CoreGame
   ): Unit = {

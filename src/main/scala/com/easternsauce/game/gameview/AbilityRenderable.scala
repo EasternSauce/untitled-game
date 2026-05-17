@@ -35,7 +35,4 @@ case class AbilityRenderable(projectileComponentId: GameEntityId[ProjectileCompo
     animation.render(batch)
   }
 
-  override def hasRenderPriority(gameState: GameState): Boolean = {
-    true
-  }
 }
